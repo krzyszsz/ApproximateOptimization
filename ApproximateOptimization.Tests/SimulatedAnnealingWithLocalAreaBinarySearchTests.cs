@@ -3,11 +3,11 @@ using System;
 
 namespace ApproximateOptimization.Tests
 {
-    public class LocalAreaBinarySearchTests
+    public class SimulatedAnnealingWithLocalAreaBinarySearchTests
     {
-        private LocalAreaBinarySearch GetSut()
+        private SimulatedAnnealingWithLocalAreaBinarySearch GetSut()
         {
-            return new LocalAreaBinarySearch();
+            return new SimulatedAnnealingWithLocalAreaBinarySearch();
         }
 
         [Test]
@@ -16,7 +16,7 @@ namespace ApproximateOptimization.Tests
             Func<double[], double> func = (double[] vector) => vector[0] + vector[1];
             var sut = GetSut();
 
-            sut.FindMaximum(2, func, default(TimeSpan), 1);
+            sut.FindMaximum(2, func, default(TimeSpan), 100);
 
             Assert.That(sut.BestSolutionSoFar.Length, Is.EqualTo(2));
             Assert.That(sut.BestSolutionSoFar[0], Is.EqualTo(1).Within(0.01));
@@ -30,7 +30,7 @@ namespace ApproximateOptimization.Tests
             Func<double[], double> func = (double[] vector) => -vector[0] - vector[1];
             var sut = GetSut();
 
-            sut.FindMaximum(2, func, default(TimeSpan), 1);
+            sut.FindMaximum(2, func, default(TimeSpan), 100);
 
             Assert.That(sut.BestSolutionSoFar.Length, Is.EqualTo(2));
             Assert.That(sut.BestSolutionSoFar[0], Is.EqualTo(0).Within(0.01));
@@ -48,7 +48,7 @@ namespace ApproximateOptimization.Tests
             double expectedY = 0.4;
             double expectedBestValue = 2;
 
-            sut.FindMaximum(2, func, default(TimeSpan), 1);
+            sut.FindMaximum(2, func, default(TimeSpan), 1000);
 
             Assert.That(sut.BestSolutionSoFar.Length, Is.EqualTo(2));
             Assert.That(sut.SolutionFound, Is.EqualTo(true));

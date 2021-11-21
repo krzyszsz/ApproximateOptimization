@@ -9,9 +9,9 @@ namespace ApproximateOptimization
         protected int dimension;
         protected Func<double[], double> getValue;
 
-        public double[] BestSolutionSoFar { get; private set; }
+        public double[] BestSolutionSoFar { get; protected set; }
 
-        public double SolutionValue { get; private set; }
+        public double SolutionValue { get; protected set; }
 
         public bool SolutionFound { get; private set; }
 
@@ -26,12 +26,17 @@ namespace ApproximateOptimization
         /// </summary>
         protected abstract void NextSolution();
 
+        protected virtual void OnInitialized()
+        {
+        }
+
         public void FindMaximum(int dimension, Func<double[], double> getValue, TimeSpan timeLimit = default, long maxIterations=-1)
         {
             this.getValue = getValue;
             this.dimension = dimension;
             SetInitialSolution();
             BestSolutionSoFar = new double[dimension];
+            OnInitialized();
             Array.Copy(currentSolution, BestSolutionSoFar, dimension);
             SolutionValue = getValue(BestSolutionSoFar);
             long iterations = 0;

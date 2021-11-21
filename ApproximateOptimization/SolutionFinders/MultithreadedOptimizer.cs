@@ -29,6 +29,10 @@ namespace ApproximateOptimization
 
         public void FindMaximum(int dimension, Func<double[], double> getValue, TimeSpan timeLimit = default, long maxIterations = -1)
         {
+            if (maxIterations == -1 && timeLimit == default(TimeSpan))
+            {
+                throw new ArgumentException("Missing timeLimit or maxIterations argument. Without them the algorithm would never stop!");
+            }
             var threads = new Thread[threadCount];
             var solutionFinders = new ISolutionFinder[threadCount];
             double[][] solutions = new double[threadCount][];
