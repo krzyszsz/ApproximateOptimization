@@ -20,7 +20,7 @@ namespace ApproximateOptimization
     /// LocalArea is exposed as public property so that this algorithm can be used in combination with others
     /// and the LocalArea can be changed between calls to "NextSolution".
     /// </summary>
-    public class LocalAreaBinarySearch : BaseSolutionFinder, ILocalAreaBinarySearch
+    public class LocalAreaBinarySearch : BaseSolutionFinder, IControllableLocalAreaSolutionFinder
     {
         private readonly int iterationCount;
         private readonly int iterationsPerDimension;
@@ -35,7 +35,7 @@ namespace ApproximateOptimization
             this.initializeSolution = initializeSolution;
         }
 
-        double ILocalAreaBinarySearch.LocalArea
+        double IControllableLocalAreaSolutionFinder.LocalArea
         {
             get
             {
@@ -44,6 +44,71 @@ namespace ApproximateOptimization
             set
             {
                 localArea = value;
+            }
+        }
+
+        double[] IControllableLocalAreaSolutionFinder.CurrentSolution
+        {
+            get
+            {
+                return currentSolution;
+            }
+            
+            set
+            {
+                currentSolution = value;
+            }
+        }
+
+        double[] IControllableLocalAreaSolutionFinder.BestSolutionSoFar
+        {
+            get
+            {
+                return BestSolutionSoFar;
+            }
+
+            set
+            {
+                BestSolutionSoFar = value;
+            }
+        }
+
+        int IControllableLocalAreaSolutionFinder.Dimension
+        {
+            get
+            {
+                return this.dimension;
+            }
+
+            set
+            {
+                dimension = value;
+            }
+        }
+
+        double IControllableLocalAreaSolutionFinder.SolutionValue
+        {
+            get
+            {
+                return SolutionValue;
+            }
+
+            set
+            {
+                SolutionValue = value;
+            }
+        }
+
+        Func<double[], double> IControllableLocalAreaSolutionFinder.ScoreFunction
+        {
+            get
+            {
+                return this.getValue;
+            }
+
+            set
+            {
+                getValue = value;
             }
         }
 
@@ -59,14 +124,17 @@ namespace ApproximateOptimization
             }
         }
 
-        void ILocalAreaBinarySearch.NextSolution()
+        void IControllableLocalAreaSolutionFinder.NextSolution()
         {
             NextSolution();
         }
 
         protected override void NextSolution()
         {
-            Array.Copy(BestSolutionSoFar, currentSolution, dimension);
+            if (initializeSolution)
+            {
+                Array.Copy(BestSolutionSoFar, currentSolution, dimension);
+            }
             for (int x=0; x<iterationCount; x++) for (int i=0; i<dimension; i++)
             {
                 OptimizeInSingleDimension(i);
@@ -92,8 +160,10 @@ namespace ApproximateOptimization
 
             while (iterationsLeft-- > 0)
             {
-                var justAboveMid = (rangeBegin + rangeEnd) * 0.51;
-                var justBelowMid = (rangeBegin + rangeEnd) * 0.49;
+                var mid = (rangeBegin + rangeEnd) / 2;
+                var justAboveMid = mid + 0.00001 * (1 - mid);
+                var justBelowMid = mid - 0.00001 * mid;
+                if (justAboveMid == justBelowMid) break;
 
                 var justAboveMidValue = GetValueWithDimensionReplaced(dimension, justAboveMid);
                 var justBelowMidValue = GetValueWithDimensionReplaced(dimension, justBelowMid);
