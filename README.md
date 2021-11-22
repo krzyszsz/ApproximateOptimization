@@ -12,8 +12,9 @@ This is definitely not the most advanced solver you can find but (hopefully) it 
 
 # Examples
 ```c#
-// Note: There are easy solutions of the below without need for generic solver;
-// these are just examples to show basic usage.
+// Note: There are more accurate and faster algorithms for the below problems which are problem-specific
+// but these examples below demonstrate basic usage of the solver / optimizer and show that it can be useful
+// as a tool to deal with much wider class of problems, as a more generic tool for data analysis.
 
 private static void Example1_FindMaximum()
 {
