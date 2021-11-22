@@ -37,7 +37,7 @@ namespace ApproximateOptimizationExamples
                 (double[] coefficients, Point point) => (coefficients[0] * point.x) + coefficients[1];
             var errorFunction = (double[] coefficients) => points
                 .Sum(point => Math.Abs(regressionLine(coefficients, point) - point.y));
-            // Below: We need to flip the sign of the function to minimize it rather than maximixe it.
+            // Below: We need to flip the sign of the function to minimize it rather than maximize it.
             var minusErrorFunc = (double[] coefficients) => -errorFunction(coefficients);
             var optimizer = new CompositeOptimizer();
             optimizer.FindMaximum(2, minusErrorFunc, maxIterations: 100);
@@ -65,7 +65,7 @@ namespace ApproximateOptimizationExamples
                 (rescale(coefficients[0]) * point.x) + rescale(coefficients[1]);
             var errorFunction = (double[] coefficients) =>
                 points.Sum(point => Math.Abs(regressionLine(coefficients, point) - point.y));
-            // Below: We need to flip the sign of the function to minimize it rather than maximixe it.
+            // Below: We need to flip the sign of the function to minimize it rather than maximize it.
             var minusErrorFunc =
                 (double[] coefficients) => -errorFunction(coefficients);
             var optimizer = new CompositeOptimizer();
@@ -77,6 +77,33 @@ namespace ApproximateOptimizationExamples
             // Found regression line y = -218.4419*x + 78.9524
         }
 
+        public static void Example4_Equation_solver()
+        {
+            // It only finds one solution even if there are more (in this example we have only one).
+            // Say we have two equations:
+            //  1:      x + 2 = 7 * y
+            //  2:      y + 6*x = 4
+            var scaleFactor = 100;
+            var rescale = (double inputNumber) => inputNumber * scaleFactor * 2 - scaleFactor;
+
+            var equations = new []
+            {
+                new Func<double[], double>[] {(double[] variables) => rescale(variables[0]) + 2,                           (double[] variables) => 7 * rescale(variables[1])  },
+                new Func<double[], double>[] {(double[] variables) => rescale(variables[1]) + 6 * rescale(variables[0]),   (double[] variables) => 4                 },
+            };
+
+            var errorFunction = (double[] variables) => equations.Sum(sides => Math.Abs(sides[0](variables) - sides[1](variables)));
+            // Below: We need to flip the sign of the error function to minimize it rather than maximize it.
+            var minusErrorFunc = (double[] variables) => -errorFunction(variables);
+            var optimizer = new CompositeOptimizer(iterationsPerDimension: 20, temperatureMultiplier: 0.99);
+            optimizer.FindMaximum(2, minusErrorFunc, maxIterations: 5);
+            Console.WriteLine(optimizer.SolutionFound && optimizer.SolutionValue < 0.1
+                ? $"Equations' solution: x = {rescale(optimizer.BestSolutionSoFar[0]):N4} y = {rescale(optimizer.BestSolutionSoFar[1]):N4}"
+                : "Solution not found.");
+            // This prints:
+            // Equations' solution: x = 0.6047 y = 0.3721
+        }
+
         static void Main(string[] args)
         {
             Example1_FindMaximum();
@@ -84,6 +111,8 @@ namespace ApproximateOptimizationExamples
             Example2_Linear_regression();
 
             Example3_Linear_regression_with_result_range_rescaled();
+
+            Example4_Equation_solver();
 
             Console.WriteLine("Press Enter.");
             Console.ReadLine();
