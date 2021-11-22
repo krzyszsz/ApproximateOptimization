@@ -27,7 +27,7 @@ Example:
         private static void Example2_Linear_regression()
         {
             // Finds simple regression line for a couple of points. To do that we need to minimize the sum
-            // of vertical distances to our line (there are faster ways than using a solver, this is just an example).
+            // of vertical distances to our line.
             // This obviously can use more complex regression models, not only lines
             // (imagine: trygonometric functions if we wnated to make a slow version of discrete frequency transformation).
             var points = new Point[] {
