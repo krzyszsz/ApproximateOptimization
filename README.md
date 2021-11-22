@@ -4,7 +4,8 @@ This is a simple meta-heuristic optimizer using simulated annealing with local a
 It can find solutions for problems where you can express the solution as an array of numbers and you can provide a function that tells the solver how good any particular array of numbers is. This solver never finds accurate solutions but for many problems they are "accurate enough".
 
 # Techincal Details
-Optimizer searches for a solution that is an array of numbers from range: <0..1> for which a given function returns best (highest) result. Example 3 below shows that we can easily re-configure solver to much wider range of numbers and request solver to minimize solution by providing reverse function.
+Optimizer searches for a solution that is an array of numbers from range: <0..1> (by default) for which the given score function returns best (highest) result.
+The last example below shows that we can easily re-configure solver to much wider range  and request solver to minimize solution by providing score function with inverted sign.
 See [Wikipedia: Simulated annealing](https://en.wikipedia.org/wiki/Simulated_annealing)
 
 This is definitely not the most advanced solver you can find but (hopefully) it is simple and easy to customize.
