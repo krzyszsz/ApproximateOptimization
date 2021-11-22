@@ -95,8 +95,8 @@ namespace ApproximateOptimizationExamples
                 },
                 new Func<double[], double>[]
                 {
-                    (double[] variables) => rescale(variables[1]) + 6 * rescale(variables[0]), // left side, second eq.
-                    (double[] variables) => 4                           // right side, second equation
+                    (double[] variables) => rescale(variables[1]) + 6 * rescale(variables[0]),
+                    (double[] variables) => 4 // right side, second equation
                 },
             };
 
