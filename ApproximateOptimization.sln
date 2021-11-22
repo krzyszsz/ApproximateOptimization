@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApproximateOptimization", "ApproximateOptimization\ApproximateOptimization.csproj", "{0570CB5E-25C8-4C71-87EB-FEDB389E1122}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApproximateOptimization", "ApproximateOptimization\ApproximateOptimization.csproj", "{0570CB5E-25C8-4C71-87EB-FEDB389E1122}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApproximateOptimization.Tests", "ApproximateOptimization.Tests\ApproximateOptimization.Tests.csproj", "{02051BDB-E86A-4364-B78A-BB2B74A2A32F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApproximateOptimization.Tests", "ApproximateOptimization.Tests\ApproximateOptimization.Tests.csproj", "{02051BDB-E86A-4364-B78A-BB2B74A2A32F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApproximateOptimization.Examples", "ApproximateOptimization.Examples\ApproximateOptimization.Examples.csproj", "{68063C84-0991-4272-8B73-2957D3D8CB3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{02051BDB-E86A-4364-B78A-BB2B74A2A32F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02051BDB-E86A-4364-B78A-BB2B74A2A32F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02051BDB-E86A-4364-B78A-BB2B74A2A32F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68063C84-0991-4272-8B73-2957D3D8CB3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68063C84-0991-4272-8B73-2957D3D8CB3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68063C84-0991-4272-8B73-2957D3D8CB3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68063C84-0991-4272-8B73-2957D3D8CB3B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
