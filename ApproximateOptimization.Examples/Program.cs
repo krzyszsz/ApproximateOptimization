@@ -1,11 +1,12 @@
-﻿using System;
-using System.Linq;
+﻿using ApproximateOptimization;
 
-namespace ApproximateOptimization
+namespace ApproximateOptimizationExamples
 {
-    class Program
+    struct Point { public double x; public double y; }
+
+    static class Program
     {
-         private static void Example1_FindMaximum()
+        public static void Example1_FindMaximum()
         {
             // Finds maximum of sin(x) * cos(y) for range x: 0..1 and y: 0..1
             var func = (double[] vector) => Math.Sin(vector[0]) * Math.Cos(vector[1]);
@@ -19,9 +20,7 @@ namespace ApproximateOptimization
             // Maximum value 0.8414709848078965 was found for x=1 and y=0 (x&y in 0..1).
         }
 
-        struct Point { public double x; public double y; }
-
-        private static void Example2_Linear_regression()
+        public static void Example2_Linear_regression()
         {
             // Finds simple regression line for a couple of points. To do that we need to minimize the sum
             // of vertical distances to our line.
@@ -49,7 +48,7 @@ namespace ApproximateOptimization
             // Found regression line y = 0.1089*x + 0.8624
         }
 
-        private static void Example3_Linear_regression_with_result_range_rescaled()
+        public static void Example3_Linear_regression_with_result_range_rescaled()
         {
             // This example is similar to example 2, but it looks for results in a wider range, not only in 0..1.
             // To do that we need to scale the result. Below search area is in range between -1 million and +1 million.
@@ -68,12 +67,12 @@ namespace ApproximateOptimization
                 points.Sum(point => Math.Abs(regressionLine(coefficients, point) - point.y));
             // Below: We need to flip the sign of the function to minimize it rather than maximixe it.
             var minusErrorFunc =
-                (double[] coefficients) => - errorFunction(coefficients);
+                (double[] coefficients) => -errorFunction(coefficients);
             var optimizer = new CompositeOptimizer();
             optimizer.FindMaximum(2, minusErrorFunc, maxIterations: 100);
             Console.WriteLine(
                 $"Found regression line " +
-                $"y = {rescale(optimizer.BestSolutionSoFar[0]) :N4}*x + {rescale(optimizer.BestSolutionSoFar[1]) :N4}");
+                $"y = {rescale(optimizer.BestSolutionSoFar[0]):N4}*x + {rescale(optimizer.BestSolutionSoFar[1]):N4}");
             // This prints:
             // Found regression line y = -218.4419*x + 78.9524
         }
@@ -90,4 +89,4 @@ namespace ApproximateOptimization
             Console.ReadLine();
         }
     }
-}
+ }
