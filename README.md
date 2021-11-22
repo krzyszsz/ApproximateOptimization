@@ -100,17 +100,27 @@ public static void Example4_Equation_solver()
 
 	var equations = new []
 	{
-		new Func<double[], double>[] {(double[] variables) => rescale(variables[0]) + 2,                           (double[] variables) => 7 * rescale(variables[1])  },
-		new Func<double[], double>[] {(double[] variables) => rescale(variables[1]) + 6 * rescale(variables[0]),   (double[] variables) => 4                 },
+		new Func<double[], double>[]
+		{
+			(double[] variables) => rescale(variables[0]) + 2,  // left side, first equation
+			(double[] variables) => 7 * rescale(variables[1])   // right side, first equation
+		},
+		new Func<double[], double>[]
+		{
+			(double[] variables) => rescale(variables[1]) + 6 * rescale(variables[0]), // left side, second eq.
+			(double[] variables) => 4                           // right side, second equation
+		},
 	};
 
-	var errorFunction = (double[] variables) => equations.Sum(sides => Math.Abs(sides[0](variables) - sides[1](variables)));
+	var errorFunction = (double[] variables) => equations
+		.Sum(sides => Math.Abs(sides[0](variables) - sides[1](variables)));
 	// Below: We need to flip the sign of the error function to minimize it rather than maximize it.
 	var minusErrorFunc = (double[] variables) => -errorFunction(variables);
 	var optimizer = new CompositeOptimizer(iterationsPerDimension: 20, temperatureMultiplier: 0.99);
 	optimizer.FindMaximum(2, minusErrorFunc, maxIterations: 5);
 	Console.WriteLine(optimizer.SolutionFound && optimizer.SolutionValue < 0.1
-		? $"Equations' solution: x = {rescale(optimizer.BestSolutionSoFar[0]):N4} y = {rescale(optimizer.BestSolutionSoFar[1]):N4}"
+		? $"Equations' solution: x = {rescale(optimizer.BestSolutionSoFar[0]):N4} " +
+		$"y = {rescale(optimizer.BestSolutionSoFar[1]):N4}"
 		: "Solution not found.");
 	// This prints:
 	// Equations' solution: x = 0.6047 y = 0.3721
