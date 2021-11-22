@@ -9,7 +9,7 @@ In simple words it can find solutions for problems where you can express the sol
 Example:
 ```c#
 // Note: There are easy solutions of the below without need for generic solver;
-// these are just an examples to show basic usage.
+// these are just examples to show basic usage.
 
        private static void Example1_FindMaximum()
         {
