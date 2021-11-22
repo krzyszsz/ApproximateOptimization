@@ -4,7 +4,9 @@ See [Wikipedia: Simulated annealing](https://en.wikipedia.org/wiki/Simulated_ann
 
 Technicalities: Optimizer searches for a solution that is an array of numbers from range: <0..1> for which a given function returns best (highest) result. Example 3 below shows that we can easily re-configure solver to much wider range of numbers and request solver to minimize solution by providing reverse function.
 
-**In simple words** it can find solutions for problems where you can express the solution as an array of numbers and you can provide a function that tells the solver how good is any particular array of numbers. This solver never finds accurate solutions but for many problems they are "accurate enough".
+**In simple words** it can find solutions for problems where you can express the solution as an array of numbers and you can provide a function that tells the solver how good any particular array of numbers is. This solver never finds accurate solutions but for many problems they are "accurate enough".
+
+This is definitely not the most advanced solver you can find but (hopefully) it is simple and easy to customize.
 
 Example:
 ```c#
