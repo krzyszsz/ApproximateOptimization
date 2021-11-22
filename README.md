@@ -49,7 +49,7 @@ private static void Example2_Linear_regression()
         (double[] coefficients, Point point) => (coefficients[0] * point.x) + coefficients[1];
     var errorFunction = (double[] coefficients) => points
         .Sum(point => Math.Abs(regressionLine(coefficients, point) - point.y));
-    // Below: We need to flip the sign of the function to maximize it rather than minimize it.
+    // Below: We need to flip the sign of the function to minimize it rather than maximixe it.
     var minusErrorFunc = (double[] coefficients) => -errorFunction(coefficients);
     var optimizer = new CompositeOptimizer();
     optimizer.FindMaximum(2, minusErrorFunc, maxIterations: 100);
@@ -63,7 +63,7 @@ private static void Example2_Linear_regression()
 private static void Example3_Linear_regression_with_result_range_rescaled()
 {
     // This example is similar to example 2, but it looks for results in a wider range, not only in 0..1.
-    // To do that we need to scale the result. Below search area is in range between -1 million and +1 million.
+    // To do that we need to scale the result. Below search area is in range between -1mln and +1mln.
     var scaleFactor = 1000000;
     var rescale = (double inputNumber) => inputNumber * scaleFactor * 2 - scaleFactor;
 
@@ -77,14 +77,14 @@ private static void Example3_Linear_regression_with_result_range_rescaled()
         (rescale(coefficients[0]) * point.x) + rescale(coefficients[1]);
     var errorFunction = (double[] coefficients) =>
         points.Sum(point => Math.Abs(regressionLine(coefficients, point) - point.y));
-    // Below: We need to flip the sign of the function to maximize it rather than minimize it.
+    // Below: We need to flip the sign of the function to minimize it rather than maximixe it.
     var minusErrorFunc =
-        (double[] coefficients) => - errorFunction(coefficients);  // Function flipped to minimize.
+        (double[] coefficients) => - errorFunction(coefficients);
     var optimizer = new CompositeOptimizer();
     optimizer.FindMaximum(2, minusErrorFunc, maxIterations: 100);
     Console.WriteLine(
         $"Found regression line " +
-        $"y = {rescale(optimizer.BestSolutionSoFar[0]) :N4}*x + {rescale(optimizer.BestSolutionSoFar[1]) :N4}");
+        $"y = {rescale(optimizer.BestSolutionSoFar[0]):N4}*x + {rescale(optimizer.BestSolutionSoFar[1]):N4}");
     // This prints:
     // Found regression line y = -218.4419*x + 78.9524
 }

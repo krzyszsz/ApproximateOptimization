@@ -5,7 +5,7 @@ namespace ApproximateOptimization
 {
     class Program
     {
-        private static void Example1_FindMaximum()
+         private static void Example1_FindMaximum()
         {
             // Finds maximum of sin(x) * cos(y) for range x: 0..1 and y: 0..1
             var func = (double[] vector) => Math.Sin(vector[0]) * Math.Cos(vector[1]);
@@ -38,13 +38,13 @@ namespace ApproximateOptimization
                 (double[] coefficients, Point point) => (coefficients[0] * point.x) + coefficients[1];
             var errorFunction = (double[] coefficients) => points
                 .Sum(point => Math.Abs(regressionLine(coefficients, point) - point.y));
-            // Below: We need to flip the sign of the function to maximize it rather than minimize it.
+            // Below: We need to flip the sign of the function to minimize it rather than maximixe it.
             var minusErrorFunc = (double[] coefficients) => -errorFunction(coefficients);
             var optimizer = new CompositeOptimizer();
             optimizer.FindMaximum(2, minusErrorFunc, maxIterations: 100);
             Console.WriteLine(
                 $"Found regression line " +
-                $"y = {optimizer.BestSolutionSoFar[0] :N4}*x + {optimizer.BestSolutionSoFar[1] :N4}");
+                $"y = {optimizer.BestSolutionSoFar[0]:N4}*x + {optimizer.BestSolutionSoFar[1]:N4}");
             // This prints:
             // Found regression line y = 0.1089*x + 0.8624
         }
@@ -66,9 +66,9 @@ namespace ApproximateOptimization
                 (rescale(coefficients[0]) * point.x) + rescale(coefficients[1]);
             var errorFunction = (double[] coefficients) =>
                 points.Sum(point => Math.Abs(regressionLine(coefficients, point) - point.y));
-            // Below: We need to flip the sign of the function to maximize it rather than minimize it.
+            // Below: We need to flip the sign of the function to minimize it rather than maximixe it.
             var minusErrorFunc =
-                (double[] coefficients) => - errorFunction(coefficients);  // Function flipped to minimize.
+                (double[] coefficients) => - errorFunction(coefficients);
             var optimizer = new CompositeOptimizer();
             optimizer.FindMaximum(2, minusErrorFunc, maxIterations: 100);
             Console.WriteLine(
