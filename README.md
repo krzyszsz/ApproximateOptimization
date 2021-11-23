@@ -1,12 +1,10 @@
 # Approximate Optimization / Generic Problem Solver
-This is a simple meta-heuristic optimizer using simulated annealing with local area binary search.
-
-It can find solutions for problems where you can express the solution as an array of numbers and you can provide a function that tells the solver how good any particular array of numbers is. This solver never finds accurate solutions but for many problems they are "accurate enough".
+This optimizer / solver can find solutions for problems where you can express the solution as an array of numbers and you can provide a function that tells the solver how good any particular array of numbers is. This solver never finds accurate solutions but for many problems they are "accurate enough".
 
 # Techincal Details
 Optimizer searches for a solution that is an array of numbers from range: <0..1> (by default) for which the given score function returns best (highest) result.
 The third example below shows that we can easily re-configure solver to much wider range  and request solver to minimize solution by providing score function with inverted sign.
-See [Wikipedia: Simulated annealing](https://en.wikipedia.org/wiki/Simulated_annealing)
+It is loosely based on simulated annealing with local area binary search. See [Wikipedia: Simulated annealing](https://en.wikipedia.org/wiki/Simulated_annealing)
 
 This is definitely not the most advanced solver you can find but (hopefully) it is simple and easy to customize.
 
