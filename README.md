@@ -1,5 +1,5 @@
 # Approximate Optimization / Generic Problem Solver
-This optimizer / solver can find solutions for problems where you can express the solution as an array of numbers and you can provide a function that tells the solver how good any particular array of numbers is. This solver never finds accurate solutions but for many problems they are "accurate enough".
+This optimizer / solver can find solutions for problems where you can express the solution as an array of numbers and you can provide a function that tells the solver how good any particular array of numbers is. It rarely finds accurate solutions but for many problems they are "accurate enough".
 
 # Techincal Details
 Optimizer searches for a solution that is an array of numbers from range: <0..1> (by default) for which the given score function returns best (highest) result.
