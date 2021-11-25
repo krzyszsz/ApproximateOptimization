@@ -115,4 +115,5 @@ public static void Example4_Equation_solver()
         : "Solution not found.");
     // This prints:
     // Equations' solution: x = 0.6047 y = 0.3721
-}```
+}
+```
