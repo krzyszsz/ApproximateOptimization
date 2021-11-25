@@ -6,7 +6,7 @@ As shown in the examples below, the easiest usage of the optimazer is via Compos
 
 The implementation aims to limit memory allocations to improve performance and also runs multiple solvers in paralel threads.
 
-Please note that when the range is not provided, only 0..1 is searched for all dimensions - see example 2. For automatic range discovery (slow!), see examples 3 and 4 employing AutoTuningFinder.
+Please note that when the range is not provided, only 0..1 is searched for all dimensions - see example 1. For automatic range discovery (slow!), see examples 3 and 4 employing AutoTuningFinder.
 
 This is definitely not the most advanced solver you can find but (hopefully) it is simple and easy to customize & extend.
 
