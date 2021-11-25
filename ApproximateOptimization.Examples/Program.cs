@@ -28,7 +28,7 @@ namespace ApproximateOptimizationExamples
             // (imagine we could use trygonometric functions to make a slow version
             // of discrete frequency transformation).
 
-            // Please note the usage of AutoTuningFinder to automate range finding.
+            // Please note the usage of AutoTuningFinder to automate range detection.
 
             var points = new Point[] {
                 new Point{ x = 13.2, y = 2.3 },
