@@ -27,12 +27,14 @@ namespace ApproximateOptimization
 
         public bool SolutionFound { get; private set; }
 
-        public void FindMaximum(int dimension, Func<double[], double> getValue, TimeSpan timeLimit = default, long maxIterations = -1)
+        public void FindMaximum(
+            int dimension,
+            Func<double[], double> getValue,
+            TimeSpan timeLimit = default,
+            long maxIterations = -1,
+            double[][] solutionRange = null)
         {
-            if (maxIterations == -1 && timeLimit == default(TimeSpan))
-            {
-                throw new ArgumentException("Missing timeLimit or maxIterations argument. Without them the algorithm would never stop!");
-            }
+            BaseSolutionFinder.ValidateArguments(dimension, timeLimit, maxIterations, solutionRange);
             var threads = new Thread[threadCount];
             var solutionFinders = new ISolutionFinder[threadCount];
             double[][] solutions = new double[threadCount][];
@@ -55,7 +57,7 @@ namespace ApproximateOptimization
 
                     try
                     {
-                        solutionFinder.FindMaximum(dimension, getValue, timeLimit, maxIterations);
+                        solutionFinder.FindMaximum(dimension, getValue, timeLimit, maxIterations, solutionRange);
                     }
                     catch (Exception e)
                     {

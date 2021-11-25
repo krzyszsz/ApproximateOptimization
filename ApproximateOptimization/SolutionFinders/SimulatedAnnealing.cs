@@ -17,9 +17,10 @@ namespace ApproximateOptimization
         protected override void SetInitialSolution()
         {
             base.SetInitialSolution();
-            for (int i=0; i<dimension; i++)
+            for (int i = 0; i < dimension; i++)
             {
-                currentSolution[i] = 0.5;
+                var rangeWidth = solutionRange[i][1] - solutionRange[i][0];
+                currentSolution[i] = solutionRange[i][0] + rangeWidth / 2;
             }
         }
 
@@ -27,7 +28,8 @@ namespace ApproximateOptimization
         {
             for (int i=0; i<dimension; i++)
             {
-                currentSolution[i] = BestSolutionSoFar[i] + (random.NextDouble() * 2.0 - 1.0) * temperature;
+                var rangeWidth = solutionRange[i][1] - solutionRange[i][0];
+                currentSolution[i] = BestSolutionSoFar[i] + (random.NextDouble() * 2.0 * rangeWidth - rangeWidth) * temperature;
                 currentSolution[i] = Math.Max(0, Math.Min(1, currentSolution[i]));
             }
             temperature *= temperatureMultiplier;
