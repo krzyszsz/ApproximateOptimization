@@ -31,7 +31,7 @@ public static void Example1_FindMaximum()
 }
 
 public static void Example2_Linear_regression_with_result_range_rescaled()
-    // This example finds s simple regression line for a couple of points.
+    // This example finds a simple regression line for a couple of points.
     // To do that we need to minimize the sum of vertical distances to our line.
     // This obviously can use more complex regression models, not only lines
     // (imagine we could use trygonometric functions to make a slow version
