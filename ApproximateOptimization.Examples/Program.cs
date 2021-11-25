@@ -22,11 +22,14 @@ namespace ApproximateOptimizationExamples
 
         public static void Example2_Linear_regression()
         {
-            // Finds simple regression line for a couple of points. To do that we need to minimize the sum
-            // of vertical distances to our line.
+            // This example finds s simple regression line for a couple of points.
+            // To do that we need to minimize the sum of vertical distances to our line.
             // This obviously can use more complex regression models, not only lines
             // (imagine we could use trygonometric functions to make a slow version
             // of discrete frequency transformation).
+
+            // Please note the usage of AutoTuningFinder to automate range finding.
+
             var points = new Point[] {
                 new Point{ x = 13.2, y = 2.3 },
                 new Point{ x = 23.3, y = 3.4 },
@@ -48,33 +51,7 @@ namespace ApproximateOptimizationExamples
             // Found regression line y = 0.1089*x + 0.8625
         }
 
-        public static void Example3_Linear_regression_with_result_range_rescaled()
-        {
-            // This example is similar to example 2, but it uses AutoTuningFinder
-            // to automatically search wider range of numbers.
-            var points = new Point[] {
-                new Point{ x = 0.2, y = 33.6 },
-                new Point{ x = 0.3, y = 24.7 },
-                new Point{ x = 0.6, y = -71.8 },
-                new Point{ x = 0.7, y = -73.9 },
-            };
-            var regressionLine = (double[] coefficients, Point point) =>
-                (coefficients[0] * point.x) + coefficients[1];
-            var errorFunction = (double[] coefficients) =>
-                points.Sum(point => Math.Abs(regressionLine(coefficients, point) - point.y));
-            // Below: We need to flip the sign of the function to minimize it rather than maximize it.
-            var minusErrorFunc =
-                (double[] coefficients) => -errorFunction(coefficients);
-            var optimizer = new AutoTuningFinder(() => new CompositeOptimizer());
-            optimizer.FindMaximum(2, minusErrorFunc, maxIterations: 100);
-            Console.WriteLine(
-                $"Found regression line " +
-                $"y = {optimizer.BestSolutionSoFar[0]:N4}*x + {optimizer.BestSolutionSoFar[1]:N4}");
-            // This prints:
-            // Found regression line y = -215.0160*x + 76.6104
-        }
-
-        public static void Example4_Equation_solver()
+        public static void Example3_Equation_solver()
         {
             // It only finds one solution even if there are more (in this example we have only one).
             // Say we have two equations:
