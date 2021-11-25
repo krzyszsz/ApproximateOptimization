@@ -7,7 +7,7 @@ namespace ApproximateOptimization.Tests
     {
         private AutoTuningFinder GetSut()
         {
-            return new AutoTuningFinder(() => new SimulatedAnnealing(0.99), 3);
+            return new AutoTuningFinder(() => new SimulatedAnnealing(0.99), 2);
         }
 
         [Test]
@@ -19,9 +19,9 @@ namespace ApproximateOptimization.Tests
             sut.FindMaximum(2, func, default(TimeSpan), 100);
 
             Assert.That(sut.BestSolutionSoFar.Length, Is.EqualTo(2));
-            Assert.That(sut.BestSolutionSoFar[0], Is.GreaterThan(9).Within(0.01));
-            Assert.That(sut.BestSolutionSoFar[1], Is.GreaterThan(9).Within(0.01));
-            Assert.That(sut.SolutionValue, Is.GreaterThan(18).Within(0.01));
+            Assert.That(sut.BestSolutionSoFar[0], Is.GreaterThan(115));
+            Assert.That(sut.BestSolutionSoFar[1], Is.GreaterThan(115));
+            Assert.That(sut.SolutionValue, Is.GreaterThan(115));
         }
 
         [Test]
@@ -33,9 +33,9 @@ namespace ApproximateOptimization.Tests
             sut.FindMaximum(2, func, default(TimeSpan), 100);
 
             Assert.That(sut.BestSolutionSoFar.Length, Is.EqualTo(2));
-            Assert.That(sut.BestSolutionSoFar[0], Is.EqualTo(0).Within(0.01));
-            Assert.That(sut.BestSolutionSoFar[1], Is.EqualTo(0).Within(0.01));
-            Assert.That(sut.SolutionValue, Is.EqualTo(0).Within(0.01));
+            Assert.That(sut.BestSolutionSoFar[0], Is.LessThanOrEqualTo(-115));
+            Assert.That(sut.BestSolutionSoFar[1], Is.LessThanOrEqualTo(-115));
+            Assert.That(sut.SolutionValue, Is.GreaterThanOrEqualTo(+115.0*2));
         }
 
         [Test]

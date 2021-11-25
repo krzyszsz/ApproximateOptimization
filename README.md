@@ -81,7 +81,7 @@ public static void Example3_Linear_regression_with_result_range_rescaled()
         $"Found regression line " +
         $"y = {optimizer.BestSolutionSoFar[0]:N4}*x + {optimizer.BestSolutionSoFar[1]:N4}");
     // This prints:
-    // Found regression line y = -120.5219*x + 10.4886
+    // Found regression line y = -215.0160*x + 76.6104
 }
 
 public static void Example4_Equation_solver()

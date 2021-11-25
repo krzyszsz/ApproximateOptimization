@@ -30,7 +30,7 @@ namespace ApproximateOptimization
             {
                 var rangeWidth = solutionRange[i][1] - solutionRange[i][0];
                 currentSolution[i] = BestSolutionSoFar[i] + (random.NextDouble() * 2.0 * rangeWidth - rangeWidth) * temperature;
-                currentSolution[i] = Math.Max(0, Math.Min(1, currentSolution[i]));
+                currentSolution[i] = Math.Max(solutionRange[i][0], Math.Min(solutionRange[i][1], currentSolution[i]));
             }
             temperature *= temperatureMultiplier;
         }
