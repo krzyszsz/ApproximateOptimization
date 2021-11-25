@@ -11,5 +11,6 @@ namespace ApproximateOptimization
         int Dimension { get; set; }
         Func<double[], double> ScoreFunction { get; set; }
         double SolutionValue { get; set; }
+        double[][] SolutionRange { get; set; }
     }
 }

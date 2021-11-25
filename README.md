@@ -2,11 +2,11 @@
 This optimizer / solver can find solutions for problems where you can express the solution as an array of numbers and you can provide a function that tells the solver how good any particular array of numbers is. It rarely finds accurate solutions but for many problems they are "accurate enough".
 
 # Techincal Details
-The optimizer searches for a solution that is an array of numbers from a range: <0..1> (by default) for which the given score function returns best (highest) result.
-The third example below shows that we can easily re-configure solver to much wider range  and request solver to minimize solution by providing score function with inverted sign.
+The optimizer searches for a solution that is an array of numbers for which the given score function returns best (highest) result.
+The third and forth examples below shows that we can easily re-configure solver to much wider range than the default 0..1 and request solver to minimize solution by providing score function with inverted sign.
 It is loosely based on simulated annealing with local area binary search. See [Wikipedia: Simulated annealing](https://en.wikipedia.org/wiki/Simulated_annealing)
 
-This is definitely not the most advanced solver you can find but (hopefully) it is simple and easy to customize.
+This is definitely not the most advanced solver you can find but (hopefully) it is simple and easy to customize & extend.
 
 # Examples
 ```c#
@@ -14,7 +14,7 @@ This is definitely not the most advanced solver you can find but (hopefully) it 
 // but these examples below demonstrate basic usage of the solver / optimizer and show that it can be useful
 // as a tool to deal with much wider class of problems, as a more generic tool for data analysis.
 
-private static void Example1_FindMaximum()
+public static void Example1_FindMaximum()
 {
     // Finds maximum of sin(x) * cos(y) for range x: 0..1 and y: 0..1
     var func = (double[] vector) => Math.Sin(vector[0]) * Math.Cos(vector[1]);
@@ -28,9 +28,7 @@ private static void Example1_FindMaximum()
     // Maximum value 0.8414709848078965 was found for x=1 and y=0 (x&y in 0..1).
 }
 
-struct Point { public double x; public double y; }
-
-private static void Example2_Linear_regression()
+public static void Example2_Linear_regression()
 {
     // Finds simple regression line for a couple of points. To do that we need to minimize the sum
     // of vertical distances to our line.
@@ -53,18 +51,15 @@ private static void Example2_Linear_regression()
     optimizer.FindMaximum(2, minusErrorFunc, maxIterations: 100);
     Console.WriteLine(
         $"Found regression line " +
-        $"y = {optimizer.BestSolutionSoFar[0] :N4}*x + {optimizer.BestSolutionSoFar[1] :N4}");
+        $"y = {optimizer.BestSolutionSoFar[0]:N4}*x + {optimizer.BestSolutionSoFar[1]:N4}");
     // This prints:
-    // Found regression line y = 0.1089*x + 0.8624
+    // Found regression line y = 0.1089*x + 0.8625
 }
 
-private static void Example3_Linear_regression_with_result_range_rescaled()
+public static void Example3_Linear_regression_with_result_range_rescaled()
 {
-    // This example is similar to example 2, but it looks for results in a wider range, not only in 0..1.
-    // To do that we need to scale the result. Below search area is in range between -1mln and +1mln.
-    var scaleFactor = 1000000;
-    var rescale = (double inputNumber) => inputNumber * scaleFactor * 2 - scaleFactor;
-
+    // This example is similar to example 2, but it uses AutoTuningFinder
+    // to automatically search wider range of numbers.
     var points = new Point[] {
         new Point{ x = 0.2, y = 33.6 },
         new Point{ x = 0.3, y = 24.7 },
@@ -72,55 +67,52 @@ private static void Example3_Linear_regression_with_result_range_rescaled()
         new Point{ x = 0.7, y = -73.9 },
     };
     var regressionLine = (double[] coefficients, Point point) =>
-        (rescale(coefficients[0]) * point.x) + rescale(coefficients[1]);
+        (coefficients[0] * point.x) + coefficients[1];
     var errorFunction = (double[] coefficients) =>
         points.Sum(point => Math.Abs(regressionLine(coefficients, point) - point.y));
     // Below: We need to flip the sign of the function to minimize it rather than maximize it.
     var minusErrorFunc =
-        (double[] coefficients) => - errorFunction(coefficients);
-    var optimizer = new CompositeOptimizer();
+        (double[] coefficients) => -errorFunction(coefficients);
+    var optimizer = new AutoTuningFinder(() => new CompositeOptimizer());
     optimizer.FindMaximum(2, minusErrorFunc, maxIterations: 100);
     Console.WriteLine(
         $"Found regression line " +
-        $"y = {rescale(optimizer.BestSolutionSoFar[0]):N4}*x + {rescale(optimizer.BestSolutionSoFar[1]):N4}");
+        $"y = {optimizer.BestSolutionSoFar[0]:N4}*x + {optimizer.BestSolutionSoFar[1]:N4}");
     // This prints:
-    // Found regression line y = -218.4419*x + 78.9524
+    // Found regression line y = -120.5219*x + 10.4886
 }
 
 public static void Example4_Equation_solver()
 {
-	// It only finds one solution even if there are more (in this example we have only one).
-	// Say we have two equations:
-	//  1:      x + 2 = 7 * y
-	//  2:      y + 6*x = 4
-	var scaleFactor = 100;
-	var rescale = (double inputNumber) => inputNumber * scaleFactor * 2 - scaleFactor;
+    // It only finds one solution even if there are more (in this example we have only one).
+    // Say we have two equations:
+    //  1:      x + 2 = 7 * y
+    //  2:      y + 6*x = 4
+    var equations = new []
+    {
+        new Func<double[], double>[]
+        {
+            (double[] variables) => variables[0] + 2,  // left side, first equation
+            (double[] variables) => 7 * variables[1]   // right side, first equation
+        },
+        new Func<double[], double>[]
+        {
+            (double[] variables) => variables[1] + 6 * variables[0],
+            (double[] variables) => 4 // right side, second equation
+        },
+    };
 
-	var equations = new []
-	{
-		new Func<double[], double>[]
-		{
-			(double[] variables) => rescale(variables[0]) + 2,  // left side, first equation
-			(double[] variables) => 7 * rescale(variables[1])   // right side, first equation
-		},
-		new Func<double[], double>[]
-		{
-			(double[] variables) => rescale(variables[1]) + 6 * rescale(variables[0]),
-			(double[] variables) => 4  // right side, second equation
-		},
-	};
-
-	var errorFunction = (double[] variables) => equations
-		.Sum(sides => Math.Abs(sides[0](variables) - sides[1](variables)));
-	// Below: We need to flip the sign of the error function to minimize it rather than maximize it.
-	var minusErrorFunc = (double[] variables) => -errorFunction(variables);
-	var optimizer = new CompositeOptimizer(iterationsPerDimension: 20, temperatureMultiplier: 0.99);
-	optimizer.FindMaximum(2, minusErrorFunc, maxIterations: 5);
-	Console.WriteLine(optimizer.SolutionFound && optimizer.SolutionValue < 0.1
-		? $"Equations' solution: x = {rescale(optimizer.BestSolutionSoFar[0]):N4} " +
-		$"y = {rescale(optimizer.BestSolutionSoFar[1]):N4}"
-		: "Solution not found.");
-	// This prints:
-	// Equations' solution: x = 0.6047 y = 0.3721
-}
-```
+    var errorFunction = (double[] variables) => equations
+        .Sum(sides => Math.Abs(sides[0](variables) - sides[1](variables)));
+    // Below: We need to flip the sign of the error function to minimize it rather than maximize it.
+    var minusErrorFunc = (double[] variables) => -errorFunction(variables);
+    var optimizer = new AutoTuningFinder(() =>
+        new CompositeOptimizer(iterationsPerDimension: 20, temperatureMultiplier: 0.99));
+    optimizer.FindMaximum(2, minusErrorFunc, maxIterations: 5);
+    Console.WriteLine(optimizer.SolutionFound && optimizer.SolutionValue < 0.1
+        ? $"Equations' solution: x = {optimizer.BestSolutionSoFar[0]:N4} " +
+        $"y = {optimizer.BestSolutionSoFar[1]:N4}"
+        : "Solution not found.");
+    // This prints:
+    // Equations' solution: x = 0.6047 y = 0.3721
+}```

@@ -28,6 +28,7 @@ namespace ApproximateOptimization
             controllableLocalAreaSolutionFinder.CurrentSolution = currentSolution; // both algorithms work on the same array!
             controllableLocalAreaSolutionFinder.BestSolutionSoFar = BestSolutionSoFar;
             controllableLocalAreaSolutionFinder.ScoreFunction = getValue;
+            controllableLocalAreaSolutionFinder.SolutionRange = solutionRange;
         }
 
         protected override void NextSolution()

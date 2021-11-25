@@ -53,7 +53,7 @@ namespace ApproximateOptimization
             {
                 return currentSolution;
             }
-            
+
             set
             {
                 currentSolution = value;
@@ -112,6 +112,12 @@ namespace ApproximateOptimization
             }
         }
 
+        double[][] IControllableLocalAreaSolutionFinder.SolutionRange
+        { 
+            get => solutionRange; 
+            set => solutionRange = value;
+        }
+
         protected override void SetInitialSolution()
         {
             if (this.initializeSolution)
@@ -119,7 +125,8 @@ namespace ApproximateOptimization
                 base.SetInitialSolution();
                 for (int i = 0; i < dimension; i++)
                 {
-                    currentSolution[i] = 0.5;
+                    var rangeWidth = solutionRange[i][1] - solutionRange[i][0];
+                    currentSolution[i] = solutionRange[i][0] + rangeWidth / 2;
                 }
             }
         }
@@ -135,10 +142,10 @@ namespace ApproximateOptimization
             {
                 Array.Copy(BestSolutionSoFar, currentSolution, dimension);
             }
-            for (int x=0; x<iterationCount; x++) for (int i=0; i<dimension; i++)
-            {
-                OptimizeInSingleDimension(i);
-            }
+            for (int x = 0; x < iterationCount; x++) for (int i = 0; i < dimension; i++)
+                {
+                    OptimizeInSingleDimension(i);
+                }
         }
 
         private double GetValueWithDimensionReplaced(int dimension, double value)
@@ -151,9 +158,10 @@ namespace ApproximateOptimization
 
         private void OptimizeInSingleDimension(int dimension)
         {
-            var rangeBegin = Math.Max(0.0, currentSolution[dimension] - localArea);
-            var rangeEnd = Math.Min(1.0, currentSolution[dimension] + localArea);
-            
+            var rangeWidth = solutionRange[dimension][1] - solutionRange[dimension][0];
+            var rangeBegin = Math.Max(solutionRange[dimension][0], currentSolution[dimension] - localArea * rangeWidth);
+            var rangeEnd = Math.Min(solutionRange[dimension][1], currentSolution[dimension] + localArea * rangeWidth);
+
             var iterationsLeft = iterationsPerDimension;
             var bestValue = SolutionValue;
             var bestX = BestSolutionSoFar[dimension];
@@ -174,10 +182,12 @@ namespace ApproximateOptimization
                 if (justBelowMidValue < justAboveMidValue)
                 {
                     rangeBegin = justBelowMid;
-                } else if (justBelowMidValue > justAboveMidValue)
+                }
+                else if (justBelowMidValue > justAboveMidValue)
                 {
                     rangeEnd = justAboveMid;
-                } else
+                }
+                else
                 {
                     break;
                 }
