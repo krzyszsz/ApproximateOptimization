@@ -2,7 +2,10 @@
 This optimizer / solver can find solutions for problems where you can express the solution as an array of numbers and you can provide a function that tells the solver how good any particular array of numbers is. It rarely finds accurate solutions but for many problems they are "accurate enough".
 
 # Techincal Details
-The optimizer searches for a solution that is an array of numbers for which the given score function returns best (highest) result.
+As shown in the examples below, the easiest usage of the optimazer is via Composite Solver which finds the solution using two alternating stages: simulated annealing is a probabilistic method scattering possible solutions across the whole multi-dimensional space and in the second stage a more deterministic method where the solution is narrowed down by binary search (to-do: gradient).
+
+The implementation aims to avoid memory allocations to improve performance and also runs multiple solvers in paralel threads.
+
 The third and forth examples below shows that we can easily re-configure solver to much wider range than the default 0..1 and request solver to minimize solution by providing score function with inverted sign.
 It is loosely based on simulated annealing with local area binary search. See [Wikipedia: Simulated annealing](https://en.wikipedia.org/wiki/Simulated_annealing)
 
