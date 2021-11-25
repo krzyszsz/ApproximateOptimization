@@ -4,7 +4,7 @@ This optimizer / solver can find solutions for problems where you can express th
 # Techincal Details
 As shown in the examples below, the easiest usage of the optimizer is via CompositeOptimizer which finds the solution using two alternating stages: simulated annealing is a probabilistic method scattering possible solutions across the whole multi-dimensional space and in the second stage a more deterministic method where the solution is narrowed down by binary search (to-do: gradient).
 
-The implementation aims to limit memory allocations to improve performance and also runs multiple solvers in paralel threads.
+The implementation aims to limit memory allocations to improve performance and also runs multiple solvers in parallel threads.
 
 Please note that when the range is not provided, only 0..1 is searched for all dimensions - see example 1. For automatic range discovery (slow!), see examples 2 employing AutoTuningFinder.
 
@@ -37,7 +37,7 @@ public static void Example2_Linear_regression_with_result_range_rescaled()
     // (imagine we could use trygonometric functions to make a slow version
     // of discrete frequency transformation).
 
-    // Please note the usage of AutoTuningFinder to automate range finding.
+    // Please note the usage of AutoTuningFinder to automate range detection.
 
     var points = new Point[] {
         new Point{ x = 0.2, y = 33.6 },
