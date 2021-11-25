@@ -2,11 +2,12 @@
 This optimizer / solver can find solutions for problems where you can express the solution as an array of numbers and you can provide a function that tells the solver how good any particular array of numbers is. It rarely finds accurate solutions but for many problems they are "accurate enough".
 
 # Techincal Details
-As shown in the examples below, the easiest usage of the optimazer is via Composite Solver which finds the solution using two alternating stages: simulated annealing is a probabilistic method scattering possible solutions across the whole multi-dimensional space and in the second stage a more deterministic method where the solution is narrowed down by binary search (to-do: gradient).
+As shown in the examples below, the easiest usage of the optimazer is via CompositeOptimizer which finds the solution using two alternating stages: simulated annealing is a probabilistic method scattering possible solutions across the whole multi-dimensional space and in the second stage a more deterministic method where the solution is narrowed down by binary search (to-do: gradient).
 
-The implementation aims to avoid memory allocations to improve performance and also runs multiple solvers in paralel threads.
+The implementation aims to limit memory allocations to improve performance and also runs multiple solvers in paralel threads.
 
 Please note that when the range is not provided, only 0..1 is searched for all dimensions - see example 2. For automatic range discovery (slow!), see examples 3 and 4 employing AutoTuningFinder.
+
 This is definitely not the most advanced solver you can find but (hopefully) it is simple and easy to customize & extend.
 
 # Examples
