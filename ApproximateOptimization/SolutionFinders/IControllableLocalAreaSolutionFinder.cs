@@ -1,16 +1,8 @@
-﻿using System;
-
-namespace ApproximateOptimization
+﻿namespace ApproximateOptimization
 {
-    public interface IControllableLocalAreaSolutionFinder
+
+    public interface IControllableLocalAreaSolutionFinder : IControllableSolutionFinder
     {
-        void NextSolution();
         double LocalArea { get; set; }
-        double[] CurrentSolution { get; set; }
-        double[] BestSolutionSoFar { get; set; }
-        int Dimension { get; set; }
-        Func<double[], double> ScoreFunction { get; set; }
-        double SolutionValue { get; set; }
-        double[][] SolutionRange { get; set; }
     }
 }

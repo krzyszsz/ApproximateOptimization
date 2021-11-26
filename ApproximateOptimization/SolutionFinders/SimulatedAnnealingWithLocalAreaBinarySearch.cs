@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ApproximateOptimization
 {
@@ -8,41 +9,57 @@ namespace ApproximateOptimization
     /// </summary>
     public class SimulatedAnnealingWithLocalAreaBinarySearch : SimulatedAnnealing
     {
-        private readonly LocalAreaBinarySearch localAreaBinarySearch;
-        private readonly IControllableLocalAreaSolutionFinder controllableLocalAreaSolutionFinder;
+        private readonly List<IControllableSolutionFinder> solutionFinders = new List<IControllableSolutionFinder>();
         private readonly double localAreaMultiplier;
 
         public SimulatedAnnealingWithLocalAreaBinarySearch(double temperatureMultiplier = 0.9, int randomSeed = 0,
-            double localAreaMultiplier = 0.2, int iterationCount = 3, int iterationsPerDimension = 10)
+            bool localBinarySearchEnabled=false, bool gradientOptimizerEnabled=true,
+            double localAreaMultiplier = 0.2, int binarySearchIterationCount = 3, int binarySearchIterationsPerDimension = 10,
+            int maxIterationsGradientSearch=50
+            )
             : base(temperatureMultiplier, randomSeed)
         {
             this.localAreaMultiplier = localAreaMultiplier;
-            localAreaBinarySearch = new LocalAreaBinarySearch(localAreaMultiplier * temperature, iterationCount, iterationsPerDimension, false);
-            controllableLocalAreaSolutionFinder = localAreaBinarySearch;
+            if (localBinarySearchEnabled) solutionFinders.Add(
+                new LocalAreaBinarySearch(localAreaMultiplier * temperature, binarySearchIterationCount, binarySearchIterationsPerDimension, false));
+            if (gradientOptimizerEnabled) solutionFinders.Add(new GradientAscentOptimizer(false, maxIterationsGradientSearch));
         }
 
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            controllableLocalAreaSolutionFinder.Dimension = dimension;
-            controllableLocalAreaSolutionFinder.CurrentSolution = currentSolution; // both algorithms work on the same array!
-            controllableLocalAreaSolutionFinder.BestSolutionSoFar = BestSolutionSoFar;
-            controllableLocalAreaSolutionFinder.ScoreFunction = getValue;
-            controllableLocalAreaSolutionFinder.SolutionRange = solutionRange;
+            foreach (var solutionFinder in solutionFinders)
+            {
+                solutionFinder.Dimension = dimension;
+                solutionFinder.CurrentSolution = currentSolution; // both algorithms work on the same array!
+                solutionFinder.BestSolutionSoFar = BestSolutionSoFar;
+                solutionFinder.ScoreFunction = getValue;
+                solutionFinder.SolutionRange = solutionRange;
+            }
         }
 
         protected override void NextSolution()
         {
             base.NextSolution();
-            controllableLocalAreaSolutionFinder.LocalArea = localAreaMultiplier * temperature;
+
             var currentValue = getValue(currentSolution);
             if (currentValue > SolutionValue)
             {
                 Array.Copy(currentSolution, BestSolutionSoFar, dimension);
                 SolutionValue = currentValue;
             }
-            controllableLocalAreaSolutionFinder.SolutionValue = SolutionValue;
-            controllableLocalAreaSolutionFinder.NextSolution();
+            foreach (var solutionFinder in solutionFinders)
+            {
+                var binarySearch = solutionFinder as IControllableLocalAreaSolutionFinder;
+                var gradientOptimizer = solutionFinder as IControllableGradientAscentOptimizer;
+                if (binarySearch != null) binarySearch.LocalArea = localAreaMultiplier * temperature;
+                if (gradientOptimizer != null)
+                {
+                    gradientOptimizer.MaxJump = localAreaMultiplier * temperature;
+                }
+                solutionFinder.SolutionValue = SolutionValue;
+                solutionFinder.NextSolution();
+            }
         }
     }
 }

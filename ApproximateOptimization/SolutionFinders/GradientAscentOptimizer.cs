@@ -2,51 +2,26 @@
 
 namespace ApproximateOptimization
 {
-
     /// <summary>
-    /// This search improves solution on each dimension independently of the other dimensions.
-    /// The improvement is done locally, that is only in a small space around the current solution.
-    /// The algorithm uses bi-section to find the maximum faster but it only works well for cases with single maximum
-    /// in the checked area with the assumption that the function is monotonic on the left of the max and is monotonic on the right
-    /// (it will find sub-optimal solution when there are two local maximums for example).
-    /// For that reason, the best results will be achieved for smaller areas (which should contain fewer local maximums).
-    /// It may give no improvement at all for certain functions or it may start improving hugely when the localArea is small enough
-    /// to only fit one maximum with two monotonic sub-ranges.
-    /// 
-    /// Another limitation is that it searches each dimension independently so even if the correct max
-    /// is found in one dimension, it may not be the global maximum.
-    /// To make is sligtly better, the process is iterative - all dimentions are searched "iterationCount" times.
-    /// 
-    /// LocalArea is exposed as public property so that this algorithm can be used in combination with others
-    /// and the LocalArea can be changed between calls to "NextSolution".
+    /// Runs gradient ascent optimization:
+    /// 1. For current point, it finds gradinet in all dimensions (save it as "direction" vector)
+    /// 2. Finds the length of the jump along the "direction" using binary search in the range 0..MaxJump
+    ///    by attempting "jumpLengthIterations" different lengths.
+    /// -> Actions 1&2 are executed "iterationCount" times unless an iteration gives no improvement.
     /// </summary>
-    public class LocalAreaBinarySearch : BaseSolutionFinder, IControllableLocalAreaSolutionFinder
+    public class GradientAscentOptimizer : BaseSolutionFinder, IControllableGradientAscentOptimizer
     {
+        private readonly bool initializeSolution;
         private readonly int iterationCount;
-        private readonly int iterationsPerDimension;
-        private double localArea;
-        private bool initializeSolution;
+        private readonly double[] direction;
 
-        public LocalAreaBinarySearch(double localArea = 1.0, int iterationCount = 3, int iterationsPerDimension = 10, bool initializeSolution = true)
+        public GradientAscentOptimizer(bool initializeSolution=true, int iterationCount=30, int jumpLengthIterations=10)
         {
-            this.localArea = localArea;
-            this.iterationCount = iterationCount;
-            this.iterationsPerDimension = iterationsPerDimension;
             this.initializeSolution = initializeSolution;
+            this.iterationCount = iterationCount;
         }
 
-        double IControllableLocalAreaSolutionFinder.LocalArea
-        {
-            get
-            {
-                return localArea;
-            }
-            set
-            {
-                localArea = value;
-            }
-        }
-
+        public double MaxJump { get; set; }
         double[] IControllableSolutionFinder.CurrentSolution
         {
             get
@@ -113,8 +88,8 @@ namespace ApproximateOptimization
         }
 
         double[][] IControllableSolutionFinder.SolutionRange
-        { 
-            get => solutionRange; 
+        {
+            get => solutionRange;
             set => solutionRange = value;
         }
 
@@ -142,25 +117,17 @@ namespace ApproximateOptimization
             {
                 Array.Copy(BestSolutionSoFar, currentSolution, dimension);
             }
-            for (int x = 0; x < iterationCount; x++) for (int i = 0; i < dimension; i++)
-                {
-                    OptimizeInSingleDimension(i);
-                }
-        }
-
-        private double GetValueWithDimensionReplaced(int dimension, double value)
-        {
-            var originalValue = BestSolutionSoFar[dimension];
-            currentSolution[dimension] = value;
-            var result = this.getValue(currentSolution);
-            return result;
+            for (int i = 0; i < iterationCount; i++)
+            {
+                OptimizeInSingleDimension(i);
+            }
         }
 
         private void OptimizeInSingleDimension(int dimension)
         {
             var rangeWidth = solutionRange[dimension][1] - solutionRange[dimension][0];
-            var rangeBegin = Math.Max(solutionRange[dimension][0], currentSolution[dimension] - localArea * rangeWidth);
-            var rangeEnd = Math.Min(solutionRange[dimension][1], currentSolution[dimension] + localArea * rangeWidth);
+            var rangeBegin = Math.Max(solutionRange[dimension][0], currentSolution[dimension] - MaxJump * rangeWidth);
+            var rangeEnd = Math.Min(solutionRange[dimension][1], currentSolution[dimension] + MaxJump * rangeWidth);
 
             var iterationsLeft = iterationsPerDimension;
             var bestValue = SolutionValue;

@@ -12,6 +12,8 @@ namespace ApproximateOptimization
             : base(threadId => new SimulatedAnnealingWithLocalAreaBinarySearch(
                     temperatureMultiplier,
                     threadId,
+                    false,
+                    true,
                     localAreaMultiplier,
                     iterationCount,
                     iterationsPerDimension),
