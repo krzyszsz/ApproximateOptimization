@@ -125,7 +125,7 @@ namespace ApproximateOptimization
             }
             for (int i = 0; i < iterationCount; i++)
             {
-                var smallIncrement = MaxJump * delta * diagonalLength;
+                var smallIncrement = MaxJump * delta;
                 FindDirection(smallIncrement);
                 FindJumpLength();
                 // TODO: Break when no improvement!
@@ -140,7 +140,7 @@ namespace ApproximateOptimization
         {
             for (int i = 0; i < dimension; i++)
             {
-                currentSolution[i] = BestSolutionSoFar[i] + direction[i] * jumpLength;
+                currentSolution[i] = BestSolutionSoFar[i] + direction[i] * jumpLength * diagonalLength;
                 currentSolution[i] = Math.Max(solutionRange[i][0], Math.Min(solutionRange[i][1], currentSolution[i]));
             }
         }
@@ -164,7 +164,7 @@ namespace ApproximateOptimization
         {
             var a = currentSolution[i];
             var b = a + smallIncrement;
-            if (b > solutionRange[i][i])
+            if (b > solutionRange[i][1])
             {
                 var tmp = a;
                 a = b;
@@ -184,7 +184,8 @@ namespace ApproximateOptimization
         {
             for (int i = 0; i< dimension; i++)
             {
-                FindGradientForDimension(i, smallIncrement);
+                var rangeWidth = (solutionRange[i][1] - solutionRange[i][0]);
+                FindGradientForDimension(i, smallIncrement * rangeWidth);
             }
             var vectorLength = GetVectorLength(direction);
             for (int i = 0; i < dimension; i++)
@@ -217,8 +218,8 @@ namespace ApproximateOptimization
 
             while (iterationsLeft-- > 0)
             {
-                var mid = (rangeBegin + rangeEnd) * 0.5;
                 var rangeWidth = rangeEnd - rangeBegin;
+                var mid = rangeWidth * 0.5;
                 var smallIncrement = delta * rangeWidth;
                 var justAboveMid = mid + smallIncrement;
                 var justBelowMid = mid - smallIncrement;
@@ -226,6 +227,7 @@ namespace ApproximateOptimization
 
                 var justAboveMidValue = GetValueForJump(justAboveMid);
                 var justBelowMidValue = GetValueForJump(justBelowMid);
+                var change = justAboveMidValue - justBelowMidValue;
 
                 ApplyJump(mid);
                 var currentValue = getValue(currentSolution);
@@ -234,11 +236,11 @@ namespace ApproximateOptimization
                     bestJumpLength = mid;
                 }
 
-                if (justBelowMidValue < justAboveMidValue)
+                if (change > 0)
                 {
                     rangeBegin = justBelowMid;
                 }
-                else if (justBelowMidValue > justAboveMidValue)
+                else if (change < 0)
                 {
                     rangeEnd = justAboveMid;
                 }
