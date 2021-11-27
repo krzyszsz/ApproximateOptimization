@@ -199,7 +199,7 @@ namespace ApproximateOptimization
             {
                 var distance = BestSolutionSoFar[i] -
                     (
-                        direction[i] >= 0 ? solutionRange[i][1] : solutionRange[i][1]
+                        direction[i] >= 0 ? solutionRange[i][1] : solutionRange[i][0]
                     );
                 diagonalLength += distance * distance;
             }
