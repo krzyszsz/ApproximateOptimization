@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace ApproximateOptimization
 {
@@ -11,9 +12,12 @@ namespace ApproximateOptimization
     /// </summary>
     public class GradientAscentOptimizer : BaseSolutionFinder, IControllableGradientAscentOptimizer
     {
+        const double delta = 0.00001; // Any number below 0.5 could work?
+
         private readonly bool isSelfContained;
         private readonly int iterationCount;
-        private readonly double[] direction;
+        private double[] direction;
+        private double diagonalLength;
 
         public GradientAscentOptimizer(bool initializeSolution=true, int iterationCount=30, int jumpLengthIterations=10)
         {
@@ -93,11 +97,13 @@ namespace ApproximateOptimization
             set => solutionRange = value;
         }
 
-        protected override void SetInitialSolution()
+        protected override void Initialize()
         {
-            if (this.isSelfContained)
+            direction = new double[dimension];
+            if (isSelfContained)
             {
-                base.SetInitialSolution();
+                base.Initialize();
+                MaxJump = 1.0;
                 for (int i = 0; i < dimension; i++)
                 {
                     var rangeWidth = solutionRange[i][1] - solutionRange[i][0];
@@ -119,8 +125,12 @@ namespace ApproximateOptimization
             }
             for (int i = 0; i < iterationCount; i++)
             {
-                FindDirection(i);
+                var smallIncrement = MaxJump * delta * diagonalLength;
+                FindDirection(smallIncrement);
+                // TODO: WRONG - only length along direction!!!
+                diagonalLength = Math.Sqrt(solutionRange.Sum(x => Math.Pow(x[1] - x[0], 2.0)));
                 FindJumpLength();
+                // TODO: Break when no improvement!
             }
             if (isSelfContained)
             {
@@ -130,19 +140,26 @@ namespace ApproximateOptimization
 
         private void ApplyJump(double jumpLength)
         {
-            for (int i = 0; i <= dimension; i++)
+            for (int i = 0; i < dimension; i++)
             {
                 currentSolution[i] = BestSolutionSoFar[i] + direction[i] * jumpLength;
+                currentSolution[i] = Math.Max(solutionRange[i][0], Math.Min(solutionRange[i][1], currentSolution[i]));
             }
         }
 
-        private double getValueWithReplaedPosition(double x, int i)
+        private double GetValueReplacedDimension(int i, double x)
         {
             var initialValue = currentSolution[i];
             currentSolution[i] = x;
             var result = getValue(currentSolution);
             currentSolution[i] = initialValue;
             return result;
+        }
+
+        private double GetValueForJump(double jumpLength)
+        {
+            ApplyJump(jumpLength);
+            return getValue(currentSolution);
         }
 
         private void FindGradientForDimension(int i, double smallIncrement)
@@ -155,12 +172,12 @@ namespace ApproximateOptimization
                 a = b;
                 b = tmp;
             }
-            direction[i] = (getValueWithReplaedPosition(b, i) - getValueWithReplaedPosition(a, i)) / (b - a);
+            direction[i] = (GetValueReplacedDimension(i, b) - GetValueReplacedDimension(i, a)) / (b - a);
         }
 
         private void FindDirection(double smallIncrement)
         {
-            for (int i = 0; i<= dimension; i++)
+            for (int i = 0; i< dimension; i++)
             {
                 FindGradientForDimension(i, smallIncrement);
             }
@@ -168,49 +185,48 @@ namespace ApproximateOptimization
 
         private void FindJumpLength()
         {
-            //var rangeWidth = solutionRange[dimension][1] - solutionRange[dimension][0];
-            //var rangeBegin = Math.Max(solutionRange[dimension][0], currentSolution[dimension] - MaxJump * rangeWidth);
-            //var rangeEnd = Math.Min(solutionRange[dimension][1], currentSolution[dimension] + MaxJump * rangeWidth);
+            var rangeBegin = 0.0;
+            var rangeEnd = MaxJump * diagonalLength;
 
-            //var iterationsLeft = iterationCount;
-            //var bestValue = SolutionValue;
-            //var bestX = BestSolutionSoFar[dimension];
+            var iterationsLeft = iterationCount;
+            var bestJumpLength = 0.0;
+            var valueForBestJumpLength = SolutionValue;
 
-            //while (iterationsLeft-- > 0)
-            //{
-            //    var mid = (rangeBegin + rangeEnd) / 2;
-            //    var justAboveMid = mid + 0.00001 * (1 - mid);
-            //    var justBelowMid = mid - 0.00001 * mid;
-            //    if (justAboveMid == justBelowMid) break;
-
-            //    var justAboveMidValue = GetValueWithDimensionReplaced(dimension, justAboveMid);
-            //    var justBelowMidValue = GetValueWithDimensionReplaced(dimension, justBelowMid);
-
-            //    UpdateBests(ref bestValue, ref bestX, justAboveMidValue, justAboveMid);
-            //    UpdateBests(ref bestValue, ref bestX, justBelowMidValue, justBelowMid);
-
-            //    if (justBelowMidValue < justAboveMidValue)
-            //    {
-            //        rangeBegin = justBelowMid;
-            //    }
-            //    else if (justBelowMidValue > justAboveMidValue)
-            //    {
-            //        rangeEnd = justAboveMid;
-            //    }
-            //    else
-            //    {
-            //        break;
-            //    }
-            //}
-            //currentSolution[dimension] = bestX;
-        }
-
-        void UpdateBests(ref double bestValue, ref double bestX, double otherValue, double otherX)
-        {
-            if (otherValue > bestValue)
+            while (iterationsLeft-- > 0)
             {
-                bestValue = otherValue;
-                bestX = otherX;
+                var mid = (rangeBegin + rangeEnd) * 0.5;
+                var rangeWidth = rangeEnd - rangeBegin;
+                var smallIncrement = delta * rangeWidth;
+                var justAboveMid = mid + smallIncrement;
+                var justBelowMid = mid - smallIncrement;
+                if (justAboveMid == justBelowMid) break;
+
+                var justAboveMidValue = GetValueForJump(justAboveMid);
+                var justBelowMidValue = GetValueForJump(justBelowMid);
+
+                ApplyJump(mid);
+                var currentValue = getValue(currentSolution);
+                if (currentValue > valueForBestJumpLength)
+                {
+                    bestJumpLength = mid;
+                }
+
+                if (justBelowMidValue < justAboveMidValue)
+                {
+                    rangeBegin = justBelowMid;
+                }
+                else if (justBelowMidValue > justAboveMidValue)
+                {
+                    rangeEnd = justAboveMid;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            if (valueForBestJumpLength > SolutionValue)
+            {
+                ApplyJump(bestJumpLength);
             }
         }
     }

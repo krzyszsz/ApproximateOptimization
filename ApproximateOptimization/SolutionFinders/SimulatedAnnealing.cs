@@ -14,9 +14,9 @@ namespace ApproximateOptimization
             random = new Random(randomSeed);
         }
 
-        protected override void SetInitialSolution()
+        protected override void Initialize()
         {
-            base.SetInitialSolution();
+            base.Initialize();
             for (int i = 0; i < dimension; i++)
             {
                 var rangeWidth = solutionRange[i][1] - solutionRange[i][0];

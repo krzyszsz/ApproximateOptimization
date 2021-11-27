@@ -17,7 +17,7 @@ namespace ApproximateOptimization
 
         public bool SolutionFound { get; private set; }
 
-        protected virtual void SetInitialSolution()
+        protected virtual void Initialize()
         {
             currentSolution = new double[dimension];
         }
@@ -43,7 +43,7 @@ namespace ApproximateOptimization
             this.getValue = getValue;
             this.dimension = dimension;
             this.solutionRange = solutionRange ?? GetDefaultSolutionRange(dimension);
-            SetInitialSolution();
+            Initialize();
             BestSolutionSoFar = new double[dimension];
             OnInitialized();
             Array.Copy(currentSolution, BestSolutionSoFar, dimension);

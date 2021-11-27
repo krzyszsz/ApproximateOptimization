@@ -118,11 +118,11 @@ namespace ApproximateOptimization
             set => solutionRange = value;
         }
 
-        protected override void SetInitialSolution()
+        protected override void Initialize()
         {
             if (this.isSelfContained)
             {
-                base.SetInitialSolution();
+                base.Initialize();
                 for (int i = 0; i < dimension; i++)
                 {
                     var rangeWidth = solutionRange[i][1] - solutionRange[i][0];
@@ -173,8 +173,10 @@ namespace ApproximateOptimization
             while (iterationsLeft-- > 0)
             {
                 var mid = (rangeBegin + rangeEnd) / 2;
-                var justAboveMid = mid + 0.00001 * (1 - mid);
-                var justBelowMid = mid - 0.00001 * mid;
+                rangeWidth = rangeEnd - rangeBegin;
+                var smallIncrement = 0.00001 * rangeWidth;
+                var justAboveMid = mid + smallIncrement;
+                var justBelowMid = mid - smallIncrement;
                 if (justAboveMid == justBelowMid) break;
 
                 var justAboveMidValue = GetValueWithDimensionReplaced(dimension, justAboveMid);
