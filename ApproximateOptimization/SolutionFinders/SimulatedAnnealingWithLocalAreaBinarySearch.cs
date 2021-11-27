@@ -52,13 +52,17 @@ namespace ApproximateOptimization
             {
                 var binarySearch = solutionFinder as IControllableLocalAreaSolutionFinder;
                 var gradientOptimizer = solutionFinder as IControllableGradientAscentOptimizer;
-                if (binarySearch != null) binarySearch.LocalArea = localAreaMultiplier * temperature;
+                if (binarySearch != null)
+                {
+                    binarySearch.LocalArea = localAreaMultiplier * temperature;
+                }
                 if (gradientOptimizer != null)
                 {
                     gradientOptimizer.MaxJump = localAreaMultiplier * temperature;
                 }
                 solutionFinder.SolutionValue = SolutionValue;
                 solutionFinder.NextSolution();
+                UpdateBestSolution();
             }
         }
     }

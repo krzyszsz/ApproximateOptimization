@@ -33,6 +33,7 @@ namespace ApproximateOptimization
                 currentSolution[i] = Math.Max(solutionRange[i][0], Math.Min(solutionRange[i][1], currentSolution[i]));
             }
             temperature *= temperatureMultiplier;
+            UpdateBestSolution();
         }
     }
 }

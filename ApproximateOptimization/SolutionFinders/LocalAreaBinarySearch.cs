@@ -25,14 +25,14 @@ namespace ApproximateOptimization
         private readonly int iterationCount;
         private readonly int iterationsPerDimension;
         private double localArea;
-        private bool initializeSolution;
+        private bool isSelfContained;
 
         public LocalAreaBinarySearch(double localArea = 1.0, int iterationCount = 3, int iterationsPerDimension = 10, bool initializeSolution = true)
         {
             this.localArea = localArea;
             this.iterationCount = iterationCount;
             this.iterationsPerDimension = iterationsPerDimension;
-            this.initializeSolution = initializeSolution;
+            this.isSelfContained = initializeSolution;
         }
 
         double IControllableLocalAreaSolutionFinder.LocalArea
@@ -120,7 +120,7 @@ namespace ApproximateOptimization
 
         protected override void SetInitialSolution()
         {
-            if (this.initializeSolution)
+            if (this.isSelfContained)
             {
                 base.SetInitialSolution();
                 for (int i = 0; i < dimension; i++)
@@ -138,14 +138,18 @@ namespace ApproximateOptimization
 
         protected override void NextSolution()
         {
-            if (initializeSolution)
+            if (isSelfContained)
             {
                 Array.Copy(BestSolutionSoFar, currentSolution, dimension);
             }
             for (int x = 0; x < iterationCount; x++) for (int i = 0; i < dimension; i++)
-                {
-                    OptimizeInSingleDimension(i);
-                }
+            {
+                OptimizeInSingleDimension(i);
+            }
+            if (isSelfContained)
+            {
+                UpdateBestSolution();
+            }
         }
 
         private double GetValueWithDimensionReplaced(int dimension, double value)

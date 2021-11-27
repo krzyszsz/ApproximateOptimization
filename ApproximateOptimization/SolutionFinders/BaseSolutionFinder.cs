@@ -55,12 +55,6 @@ namespace ApproximateOptimization
             {
                 iterations++;
                 NextSolution();
-                var value = getValue(currentSolution);
-                if (value > SolutionValue)
-                {
-                    Array.Copy(currentSolution, BestSolutionSoFar, dimension);
-                    SolutionValue = value;
-                }
             }
             sw.Stop();
             SolutionValue = SolutionValue;
@@ -94,6 +88,16 @@ namespace ApproximateOptimization
             {
                 throw new ArgumentException(
                     $"Incorrect range dimension. Expected: {dimension}x2 but got second dimension: {solutionRange.First(x => x.Length != 2).Length}");
+            }
+        }
+
+        protected void UpdateBestSolution()
+        {
+            var value = getValue(currentSolution);
+            if (value > SolutionValue)
+            {
+                Array.Copy(currentSolution, BestSolutionSoFar, dimension);
+                SolutionValue = value;
             }
         }
     }

@@ -11,13 +11,13 @@ namespace ApproximateOptimization
     /// </summary>
     public class GradientAscentOptimizer : BaseSolutionFinder, IControllableGradientAscentOptimizer
     {
-        private readonly bool initializeSolution;
+        private readonly bool isSelfContained;
         private readonly int iterationCount;
         private readonly double[] direction;
 
         public GradientAscentOptimizer(bool initializeSolution=true, int iterationCount=30, int jumpLengthIterations=10)
         {
-            this.initializeSolution = initializeSolution;
+            this.isSelfContained = initializeSolution;
             this.iterationCount = iterationCount;
         }
 
@@ -95,7 +95,7 @@ namespace ApproximateOptimization
 
         protected override void SetInitialSolution()
         {
-            if (this.initializeSolution)
+            if (this.isSelfContained)
             {
                 base.SetInitialSolution();
                 for (int i = 0; i < dimension; i++)
@@ -113,7 +113,7 @@ namespace ApproximateOptimization
 
         protected override void NextSolution()
         {
-            if (initializeSolution)
+            if (isSelfContained)
             {
                 Array.Copy(BestSolutionSoFar, currentSolution, dimension);
             }
@@ -121,6 +121,10 @@ namespace ApproximateOptimization
             {
                 FindDirection(i);
                 FindJumpLength();
+            }
+            if (isSelfContained)
+            {
+                UpdateBestSolution();
             }
         }
 
@@ -164,55 +168,50 @@ namespace ApproximateOptimization
 
         private void FindJumpLength()
         {
-           // unfinished
+            //var rangeWidth = solutionRange[dimension][1] - solutionRange[dimension][0];
+            //var rangeBegin = Math.Max(solutionRange[dimension][0], currentSolution[dimension] - MaxJump * rangeWidth);
+            //var rangeEnd = Math.Min(solutionRange[dimension][1], currentSolution[dimension] + MaxJump * rangeWidth);
+
+            //var iterationsLeft = iterationCount;
+            //var bestValue = SolutionValue;
+            //var bestX = BestSolutionSoFar[dimension];
+
+            //while (iterationsLeft-- > 0)
+            //{
+            //    var mid = (rangeBegin + rangeEnd) / 2;
+            //    var justAboveMid = mid + 0.00001 * (1 - mid);
+            //    var justBelowMid = mid - 0.00001 * mid;
+            //    if (justAboveMid == justBelowMid) break;
+
+            //    var justAboveMidValue = GetValueWithDimensionReplaced(dimension, justAboveMid);
+            //    var justBelowMidValue = GetValueWithDimensionReplaced(dimension, justBelowMid);
+
+            //    UpdateBests(ref bestValue, ref bestX, justAboveMidValue, justAboveMid);
+            //    UpdateBests(ref bestValue, ref bestX, justBelowMidValue, justBelowMid);
+
+            //    if (justBelowMidValue < justAboveMidValue)
+            //    {
+            //        rangeBegin = justBelowMid;
+            //    }
+            //    else if (justBelowMidValue > justAboveMidValue)
+            //    {
+            //        rangeEnd = justAboveMid;
+            //    }
+            //    else
+            //    {
+            //        break;
+            //    }
+            //}
+            //currentSolution[dimension] = bestX;
         }
 
-        //private void OptimizeInSingleDimension(int dimension)
-        //{
-        //    var rangeWidth = solutionRange[dimension][1] - solutionRange[dimension][0];
-        //    var rangeBegin = Math.Max(solutionRange[dimension][0], currentSolution[dimension] - MaxJump * rangeWidth);
-        //    var rangeEnd = Math.Min(solutionRange[dimension][1], currentSolution[dimension] + MaxJump * rangeWidth);
-
-        //    var iterationsLeft = iterationsPerDimension;
-        //    var bestValue = SolutionValue;
-        //    var bestX = BestSolutionSoFar[dimension];
-
-        //    while (iterationsLeft-- > 0)
-        //    {
-        //        var mid = (rangeBegin + rangeEnd) / 2;
-        //        var justAboveMid = mid + 0.00001 * (1 - mid);
-        //        var justBelowMid = mid - 0.00001 * mid;
-        //        if (justAboveMid == justBelowMid) break;
-
-        //        var justAboveMidValue = GetValueWithDimensionReplaced(dimension, justAboveMid);
-        //        var justBelowMidValue = GetValueWithDimensionReplaced(dimension, justBelowMid);
-
-        //        UpdateBests(ref bestValue, ref bestX, justAboveMidValue, justAboveMid);
-        //        UpdateBests(ref bestValue, ref bestX, justBelowMidValue, justBelowMid);
-
-        //        if (justBelowMidValue < justAboveMidValue)
-        //        {
-        //            rangeBegin = justBelowMid;
-        //        }
-        //        else if (justBelowMidValue > justAboveMidValue)
-        //        {
-        //            rangeEnd = justAboveMid;
-        //        }
-        //        else
-        //        {
-        //            break;
-        //        }
-        //    }
-        //    currentSolution[dimension] = bestX;
-        //}
-
-        //void UpdateBests(ref double bestValue, ref double bestX, double otherValue, double otherX)
-        //{
-        //    if (otherValue > bestValue)
-        //    {
-        //        bestValue = otherValue;
-        //        bestX = otherX;
-        //    }
-        //}
+        void UpdateBests(ref double bestValue, ref double bestX, double otherValue, double otherX)
+        {
+            if (otherValue > bestValue)
+            {
+                bestValue = otherValue;
+                bestX = otherX;
+            }
+        }
     }
 }
