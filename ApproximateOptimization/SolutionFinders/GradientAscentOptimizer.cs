@@ -127,8 +127,6 @@ namespace ApproximateOptimization
             {
                 var smallIncrement = MaxJump * delta * diagonalLength;
                 FindDirection(smallIncrement);
-                // TODO: WRONG - only length along direction!!!
-                diagonalLength = Math.Sqrt(solutionRange.Sum(x => Math.Pow(x[1] - x[0], 2.0)));
                 FindJumpLength();
                 // TODO: Break when no improvement!
             }
@@ -147,7 +145,7 @@ namespace ApproximateOptimization
             }
         }
 
-        private double GetValueReplacedDimension(int i, double x)
+        private double GetValueForReplacedDimension(int i, double x)
         {
             var initialValue = currentSolution[i];
             currentSolution[i] = x;
@@ -172,8 +170,15 @@ namespace ApproximateOptimization
                 a = b;
                 b = tmp;
             }
-            direction[i] = (GetValueReplacedDimension(i, b) - GetValueReplacedDimension(i, a)) / (b - a);
+            direction[i] = (GetValueForReplacedDimension(i, b) - GetValueForReplacedDimension(i, a)) / (b - a);
         }
+
+        private double GetVectorLength(double[] vector)
+        {
+            return Math.Sqrt(vector.Sum(x => x * x));
+        }
+
+
 
         private void FindDirection(double smallIncrement)
         {
@@ -181,6 +186,24 @@ namespace ApproximateOptimization
             {
                 FindGradientForDimension(i, smallIncrement);
             }
+            var vectorLength = GetVectorLength(direction);
+            for (int i = 0; i < dimension; i++)
+            {
+                direction[i] = direction[i] / vectorLength;
+            }
+
+            // Below could be better (diagonalLength could be smaller) but it would be more complex to find it
+            // so the distance to the "corner" is good enough.
+            diagonalLength = 0;
+            for (int i = 0; i < dimension; i++)
+            {
+                var distance = BestSolutionSoFar[i] -
+                    (
+                        direction[i] >= 0 ? solutionRange[i][1] : solutionRange[i][1]
+                    );
+                diagonalLength += distance * distance;
+            }
+            diagonalLength = Math.Sqrt(diagonalLength);
         }
 
         private void FindJumpLength()
