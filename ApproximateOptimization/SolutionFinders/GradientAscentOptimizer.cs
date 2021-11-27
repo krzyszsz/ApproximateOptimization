@@ -8,7 +8,7 @@ namespace ApproximateOptimization
     /// 1. For current point, it finds gradinet in all dimensions (save it as "direction" vector)
     /// 2. Finds the length of the jump along the "direction" using binary search in the range 0..MaxJump
     ///    by attempting "jumpLengthIterations" different lengths.
-    /// -> Actions 1&2 are executed "iterationCount" times unless an iteration gives no improvement.
+    /// -> Actions 1&2 are executed "iterationCount" times.
     /// </summary>
     public class GradientAscentOptimizer : BaseSolutionFinder, IControllableGradientAscentOptimizer
     {
@@ -128,7 +128,6 @@ namespace ApproximateOptimization
                 var smallIncrement = MaxJump * delta;
                 FindDirection(smallIncrement);
                 FindJumpLength();
-                // TODO: Break when no improvement!
             }
             if (isSelfContained)
             {
@@ -140,7 +139,7 @@ namespace ApproximateOptimization
         {
             for (int i = 0; i < dimension; i++)
             {
-                currentSolution[i] = BestSolutionSoFar[i] + direction[i] * jumpLength * diagonalLength;
+                currentSolution[i] = BestSolutionSoFar[i] + direction[i] * jumpLength / diagonalLength;
                 currentSolution[i] = Math.Max(solutionRange[i][0], Math.Min(solutionRange[i][1], currentSolution[i]));
             }
         }
@@ -219,7 +218,7 @@ namespace ApproximateOptimization
             while (iterationsLeft-- > 0)
             {
                 var rangeWidth = rangeEnd - rangeBegin;
-                var mid = rangeWidth * 0.5;
+                var mid = rangeBegin + rangeWidth * 0.5;
                 var smallIncrement = delta * rangeWidth;
                 var justAboveMid = mid + smallIncrement;
                 var justBelowMid = mid - smallIncrement;
@@ -229,16 +228,17 @@ namespace ApproximateOptimization
                 var justBelowMidValue = GetValueForJump(justBelowMid);
                 var change = justAboveMidValue - justBelowMidValue;
 
-                ApplyJump(mid);
-                var currentValue = getValue(currentSolution);
-                if (currentValue > valueForBestJumpLength)
-                {
-                    bestJumpLength = mid;
-                }
-
                 if (change > 0)
                 {
                     rangeBegin = justBelowMid;
+
+                    // ApplyJump(justBelowMid);
+                    // var currentValue = getValue(currentSolution);
+                    if (justBelowMidValue > valueForBestJumpLength)
+                    {
+                        bestJumpLength = justBelowMid;
+                        valueForBestJumpLength = justBelowMidValue;
+                    }
                 }
                 else if (change < 0)
                 {
@@ -252,6 +252,7 @@ namespace ApproximateOptimization
             if (valueForBestJumpLength > SolutionValue)
             {
                 ApplyJump(bestJumpLength);
+                this.UpdateBestSolution();
             }
         }
     }
