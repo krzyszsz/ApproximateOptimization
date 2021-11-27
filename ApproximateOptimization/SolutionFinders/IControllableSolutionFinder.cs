@@ -4,6 +4,7 @@ namespace ApproximateOptimization
 {
     public interface IControllableSolutionFinder
     {
+        void OnInitialized();
         void NextSolution();
         double[] CurrentSolution { get; set; }
         double[] BestSolutionSoFar { get; set; }

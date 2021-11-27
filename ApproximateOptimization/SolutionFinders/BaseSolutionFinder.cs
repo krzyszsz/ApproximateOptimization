@@ -17,11 +17,6 @@ namespace ApproximateOptimization
 
         public bool SolutionFound { get; private set; }
 
-        protected virtual void Initialize()
-        {
-            currentSolution = new double[dimension];
-        }
-
         /// <summary>
         /// Implementations of this method should update "currentSolution" and not change "BestSolutionSoFar"
         /// but they can read "BestSolutionSoFar" to create next iteration based on it.
@@ -30,6 +25,7 @@ namespace ApproximateOptimization
 
         protected virtual void OnInitialized()
         {
+            currentSolution = new double[dimension];
         }
 
         public void FindMaximum(
@@ -43,7 +39,6 @@ namespace ApproximateOptimization
             this.getValue = getValue;
             this.dimension = dimension;
             this.solutionRange = solutionRange ?? GetDefaultSolutionRange(dimension);
-            Initialize();
             BestSolutionSoFar = new double[dimension];
             OnInitialized();
             Array.Copy(currentSolution, BestSolutionSoFar, dimension);

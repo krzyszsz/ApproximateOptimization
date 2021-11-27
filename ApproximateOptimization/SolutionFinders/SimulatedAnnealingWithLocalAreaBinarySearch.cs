@@ -35,6 +35,7 @@ namespace ApproximateOptimization
                 solutionFinder.BestSolutionSoFar = BestSolutionSoFar;
                 solutionFinder.ScoreFunction = getValue;
                 solutionFinder.SolutionRange = solutionRange;
+                solutionFinder.OnInitialized();
             }
         }
 

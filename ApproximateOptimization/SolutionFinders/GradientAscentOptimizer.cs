@@ -97,12 +97,17 @@ namespace ApproximateOptimization
             set => solutionRange = value;
         }
 
-        protected override void Initialize()
+        void IControllableSolutionFinder.OnInitialized()
+        {
+            OnInitialized();
+        }
+
+        protected override void OnInitialized()
         {
             direction = new double[dimension];
             if (isSelfContained)
             {
-                base.Initialize();
+                base.OnInitialized();
                 MaxJump = 1.0;
                 for (int i = 0; i < dimension; i++)
                 {
@@ -177,8 +182,6 @@ namespace ApproximateOptimization
             return Math.Sqrt(vector.Sum(x => x * x));
         }
 
-
-
         private void FindDirection(double smallIncrement)
         {
             for (int i = 0; i< dimension; i++)
@@ -252,7 +255,7 @@ namespace ApproximateOptimization
             if (valueForBestJumpLength > SolutionValue)
             {
                 ApplyJump(bestJumpLength);
-                this.UpdateBestSolution();
+                UpdateBestSolution();
             }
         }
     }

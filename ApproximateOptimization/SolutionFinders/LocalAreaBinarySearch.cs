@@ -118,11 +118,16 @@ namespace ApproximateOptimization
             set => solutionRange = value;
         }
 
-        protected override void Initialize()
+        void IControllableSolutionFinder.OnInitialized()
+        {
+            OnInitialized();
+        }
+
+        protected override void OnInitialized()
         {
             if (this.isSelfContained)
             {
-                base.Initialize();
+                base.OnInitialized();
                 for (int i = 0; i < dimension; i++)
                 {
                     var rangeWidth = solutionRange[i][1] - solutionRange[i][0];
