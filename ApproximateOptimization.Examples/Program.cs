@@ -47,15 +47,10 @@ namespace ApproximateOptimizationExamples
             // Below: We need to flip the sign of the function to minimize it rather than maximize it.
             var minusErrorFunc = (double[] coefficients) => -errorFunction(coefficients);
             var optimizer = OptimizerFactory.GetAutoSizingCompositeOptmizer(
-                new ConcreteAutoTuningParams
+                new ConcreteMuiltiThreadedOptimizerParams
                 {
-                    solutionFinderFactoryMethod = () =>
-                    new ConcreteMuiltiThreadedOptimizerParams
-                    {
-                        getValue = minusErrorFunc,
-                        dimension = 2,
-                        maxIterations = 100,
-                    }
+                    getValue = minusErrorFunc,
+                    dimension = 2,
                 }
            );
             optimizer.FindMaximum();
@@ -90,12 +85,13 @@ namespace ApproximateOptimizationExamples
                 .Sum(sides => Math.Abs(sides[0](variables) - sides[1](variables)));
             // Below: We need to flip the sign of the error function to minimize it rather than maximize it.
             var minusErrorFunc = (double[] variables) => -errorFunction(variables);
-            var optimizer = OptimizerFactory.GetCompositeOptiizer(new CompositeParams
-            {
-                getValue = minusErrorFunc,
-                dimension = 2,
-                maxIterations = 5,
-            });
+            var optimizer = OptimizerFactory.GetAutoSizingCompositeOptmizer(
+                new ConcreteMuiltiThreadedOptimizerParams
+                {
+                    getValue = minusErrorFunc,
+                    dimension = 2,
+                }
+           );
             Console.WriteLine(optimizer.SolutionFound && optimizer.SolutionValue < 0.1
                 ? $"Equations' solution: x = {optimizer.BestSolutionSoFar[0]:N4} " +
                 $"y = {optimizer.BestSolutionSoFar[1]:N4}"
