@@ -27,7 +27,7 @@
             return new ConcreteAutoTuningFinder(new ConcreteAutoTuningParams
             {
                 maxAttempts = maxReadjustments,
-                solutionFinderFactoryMethod = () => new ConcreteAutoTuningFinder(optimizerParams)
+                solutionFinderFactoryMethod = () => new ConcreteCompositeOptimizer(optimizerParams)
             });
         }
     }
