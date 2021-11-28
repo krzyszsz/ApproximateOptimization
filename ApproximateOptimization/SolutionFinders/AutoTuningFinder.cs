@@ -14,6 +14,7 @@ namespace ApproximateOptimization
 
         public AutoTuningFinder(T problemParameters)
         {
+            this.problemParameters = problemParameters;
             solutionFinder = problemParameters.solutionFinderFactoryMethod();
         }
 

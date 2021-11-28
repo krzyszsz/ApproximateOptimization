@@ -1,10 +1,10 @@
 ﻿namespace ApproximateOptimization
 {
-    public class CompositeOptimizer<T, P> : MultithreadedOptimizer<T>
+    public class CompositeOptimizer<T, P> : MultithreadedOptimizer<P>
         where T : MultiThreadedOptimizerParams<P>, new()
         where P : BaseSolutionFinderParams, new()
     {
-        public CompositeOptimizer(CompositeOptimizerParams<T> problemParams)
+        public CompositeOptimizer(T problemParams)
             : base(problemParams)
         {
         }
@@ -17,9 +17,10 @@
     /// This is a concrete version of CompositeOptimizer to be used for convenience where multiple generic arguments
     /// could be confusing.
     /// </summary>
-    public class NonGenericCompositeOptimizer : CompositeOptimizer<NonGenericMuiltiThreadedOptimizerParams, SimulatedAnnealingWithLocalAreaBinarySearchParams>
+    public class ConcreteCompositeOptimizer : CompositeOptimizer<ConcreteMuiltiThreadedOptimizerParams, SimulatedAnnealingWithLocalAreaBinarySearchParams>
     {
-        public NonGenericCompositeOptimizer(CompositeParams problemParams) : base(problemParams)
+        public ConcreteCompositeOptimizer(ConcreteMuiltiThreadedOptimizerParams problemParams)
+            : base(problemParams)
         {
         }
     }

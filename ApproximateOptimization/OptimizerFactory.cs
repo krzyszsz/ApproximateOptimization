@@ -5,9 +5,10 @@
         /// <summary>
         /// Returns an optimizer employing MultithreadedOptimizer to run SimulatedAnnealingWithLocalAreaBinarySearch.
         /// </summary>
-        public static NonGenericCompositeOptimizer GetCompositeOptiizer(CompositeParams optimizerParams)
+        public static ConcreteCompositeOptimizer GetCompositeOptiizer(
+            ConcreteMuiltiThreadedOptimizerParams optimizerParams)
         {
-            return new NonGenericCompositeOptimizer(optimizerParams);
+            return new ConcreteCompositeOptimizer(optimizerParams);
         }
 
         // TODO - autoTuning

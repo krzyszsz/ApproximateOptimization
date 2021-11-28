@@ -3,23 +3,13 @@
 namespace ApproximateOptimization
 {
     public class CompositeOptimizerParams<T> : MultiThreadedOptimizerParams<T> where T : BaseSolutionFinderParams, new()
-    {
-        public T ActualOptimizerParams { get; set; } = new T();
+    { }
 
-        public override void Validate()
+    public class ConcreteCompositeParams : CompositeOptimizerParams<SimulatedAnnealingWithLocalAreaBinarySearchParams>
+    {
+        public ConcreteCompositeParams(SimulatedAnnealingWithLocalAreaBinarySearchParams problemParameters)
         {
-            base.Validate();
-            if (ActualOptimizerParams != null)
-            {
-                ActualOptimizerParams.Validate();
-            }
-            else
-            {
-                throw new ArgumentException("Missing argument ActualOptimizerParams");
-            }
+            createSolutionFinder = (int threadId) => new SimulatedAnnealingWithLocalAreaBinarySearch<SimulatedAnnealingWithLocalAreaBinarySearchParams>(problemParameters);
         }
     }
-
-    public class CompositeParams : CompositeOptimizerParams<NonGenericMuiltiThreadedOptimizerParams>
-    { }
 }
