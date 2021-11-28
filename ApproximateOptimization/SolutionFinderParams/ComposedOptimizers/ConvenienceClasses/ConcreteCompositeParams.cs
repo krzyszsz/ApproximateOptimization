@@ -1,10 +1,5 @@
-﻿using System;
-
-namespace ApproximateOptimization
+﻿namespace ApproximateOptimization
 {
-    public class CompositeOptimizerParams<T> : MultiThreadedOptimizerParams<T> where T : BaseSolutionFinderParams, new()
-    { }
-
     public class ConcreteCompositeParams : CompositeOptimizerParams<SimulatedAnnealingWithLocalAreaBinarySearchParams>
     {
         public ConcreteCompositeParams(SimulatedAnnealingWithLocalAreaBinarySearchParams problemParameters)
