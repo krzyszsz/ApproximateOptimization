@@ -7,6 +7,10 @@ namespace ApproximateOptimization
         protected double temperature = 1.0f;
         protected readonly Random random;
 
+        public SimulatedAnnealing(T simulatedAnnealingParams)
+            : base(simulatedAnnealingParams)
+        { }
+
         protected override void NextSolution()
         {
             for (int i=0; i< problemParameters.dimension; i++)

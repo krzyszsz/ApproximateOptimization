@@ -17,13 +17,13 @@ namespace ApproximateOptimization
             solutionFinder = problemParameters.solutionFinderFactoryMethod();
         }
 
-        public new double[] BestSolutionSoFar => solutionFinder.BestSolutionSoFar;
+        public double[] BestSolutionSoFar => solutionFinder.BestSolutionSoFar;
 
-        public new double SolutionValue => solutionFinder.SolutionValue;
+        public double SolutionValue => solutionFinder.SolutionValue;
 
-        public new bool SolutionFound => solutionFinder.SolutionFound;
+        public bool SolutionFound => solutionFinder.SolutionFound;
 
-        public new void FindMaximum()
+        public void FindMaximum()
         {
             var solutionRange = problemParameters.solutionRange ?? BaseSolutionFinder<P>.GetDefaultSolutionRange(problemParameters.dimension);
             bool requiresRecalculation = false;
@@ -55,11 +55,6 @@ namespace ApproximateOptimization
                     break;
                 }
             } while (attempts-- > 0 && requiresRecalculation);
-        }
-
-        public void Initialize(T solutionFinderParams)
-        {
-            throw new NotImplementedException(); // TODO: Remove method
         }
     }
 }

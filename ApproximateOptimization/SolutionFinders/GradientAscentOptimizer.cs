@@ -17,10 +17,9 @@ namespace ApproximateOptimization
         private double[] direction;
         private double diagonalLength;
 
-        public override void Initialize(T searchParams)
-        {
-            base.Initialize(searchParams);
-        }
+        public GradientAscentOptimizer(T searchParams)
+            :base(searchParams)
+        { }
 
         protected override void NextSolution()
         {

@@ -18,6 +18,10 @@ namespace ApproximateOptimization
     /// </summary>
     public class LocalAreaBinarySearch<T> : BaseSolutionFinder<T> where T : LocalAreaBinarySearchParams
     {
+        public LocalAreaBinarySearch(T searchParams)
+            : base(searchParams)
+        { }
+
         protected override void NextSolution()
         {
             if (isSelfContained)
@@ -47,11 +51,11 @@ namespace ApproximateOptimization
         {
             var rangeWidth = problemParameters.solutionRange[dimension][1] - problemParameters.solutionRange[dimension][0];
             var rangeBegin = Math.Max(problemParameters.solutionRange[dimension][0],
-                currentSolution[dimension] - localArea * rangeWidth);
+                currentSolution[dimension] - problemParameters.localArea * rangeWidth);
             var rangeEnd = Math.Min(problemParameters.solutionRange[dimension][1],
-                currentSolution[dimension] + localArea * rangeWidth);
+                currentSolution[dimension] + problemParameters.localArea * rangeWidth);
 
-            var iterationsLeft = iterationsPerDimension;
+            var iterationsLeft = problemParameters.iterationsPerDimension;
             var bestValue = SolutionValue;
             var bestX = BestSolutionSoFar[dimension];
 

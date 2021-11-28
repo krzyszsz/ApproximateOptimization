@@ -3,8 +3,6 @@
 
     public interface ISolutionFinder<T> where T : BaseSolutionFinderParams
     {
-        void Initialize(T solutionFinderParams);
-
         /// <summary>
         /// Runs the actual solving algorithm. This may take considerable time.
         /// </summary>

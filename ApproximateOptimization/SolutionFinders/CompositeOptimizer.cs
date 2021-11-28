@@ -10,7 +10,6 @@
         public CompositeOptimizer(CompositeOptimizerParams<T> problemParams)
             : base(problemParams)
         {
-            var q = (MultiThreadedOptimizerParams<T>)problemParams;
         }
     }
 }

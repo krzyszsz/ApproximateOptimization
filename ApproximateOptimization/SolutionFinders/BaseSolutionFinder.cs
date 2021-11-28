@@ -5,7 +5,6 @@ namespace ApproximateOptimization
 {
     public abstract class BaseSolutionFinder<T> : ISolutionFinder<T> where T : BaseSolutionFinderParams
     {
-        private bool isInitialized;
         protected bool isSelfContained;
         protected double[] currentSolution;
         protected T problemParameters;
@@ -22,10 +21,9 @@ namespace ApproximateOptimization
         /// </summary>
         protected abstract void NextSolution();
 
-        public virtual void Initialize(T solutionFinderParams)
+        public BaseSolutionFinder(T solutionFinderParams)
         {
             solutionFinderParams.Validate();
-            isInitialized = true;
             problemParameters = solutionFinderParams;
             BestSolutionSoFar = new double[problemParameters.dimension];
             currentSolution = new double[problemParameters.dimension];
@@ -41,17 +39,8 @@ namespace ApproximateOptimization
             }
         }
 
-        private void ValidateInitialized()
-        {
-            if (!isInitialized)
-            {
-                throw new InvalidOperationException("Not initialized. Please call Initialize before FindMaximum.");
-            }
-        }
-
         public void FindMaximum()
         {
-            ValidateInitialized();
             Array.Copy(currentSolution, BestSolutionSoFar, problemParameters.dimension);
             SolutionValue = problemParameters.getValue(BestSolutionSoFar);
             long iterations = 0;

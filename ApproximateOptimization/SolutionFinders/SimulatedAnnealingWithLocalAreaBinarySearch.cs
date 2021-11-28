@@ -14,9 +14,9 @@ namespace ApproximateOptimization
         private GradientAscentOptimizerParams gradientAscentOptimizerParams;
         private GradientAscentOptimizer<GradientAscentOptimizerParams> gradientAscentOptimizer;
 
-        public override void Initialize(T searchParams)
+        public SimulatedAnnealingWithLocalAreaBinarySearch(T searchParams)
+            : base(searchParams)
         {
-            base.Initialize(searchParams);
             if (searchParams.gradientOptimizerEnabled)
             {
                 gradientAscentOptimizerParams = new GradientAscentOptimizerParams
@@ -30,8 +30,8 @@ namespace ApproximateOptimization
                     timeLimit = searchParams.timeLimit,
                 };
                 ((IExternalOptimazerAware)gradientAscentOptimizerParams).externalOptimizerState = GetExternallyInjectedOptimizerState();
-                gradientAscentOptimizer = new GradientAscentOptimizer<GradientAscentOptimizerParams>();
-                gradientAscentOptimizer.Initialize(gradientAscentOptimizerParams);
+                gradientAscentOptimizer = new GradientAscentOptimizer<GradientAscentOptimizerParams>(
+                    gradientAscentOptimizerParams);
             }
             if (searchParams.localBinarySearchEnabled)
             {
@@ -46,8 +46,8 @@ namespace ApproximateOptimization
                     timeLimit = searchParams.timeLimit,
                 };
                 ((IExternalOptimazerAware)localAreaBinarySearchParams).externalOptimizerState = GetExternallyInjectedOptimizerState();
-                localAreaBinarySearch = new LocalAreaBinarySearch<LocalAreaBinarySearchParams>();
-                localAreaBinarySearch.Initialize(localAreaBinarySearchParams);
+                localAreaBinarySearch = new LocalAreaBinarySearch<LocalAreaBinarySearchParams>(
+                    localAreaBinarySearchParams);
             }
         }
 
