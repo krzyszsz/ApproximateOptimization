@@ -9,7 +9,7 @@ namespace ApproximateOptimization
     /// therefore it can be efficient to run each of them in a separate thread
     /// (assuming that value function can also use constant memory).
     /// </summary>
-    public class MultithreadedOptimizer<T> : ISolutionFinder<T> where T: BaseSolutionFinderParams, new()
+    public class MultithreadedOptimizer<T> : ISolutionFinder<T> where T: new()
     {
         private MultiThreadedOptimizerParams<T> problemParameters;
 

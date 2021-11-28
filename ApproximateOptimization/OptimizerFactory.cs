@@ -25,14 +25,19 @@
         /// of the search range (or the number of iterations exceeds the configured maximum).
         /// </summary>
         public static ConcreteAutoTuningFinder GetAutoSizingCompositeOptmizer(
-            ConcreteMuiltiThreadedOptimizerParams optimizerParams,
-            int maxReadjustments = 50
+            SimulatedAnnealingWithLocalAreaBinarySearchParams optimizerParams,
+            int maxReadjustments = 50,
+            int threads = 8
             )
         {
             return new ConcreteAutoTuningFinder(new ConcreteAutoTuningParams
             {
                 maxAttempts = maxReadjustments,
-                solutionFinderFactoryMethod = () => new ConcreteCompositeOptimizer(optimizerParams)
+                solutionFinderFactoryMethod = () => new ConcreteCompositeOptimizer(
+                    new ConcreteMuiltiThreadedOptimizerParams(optimizerParams)
+                    {
+                        threadCount = threads
+                    })
             });
         }
     }

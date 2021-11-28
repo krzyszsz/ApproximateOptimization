@@ -1,7 +1,7 @@
 ﻿namespace ApproximateOptimization
 {
 
-    public interface ISolutionFinder<T> where T : BaseSolutionFinderParams
+    public interface ISolutionFinder<T>
     {
         /// <summary>
         /// Runs the actual solving algorithm. This may take considerable time.

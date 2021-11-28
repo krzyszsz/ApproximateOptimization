@@ -2,7 +2,7 @@
 
 namespace ApproximateOptimization
 {
-    public class MultiThreadedOptimizerParams<T> where T: BaseSolutionFinderParams, new()
+    public class MultiThreadedOptimizerParams<T> where T: new()
     {
         public T actualOptimizerParams { get; set; }
         public Func<int, ISolutionFinder<T>> createSolutionFinder { get; set; }

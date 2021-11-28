@@ -87,7 +87,7 @@ namespace ApproximateOptimizationExamples
             // Below: We need to flip the sign of the error function to minimize it rather than maximize it.
             var minusErrorFunc = (double[] variables) => -errorFunction(variables);
             var optimizer = OptimizerFactory.GetAutoSizingCompositeOptmizer(
-                new ConcreteMuiltiThreadedOptimizerParams
+                new SimulatedAnnealingWithLocalAreaBinarySearchParams
                 {
                     getValue = minusErrorFunc,
                     dimension = 2,
