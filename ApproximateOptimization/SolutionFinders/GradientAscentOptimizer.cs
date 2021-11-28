@@ -13,13 +13,14 @@ namespace ApproximateOptimization
     public class GradientAscentOptimizer<T> : BaseSolutionFinder<T> where T: GradientAscentOptimizerParams
     {
         const double delta = 0.00001; // Any number below 0.5 could work?
-
         private double[] direction;
         private double diagonalLength;
 
         public GradientAscentOptimizer(T searchParams)
             :base(searchParams)
-        { }
+        {
+            direction = new double[searchParams.dimension];
+        }
 
         protected override void NextSolution()
         {
