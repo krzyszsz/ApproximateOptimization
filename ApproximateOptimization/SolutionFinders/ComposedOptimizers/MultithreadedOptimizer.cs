@@ -14,8 +14,8 @@ namespace ApproximateOptimization
 
         public MultithreadedOptimizer(MultiThreadedOptimizerParams<T> problemParameters)
         {
+            BaseSolutionFinder<MultiThreadedOptimizerParams<T>>.ProcessParameters(problemParameters);
             this.problemParameters = problemParameters;
-            problemParameters.Validate();
         }
 
         public double[] BestSolutionSoFar { get; private set; }

@@ -46,6 +46,11 @@ namespace ApproximateOptimization
             {
                 throw new ArgumentException("Missing timeLimit or maxIterations argument. Without them the algorithm would never stop!");
             }
+            if (solutionRange == null)
+            {
+                throw new ArgumentException(
+                    $"Solution range argument is missing");
+            }
             if (solutionRange != null && solutionRange.Length != dimension)
             {
                 throw new ArgumentException(

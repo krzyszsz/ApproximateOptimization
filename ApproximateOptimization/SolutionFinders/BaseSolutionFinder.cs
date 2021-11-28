@@ -23,6 +23,7 @@ namespace ApproximateOptimization
 
         public BaseSolutionFinder(T solutionFinderParams)
         {
+            ProcessParameters(solutionFinderParams);
             solutionFinderParams.Validate();
             problemParameters = solutionFinderParams;
             BestSolutionSoFar = new double[problemParameters.dimension];
@@ -68,6 +69,19 @@ namespace ApproximateOptimization
                 solutionRange[i][1] = 1;
             }
             return solutionRange;
+        }
+
+        internal static void ProcessParameters(T solutionFinderParams)
+        {
+            if (solutionFinderParams == null)
+            {
+                throw new ArgumentNullException(nameof(solutionFinderParams));
+            }
+            if (solutionFinderParams.solutionRange == null)
+            {
+                solutionFinderParams.solutionRange = GetDefaultSolutionRange(solutionFinderParams.dimension);
+            }
+            solutionFinderParams.Validate();
         }
 
         protected void UpdateBestSolution()
