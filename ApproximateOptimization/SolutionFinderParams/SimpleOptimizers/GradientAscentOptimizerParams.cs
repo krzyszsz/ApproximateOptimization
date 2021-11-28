@@ -12,7 +12,7 @@ namespace ApproximateOptimization
         public override void Validate()
         {
             base.Validate();
-            if (MaxJump <= 0 || MaxJump >= 1)
+            if (MaxJump <= 0 || MaxJump > 1)
             {
                 throw new ArgumentException("MaxJump should be a number greater than 0 and less than 1.");
             }
