@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApproximateOptimization.Utils;
+using System;
 
 namespace ApproximateOptimization
 {
@@ -26,7 +27,7 @@ namespace ApproximateOptimization
 
         public void FindMaximum()
         {
-            var solutionRange = problemParameters.solutionRange ?? BaseSolutionFinder<P>.GetDefaultSolutionRange(problemParameters.dimension);
+            var solutionRange = problemParameters.solutionRange ?? ParametersManagement.GetDefaultSolutionRange(problemParameters.dimension);
             bool requiresRecalculation = false;
             var attempts = problemParameters.maxAttempts;
             do

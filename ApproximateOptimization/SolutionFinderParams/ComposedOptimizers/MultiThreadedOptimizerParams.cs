@@ -2,16 +2,15 @@
 
 namespace ApproximateOptimization
 {
-    public class MultiThreadedOptimizerParams<T> : BaseSolutionFinderParams where T: BaseSolutionFinderParams, new()
+    public class MultiThreadedOptimizerParams<T> where T: BaseSolutionFinderParams, new()
     {
         public T actualOptimizerParams { get; set; }
         public Func<int, ISolutionFinder<T>> createSolutionFinder { get; set; }
         public int threadCount { get; set; } = 8;
         public ILogger logger { get; set; } = ThreadSafeConsoleLogger.Instance;
 
-        public override void Validate()
+        public virtual void Validate()
         {
-            base.Validate();
             if (createSolutionFinder == null)
             {
                 throw new ArgumentException("Missing createSolutionFinder argument.");

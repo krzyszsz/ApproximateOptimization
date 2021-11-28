@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using ApproximateOptimization.Utils;
 
 namespace ApproximateOptimization
 {
@@ -14,7 +15,11 @@ namespace ApproximateOptimization
 
         public MultithreadedOptimizer(MultiThreadedOptimizerParams<T> problemParameters)
         {
-            BaseSolutionFinder<MultiThreadedOptimizerParams<T>>.ProcessParameters(problemParameters);
+            if (problemParameters == null)
+            {
+                throw new ArgumentNullException(nameof(problemParameters));
+            }
+            problemParameters.Validate();
             this.problemParameters = problemParameters;
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApproximateOptimization.Utils;
+using System;
 using System.Diagnostics;
 
 namespace ApproximateOptimization
@@ -23,8 +24,7 @@ namespace ApproximateOptimization
 
         public BaseSolutionFinder(T solutionFinderParams)
         {
-            ProcessParameters(solutionFinderParams);
-            solutionFinderParams.Validate();
+            solutionFinderParams.ProcessStandarParametersForConstructor();
             problemParameters = solutionFinderParams;
             BestSolutionSoFar = new double[problemParameters.dimension];
             currentSolution = new double[problemParameters.dimension];
@@ -57,31 +57,6 @@ namespace ApproximateOptimization
             sw.Stop();
             SolutionValue = SolutionValue;
             SolutionFound = true;
-        }
-
-        internal static double[][] GetDefaultSolutionRange(int dimension)
-        {
-            double[][] solutionRange = new double[dimension][];
-            for (int i = 0; i < dimension; i++)
-            {
-                solutionRange[i] = new double[2];
-                solutionRange[i][0] = 0;
-                solutionRange[i][1] = 1;
-            }
-            return solutionRange;
-        }
-
-        internal static void ProcessParameters(T solutionFinderParams)
-        {
-            if (solutionFinderParams == null)
-            {
-                throw new ArgumentNullException(nameof(solutionFinderParams));
-            }
-            if (solutionFinderParams.solutionRange == null)
-            {
-                solutionFinderParams.solutionRange = GetDefaultSolutionRange(solutionFinderParams.dimension);
-            }
-            solutionFinderParams.Validate();
         }
 
         protected void UpdateBestSolution()
