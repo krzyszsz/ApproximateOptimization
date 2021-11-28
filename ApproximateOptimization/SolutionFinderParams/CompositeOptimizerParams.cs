@@ -19,4 +19,7 @@ namespace ApproximateOptimization
             }
         }
     }
+
+    public class CompositeParams : CompositeOptimizerParams<NonGenericMuiltiThreadedOptimizerParams>
+    { }
 }

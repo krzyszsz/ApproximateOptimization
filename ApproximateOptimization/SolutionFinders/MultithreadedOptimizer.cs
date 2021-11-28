@@ -8,14 +8,14 @@ namespace ApproximateOptimization
     /// therefore it can be efficient to run each of them in a separate thread
     /// (assuming that value function can also use constant memory).
     /// </summary>
-    public class MultithreadedOptimizer<T> : ISolutionFinder<T> where T: BaseSolutionFinderParams
+    public class MultithreadedOptimizer<T> : ISolutionFinder<T> where T: BaseSolutionFinderParams, new()
     {
         private MultiThreadedOptimizerParams<T> problemParameters;
 
         public MultithreadedOptimizer(MultiThreadedOptimizerParams<T> problemParameters)
         {
-            problemParameters.Validate();
             this.problemParameters = problemParameters;
+            problemParameters.Validate();
         }
 
         public double[] BestSolutionSoFar { get; private set; }
