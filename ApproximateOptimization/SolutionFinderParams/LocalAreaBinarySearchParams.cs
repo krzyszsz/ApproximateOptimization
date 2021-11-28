@@ -9,9 +9,9 @@ namespace ApproximateOptimization
         public long iterationsPerDimension { get; set; } = 10;
         ExternallyInjectedOptimizerState IExternalOptimazerAware.externalOptimizerState { get; set; }
 
-        public override void ValidateArguments()
+        public override void Validate()
         {
-            base.ValidateArguments();
+            base.Validate();
             if (localArea <= 0 || localArea > 1)
             {
                 throw new ArgumentException("LocalArea should be a number greater than 0 and less or equal 1.");

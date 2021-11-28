@@ -12,9 +12,9 @@ namespace ApproximateOptimization
         public int maxIterationsGradientSearch { get; set; } = 20;
         public int maxIterationsGradientJumps { get; set; } = 20;
 
-        public override void ValidateArguments()
+        public override void Validate()
         {
-            base.ValidateArguments();
+            base.Validate();
             if (!localBinarySearchEnabled && !gradientOptimizerEnabled)
             {
                 throw new ArgumentException("Both types of optimizers are disabled: gradientOptimizerEnabled && localBinarySearchEnabled. Please use standard SimulatedAnnealing instead.");

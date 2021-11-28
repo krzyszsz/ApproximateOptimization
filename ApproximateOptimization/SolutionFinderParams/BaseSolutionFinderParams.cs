@@ -40,7 +40,7 @@ namespace ApproximateOptimization
         /// </summary>
         public double[][] solutionRange { get; set; } = null;
 
-        public virtual void ValidateArguments()
+        public virtual void Validate()
         {
             if (maxIterations == -1 && timeLimit == default(TimeSpan))
             {

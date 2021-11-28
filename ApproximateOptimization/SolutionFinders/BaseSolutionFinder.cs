@@ -24,7 +24,7 @@ namespace ApproximateOptimization
 
         public virtual void Initialize(T solutionFinderParams)
         {
-            solutionFinderParams.ValidateArguments();
+            solutionFinderParams.Validate();
             isInitialized = true;
             problemParameters = solutionFinderParams;
             BestSolutionSoFar = new double[problemParameters.dimension];

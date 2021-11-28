@@ -6,19 +6,16 @@ namespace ApproximateOptimization
     /// <summary>
     /// All solution finders in this project work on local array with no memory allocations,
     /// therefore it can be efficient to run each of them in a separate thread
-    /// (assuming that value function can also use const memory).
+    /// (assuming that value function can also use constant memory).
     /// </summary>
-    public class MultithreadedOptimizer : ISolutionFinder
+    public class MultithreadedOptimizer<T> : ISolutionFinder<T> where T: BaseSolutionFinderParams
     {
-        private ILogger logger;
-        private int threadCount;
-        private Func<int, ISolutionFinder> createSolutionFinder;
+        private MultiThreadedOptimizerParams<T> problemParameters;
 
-        public MultithreadedOptimizer(Func<int, ISolutionFinder> createSolutionFinder, int threadCount = 8, ILogger logger = null)
+        public MultithreadedOptimizer(MultiThreadedOptimizerParams<T> problemParameters)
         {
-            this.logger = logger ?? ThreadSafeConsoleLogger.Instance;
-            this.createSolutionFinder = createSolutionFinder;
-            this.threadCount = threadCount;
+            problemParameters.Validate();
+            this.problemParameters = problemParameters;
         }
 
         public double[] BestSolutionSoFar { get; private set; }
@@ -27,41 +24,35 @@ namespace ApproximateOptimization
 
         public bool SolutionFound { get; private set; }
 
-        public void FindMaximum(
-            int dimension,
-            Func<double[], double> getValue,
-            TimeSpan timeLimit = default,
-            long maxIterations = -1,
-            double[][] solutionRange = null)
+        public void FindMaximum()
         {
-            BaseSolutionFinder.ValidateArguments(dimension, timeLimit, maxIterations, solutionRange);
-            var threads = new Thread[threadCount];
-            var solutionFinders = new ISolutionFinder[threadCount];
-            double[][] solutions = new double[threadCount][];
+            var threads = new Thread[problemParameters.threadCount];
+            var solutionFinders = new ISolutionFinder<T>[problemParameters.threadCount];
+            double[][] solutions = new double[problemParameters.threadCount][];
 
-            for (int i=0; i<threadCount; i++)
+            for (int i=0; i< problemParameters.threadCount; i++)
             {
                 var thread = new Thread((object threadId) => {
                     int threadIdInt = (int)threadId;
-                    ISolutionFinder solutionFinder;
+                    ISolutionFinder<T> solutionFinder;
                     try
                     {
-                        solutionFinder = createSolutionFinder(threadIdInt);
+                        solutionFinder = problemParameters.createSolutionFinder(threadIdInt);
                         solutionFinders[threadIdInt] = solutionFinder;
                     }
                     catch (Exception e)
                     {
-                        logger.Error($"Error while creating solution finder in thread ${threadId}: ${e}");
+                        problemParameters.logger.Error($"Error while creating solution finder in thread ${threadId}: ${e}");
                         return;
                     }
 
                     try
                     {
-                        solutionFinder.FindMaximum(dimension, getValue, timeLimit, maxIterations, solutionRange);
+                        solutionFinder.FindMaximum();
                     }
                     catch (Exception e)
                     {
-                        logger.Error($"Error while running solution finder in thread ${threadId}: ${e}");
+                        problemParameters.logger.Error($"Error while running solution finder in thread ${threadId}: ${e}");
                     }
                 });
                 threads[i] = thread;
@@ -69,12 +60,12 @@ namespace ApproximateOptimization
                 thread.Start(i);
             }
 
-            for (int i=0; i<threadCount; i++)
+            for (int i=0; i< problemParameters.threadCount; i++)
             {
                 threads[i].Join();
             }
 
-            for (int i=0; i<threadCount; i++)
+            for (int i=0; i< problemParameters.threadCount; i++)
             {
                 if ((solutionFinders[i]?.SolutionFound ?? false) &&
                     (!SolutionFound || SolutionValue < solutionFinders[i].SolutionValue))
@@ -84,6 +75,11 @@ namespace ApproximateOptimization
                     SolutionFound = true;
                 }
             }
+        }
+
+        public void Initialize(T solutionFinderParams)
+        {
+            throw new NotImplementedException(); // TODO: REmove this method!!!
         }
     }
 }

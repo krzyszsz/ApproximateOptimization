@@ -15,9 +15,9 @@ namespace ApproximateOptimization
         /// </summary>
         public int randomSeed { get; set; } = 0;
 
-        public override void ValidateArguments()
+        public override void Validate()
         {
-            base.ValidateArguments();
+            base.Validate();
             if (temperatureMultiplier <= 0 || temperatureMultiplier >= 1)
             {
                 throw new ArgumentException("Temperature multiplier should be a number greater than 0 and less than 1.");
