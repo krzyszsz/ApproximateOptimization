@@ -7,36 +7,35 @@ namespace ApproximateOptimization
     /// It's much slower to use this class because it runs the actual solution finder multiple times.
     /// Also: it does not narrow the initial range, it can only widen it.
     /// </summary>
-    public class AutoTuningFinder : ISolutionFinder
+    public class AutoTuningFinder<T, P> : BaseSolutionFinder<T> where T: AutoTuningParams<P> where P : BaseSolutionFinderParams
     {
-        private readonly Func<ISolutionFinder> solutionFinderFactoryMethod;
-        private int attempts;
-        private ISolutionFinder solutionFinder;
+        private ISolutionFinder<P> solutionFinder;
 
-        public AutoTuningFinder(Func<ISolutionFinder> solutionFinderFactoryMethod, int maxAttempts=50)
+        public override void Initialize(T solutionFinderParams)
         {
-            this.solutionFinderFactoryMethod = solutionFinderFactoryMethod;
-            this.attempts = maxAttempts;
+            base.Initialize(solutionFinderParams);
+            solutionFinder = problemParameters.solutionFinderFactoryMethod();
         }
 
-        public double[] BestSolutionSoFar => solutionFinder.BestSolutionSoFar;
+        public new double[] BestSolutionSoFar => solutionFinder.BestSolutionSoFar;
 
-        public double SolutionValue => solutionFinder.SolutionValue;
+        public new double SolutionValue => solutionFinder.SolutionValue;
 
-        public bool SolutionFound => solutionFinder.SolutionFound;
+        public new bool SolutionFound => solutionFinder.SolutionFound;
 
-        public void FindMaximum(int dimension, Func<double[], double> getValue, TimeSpan timeLimit = default, long maxIterations = -1, double[][] solutionRange = null)
+        public new void FindMaximum()
         {
-            solutionRange = solutionRange ?? BaseSolutionFinder.GetDefaultSolutionRange(dimension);
+            solutionRange = solutionRange ?? BaseSolutionFinder<P>.GetDefaultSolutionRange(problemParameters.dimension);
             bool requiresRecalculation = false;
+            var attempts = problemParameters.maxAttempts;
             do
             {
-                solutionFinder = solutionFinderFactoryMethod();
-                solutionFinder.FindMaximum(dimension, getValue, timeLimit, maxIterations, solutionRange);
+                solutionFinder = problemParameters.solutionFinderFactoryMethod();
+                solutionFinder.FindMaximum();
                 if (solutionFinder.SolutionFound)
                 {
                     requiresRecalculation = false;
-                    for (var i = 0; i < dimension; i++)
+                    for (var i = 0; i < problemParameters.dimension; i++)
                     {
                         var rangeWidth = solutionRange[i][1] - solutionRange[i][0];
                         if (solutionFinder.BestSolutionSoFar[i] - solutionRange[i][0] < 0.01 * rangeWidth)
@@ -56,6 +55,11 @@ namespace ApproximateOptimization
                     break;
                 }
             } while (attempts-- > 0 && requiresRecalculation);
+        }
+
+        protected override void NextSolution()
+        {
+            throw new NotImplementedException();
         }
     }
 }

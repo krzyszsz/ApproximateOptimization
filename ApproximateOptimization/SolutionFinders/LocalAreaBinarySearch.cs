@@ -2,11 +2,10 @@
 
 namespace ApproximateOptimization
 {
-
     /// <summary>
     /// This search improves solution on each dimension independently of the other dimensions.
     /// The improvement is done locally, that is only in a small space around the current solution.
-    /// The algorithm uses bi-section to find the maximum faster but it only works well for cases with single maximum
+    /// The algorithm uses binary search to find the maximum faster but it only works well for cases with single maximum
     /// in the checked area with the assumption that the function is monotonic on the left of the max and is monotonic on the right
     /// (it will find sub-optimal solution when there are two local maximums for example).
     /// For that reason, the best results will be achieved for smaller areas (which should contain fewer local maximums).
@@ -16,138 +15,17 @@ namespace ApproximateOptimization
     /// Another limitation is that it searches each dimension independently so even if the correct max
     /// is found in one dimension, it may not be the global maximum.
     /// To make is sligtly better, the process is iterative - all dimentions are searched "iterationCount" times.
-    /// 
-    /// LocalArea is exposed as public property so that this algorithm can be used in combination with others
-    /// and the LocalArea can be changed between calls to "NextSolution".
     /// </summary>
-    public class LocalAreaBinarySearch : BaseSolutionFinder, IControllableLocalAreaSolutionFinder
+    public class LocalAreaBinarySearch<T> : BaseSolutionFinder<T> where T : LocalAreaBinarySearchParams
     {
-        private readonly int iterationCount;
-        private readonly int iterationsPerDimension;
-        private double localArea;
-        private bool isSelfContained;
-
-        public LocalAreaBinarySearch(double localArea = 1.0, int iterationCount = 3, int iterationsPerDimension = 10, bool initializeSolution = true)
-        {
-            this.localArea = localArea;
-            this.iterationCount = iterationCount;
-            this.iterationsPerDimension = iterationsPerDimension;
-            this.isSelfContained = initializeSolution;
-        }
-
-        double IControllableLocalAreaSolutionFinder.LocalArea
-        {
-            get
-            {
-                return localArea;
-            }
-            set
-            {
-                localArea = value;
-            }
-        }
-
-        double[] IControllableSolutionFinder.CurrentSolution
-        {
-            get
-            {
-                return currentSolution;
-            }
-
-            set
-            {
-                currentSolution = value;
-            }
-        }
-
-        double[] IControllableSolutionFinder.BestSolutionSoFar
-        {
-            get
-            {
-                return BestSolutionSoFar;
-            }
-
-            set
-            {
-                BestSolutionSoFar = value;
-            }
-        }
-
-        int IControllableSolutionFinder.Dimension
-        {
-            get
-            {
-                return this.dimension;
-            }
-
-            set
-            {
-                dimension = value;
-            }
-        }
-
-        double IControllableSolutionFinder.SolutionValue
-        {
-            get
-            {
-                return SolutionValue;
-            }
-
-            set
-            {
-                SolutionValue = value;
-            }
-        }
-
-        Func<double[], double> IControllableSolutionFinder.ScoreFunction
-        {
-            get
-            {
-                return this.getValue;
-            }
-
-            set
-            {
-                getValue = value;
-            }
-        }
-
-        double[][] IControllableSolutionFinder.SolutionRange
-        { 
-            get => solutionRange; 
-            set => solutionRange = value;
-        }
-
-        void IControllableSolutionFinder.OnInitialized()
-        {
-            OnInitialized();
-        }
-
-        protected override void OnInitialized()
-        {
-            if (this.isSelfContained)
-            {
-                base.OnInitialized();
-                for (int i = 0; i < dimension; i++)
-                {
-                    var rangeWidth = solutionRange[i][1] - solutionRange[i][0];
-                    currentSolution[i] = solutionRange[i][0] + rangeWidth / 2;
-                }
-            }
-        }
-
-        void IControllableSolutionFinder.NextSolution()
-        {
-            NextSolution();
-        }
-
         protected override void NextSolution()
         {
             if (isSelfContained)
             {
-                Array.Copy(BestSolutionSoFar, currentSolution, dimension);
+                Array.Copy(BestSolutionSoFar, currentSolution, problemParameters.dimension);
             }
-            for (int x = 0; x < iterationCount; x++) for (int i = 0; i < dimension; i++)
+            for (int x = 0; x < problemParameters.maxBinarySearchIterations; x++)
+                for (int i = 0; i < problemParameters.dimension; i++)
             {
                 OptimizeInSingleDimension(i);
             }
@@ -161,15 +39,17 @@ namespace ApproximateOptimization
         {
             var originalValue = BestSolutionSoFar[dimension];
             currentSolution[dimension] = value;
-            var result = this.getValue(currentSolution);
+            var result = problemParameters.getValue(currentSolution);
             return result;
         }
 
         private void OptimizeInSingleDimension(int dimension)
         {
-            var rangeWidth = solutionRange[dimension][1] - solutionRange[dimension][0];
-            var rangeBegin = Math.Max(solutionRange[dimension][0], currentSolution[dimension] - localArea * rangeWidth);
-            var rangeEnd = Math.Min(solutionRange[dimension][1], currentSolution[dimension] + localArea * rangeWidth);
+            var rangeWidth = problemParameters.solutionRange[dimension][1] - problemParameters.solutionRange[dimension][0];
+            var rangeBegin = Math.Max(problemParameters.solutionRange[dimension][0],
+                currentSolution[dimension] - localArea * rangeWidth);
+            var rangeEnd = Math.Min(problemParameters.solutionRange[dimension][1],
+                currentSolution[dimension] + localArea * rangeWidth);
 
             var iterationsLeft = iterationsPerDimension;
             var bestValue = SolutionValue;

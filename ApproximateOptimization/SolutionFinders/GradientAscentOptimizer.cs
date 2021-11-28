@@ -10,127 +10,27 @@ namespace ApproximateOptimization
     ///    by attempting "jumpLengthIterations" different lengths.
     /// -> Actions 1&2 are executed "iterationCount" times.
     /// </summary>
-    public class GradientAscentOptimizer : BaseSolutionFinder, IControllableGradientAscentOptimizer
+    public class GradientAscentOptimizer<T> : BaseSolutionFinder<T> where T: GradientAscentOptimizerParams
     {
         const double delta = 0.00001; // Any number below 0.5 could work?
 
-        private readonly bool isSelfContained;
-        private readonly int iterationCount;
         private double[] direction;
         private double diagonalLength;
 
-        public GradientAscentOptimizer(bool initializeSolution=true, int iterationCount=30, int jumpLengthIterations=10)
+        public override void Initialize(T searchParams)
         {
-            this.isSelfContained = initializeSolution;
-            this.iterationCount = iterationCount;
-        }
-
-        public double MaxJump { get; set; }
-        double[] IControllableSolutionFinder.CurrentSolution
-        {
-            get
-            {
-                return currentSolution;
-            }
-
-            set
-            {
-                currentSolution = value;
-            }
-        }
-
-        double[] IControllableSolutionFinder.BestSolutionSoFar
-        {
-            get
-            {
-                return BestSolutionSoFar;
-            }
-
-            set
-            {
-                BestSolutionSoFar = value;
-            }
-        }
-
-        int IControllableSolutionFinder.Dimension
-        {
-            get
-            {
-                return this.dimension;
-            }
-
-            set
-            {
-                dimension = value;
-            }
-        }
-
-        double IControllableSolutionFinder.SolutionValue
-        {
-            get
-            {
-                return SolutionValue;
-            }
-
-            set
-            {
-                SolutionValue = value;
-            }
-        }
-
-        Func<double[], double> IControllableSolutionFinder.ScoreFunction
-        {
-            get
-            {
-                return this.getValue;
-            }
-
-            set
-            {
-                getValue = value;
-            }
-        }
-
-        double[][] IControllableSolutionFinder.SolutionRange
-        {
-            get => solutionRange;
-            set => solutionRange = value;
-        }
-
-        void IControllableSolutionFinder.OnInitialized()
-        {
-            OnInitialized();
-        }
-
-        protected override void OnInitialized()
-        {
-            direction = new double[dimension];
-            if (isSelfContained)
-            {
-                base.OnInitialized();
-                MaxJump = 1.0;
-                for (int i = 0; i < dimension; i++)
-                {
-                    var rangeWidth = solutionRange[i][1] - solutionRange[i][0];
-                    currentSolution[i] = solutionRange[i][0] + rangeWidth / 2;
-                }
-            }
-        }
-
-        void IControllableSolutionFinder.NextSolution()
-        {
-            NextSolution();
+            base.Initialize(searchParams);
         }
 
         protected override void NextSolution()
         {
             if (isSelfContained)
             {
-                Array.Copy(BestSolutionSoFar, currentSolution, dimension);
+                Array.Copy(BestSolutionSoFar, currentSolution, problemParameters.dimension);
             }
-            for (int i = 0; i < iterationCount; i++)
+            for (int i = 0; i < problemParameters.iterationCount; i++)
             {
-                var smallIncrement = MaxJump * delta;
+                var smallIncrement = problemParameters.MaxJump * delta;
                 FindDirection(smallIncrement);
                 FindJumpLength();
             }
@@ -142,10 +42,11 @@ namespace ApproximateOptimization
 
         private void ApplyJump(double jumpLength)
         {
-            for (int i = 0; i < dimension; i++)
+            for (int i = 0; i < problemParameters.dimension; i++)
             {
                 currentSolution[i] = BestSolutionSoFar[i] + direction[i] * jumpLength / diagonalLength;
-                currentSolution[i] = Math.Max(solutionRange[i][0], Math.Min(solutionRange[i][1], currentSolution[i]));
+                currentSolution[i] = Math.Max(problemParameters.solutionRange[i][0],
+                    Math.Min(problemParameters.solutionRange[i][1], currentSolution[i]));
             }
         }
 
@@ -153,7 +54,7 @@ namespace ApproximateOptimization
         {
             var initialValue = currentSolution[i];
             currentSolution[i] = x;
-            var result = getValue(currentSolution);
+            var result = problemParameters.getValue(currentSolution);
             currentSolution[i] = initialValue;
             return result;
         }
@@ -161,14 +62,14 @@ namespace ApproximateOptimization
         private double GetValueForJump(double jumpLength)
         {
             ApplyJump(jumpLength);
-            return getValue(currentSolution);
+            return problemParameters.getValue(currentSolution);
         }
 
         private void FindGradientForDimension(int i, double smallIncrement)
         {
             var a = currentSolution[i];
             var b = a + smallIncrement;
-            if (b > solutionRange[i][1])
+            if (b > problemParameters.solutionRange[i][1])
             {
                 var tmp = a;
                 a = b;
@@ -184,13 +85,13 @@ namespace ApproximateOptimization
 
         private void FindDirection(double smallIncrement)
         {
-            for (int i = 0; i< dimension; i++)
+            for (int i = 0; i< problemParameters.dimension; i++)
             {
-                var rangeWidth = (solutionRange[i][1] - solutionRange[i][0]);
+                var rangeWidth = (problemParameters.solutionRange[i][1] - problemParameters.solutionRange[i][0]);
                 FindGradientForDimension(i, smallIncrement * rangeWidth);
             }
             var vectorLength = GetVectorLength(direction);
-            for (int i = 0; i < dimension; i++)
+            for (int i = 0; i < problemParameters.dimension; i++)
             {
                 direction[i] = direction[i] / vectorLength;
             }
@@ -198,11 +99,11 @@ namespace ApproximateOptimization
             // Below could be better (diagonalLength could be smaller) but it would be more complex to find it
             // so the distance to the "corner" is good enough.
             diagonalLength = 0;
-            for (int i = 0; i < dimension; i++)
+            for (int i = 0; i < problemParameters.dimension; i++)
             {
                 var distance = BestSolutionSoFar[i] -
                     (
-                        direction[i] >= 0 ? solutionRange[i][1] : solutionRange[i][0]
+                        direction[i] >= 0 ? problemParameters.solutionRange[i][1] : problemParameters.solutionRange[i][0]
                     );
                 diagonalLength += distance * distance;
             }
@@ -212,9 +113,9 @@ namespace ApproximateOptimization
         private void FindJumpLength()
         {
             var rangeBegin = 0.0;
-            var rangeEnd = MaxJump * diagonalLength;
+            var rangeEnd = problemParameters.MaxJump * diagonalLength;
 
-            var iterationsLeft = iterationCount;
+            var iterationsLeft = problemParameters.iterationCount;
             var bestJumpLength = 0.0;
             var valueForBestJumpLength = SolutionValue;
 

@@ -1,70 +1,95 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace ApproximateOptimization
 {
     /// <summary>
-    /// This combines 2 other solution finders to improve results for some problems:
-    /// After each iteration of simulated annealing it runs LocalAreaBinarySearch with narrowing down local area.
+    /// This combines multiple solution finders to improve results for some problems:
+    /// After each iteration of simulated annealing it runs LocalAreaBinarySearch / GradientAscentOptimizer
+    /// with narrowing down local area.
     /// </summary>
-    public class SimulatedAnnealingWithLocalAreaBinarySearch : SimulatedAnnealing
+    public class SimulatedAnnealingWithLocalAreaBinarySearch<T> : SimulatedAnnealing<T> where T: SimulatedAnnealingWithLocalAreaBinarySearchParams
     {
-        private readonly List<IControllableSolutionFinder> solutionFinders = new List<IControllableSolutionFinder>();
-        private readonly double localAreaMultiplier;
+        private LocalAreaBinarySearchParams localAreaBinarySearchParams;
+        private LocalAreaBinarySearch<LocalAreaBinarySearchParams> localAreaBinarySearch;
+        private GradientAscentOptimizerParams gradientAscentOptimizerParams;
+        private GradientAscentOptimizer<GradientAscentOptimizerParams> gradientAscentOptimizer;
 
-        public SimulatedAnnealingWithLocalAreaBinarySearch(double temperatureMultiplier = 0.9, int randomSeed = 0,
-            bool localBinarySearchEnabled=false, bool gradientOptimizerEnabled=true,
-            double localAreaMultiplier = 0.2, int binarySearchIterationCount = 3, int binarySearchIterationsPerDimension = 10,
-            int maxIterationsGradientSearch=50
-            )
-            : base(temperatureMultiplier, randomSeed)
+        public override void Initialize(T searchParams)
         {
-            this.localAreaMultiplier = localAreaMultiplier;
-            if (localBinarySearchEnabled) solutionFinders.Add(
-                new LocalAreaBinarySearch(localAreaMultiplier * temperature, binarySearchIterationCount, binarySearchIterationsPerDimension, false));
-            if (gradientOptimizerEnabled) solutionFinders.Add(new GradientAscentOptimizer(false, maxIterationsGradientSearch));
+            base.Initialize(searchParams);
+            if (searchParams.gradientOptimizerEnabled)
+            {
+                gradientAscentOptimizerParams = new GradientAscentOptimizerParams
+                {
+                    dimension = searchParams.dimension,
+                    getValue = searchParams.getValue,
+                    iterationCount = searchParams.maxIterationsGradientSearch,
+                    jumpLengthIterations = searchParams.maxIterationsGradientJumps,
+                    maxIterations = searchParams.maxIterations,
+                    solutionRange = searchParams.solutionRange,
+                    timeLimit = searchParams.timeLimit,
+                };
+                ((IExternalOptimazerAware)gradientAscentOptimizerParams).externalOptimizerState = GetExternallyInjectedOptimizerState();
+                gradientAscentOptimizer = new GradientAscentOptimizer<GradientAscentOptimizerParams>();
+                gradientAscentOptimizer.Initialize(gradientAscentOptimizerParams);
+            }
+            if (searchParams.localBinarySearchEnabled)
+            {
+                localAreaBinarySearchParams = new LocalAreaBinarySearchParams
+                {
+                    dimension = searchParams.dimension,
+                    getValue = searchParams.getValue,
+                    maxIterations = searchParams.maxIterations,
+                    maxBinarySearchIterations = searchParams.binarySearchIterationCount,
+                    iterationsPerDimension = searchParams.binarySearchIterationsPerDimension,
+                    solutionRange = searchParams.solutionRange,
+                    timeLimit = searchParams.timeLimit,
+                };
+                ((IExternalOptimazerAware)localAreaBinarySearchParams).externalOptimizerState = GetExternallyInjectedOptimizerState();
+                localAreaBinarySearch = new LocalAreaBinarySearch<LocalAreaBinarySearchParams>();
+                localAreaBinarySearch.Initialize(localAreaBinarySearchParams);
+            }
         }
 
-        protected override void OnInitialized()
+        private ExternallyInjectedOptimizerState GetExternallyInjectedOptimizerState()
         {
-            base.OnInitialized();
-            foreach (var solutionFinder in solutionFinders)
+            return new ExternallyInjectedOptimizerState
             {
-                solutionFinder.Dimension = dimension;
-                solutionFinder.CurrentSolution = currentSolution; // both algorithms work on the same array!
-                solutionFinder.BestSolutionSoFar = BestSolutionSoFar;
-                solutionFinder.ScoreFunction = getValue;
-                solutionFinder.SolutionRange = solutionRange;
-                solutionFinder.OnInitialized();
-            }
+                BestSolutionSoFar = BestSolutionSoFar,
+                CurrentSolution = currentSolution,
+                Dimension = problemParameters.dimension,
+                ScoreFunction = problemParameters.getValue,
+                SolutionRange = problemParameters.solutionRange,
+            };
         }
 
         protected override void NextSolution()
         {
             base.NextSolution();
 
-            var currentValue = getValue(currentSolution);
+            var currentValue = problemParameters.getValue(currentSolution);
             if (currentValue > SolutionValue)
             {
-                Array.Copy(currentSolution, BestSolutionSoFar, dimension);
+                Array.Copy(currentSolution, BestSolutionSoFar, problemParameters.dimension);
                 SolutionValue = currentValue;
             }
-            foreach (var solutionFinder in solutionFinders)
+
+            if (problemParameters.gradientOptimizerEnabled)
             {
-                var binarySearch = solutionFinder as IControllableLocalAreaSolutionFinder;
-                var gradientOptimizer = solutionFinder as IControllableGradientAscentOptimizer;
-                if (binarySearch != null)
-                {
-                    binarySearch.LocalArea = localAreaMultiplier * temperature;
-                }
-                if (gradientOptimizer != null)
-                {
-                    gradientOptimizer.MaxJump = localAreaMultiplier * temperature;
-                }
-                solutionFinder.SolutionValue = SolutionValue;
-                solutionFinder.NextSolution();
-                UpdateBestSolution();
+                gradientAscentOptimizerParams.MaxJump = problemParameters.localAreaMultiplier * temperature;
+                var externalStateAware = ((IExternalOptimazerAware)gradientAscentOptimizerParams).externalOptimizerState;
+                externalStateAware.SolutionValue = SolutionValue;
+                externalStateAware.RequestNextSolution();
             }
+
+            if (problemParameters.localBinarySearchEnabled)
+            {
+                localAreaBinarySearchParams.localArea = problemParameters.localAreaMultiplier * temperature;
+                var externalStateAware = ((IExternalOptimazerAware)localAreaBinarySearchParams).externalOptimizerState;
+                externalStateAware.SolutionValue = SolutionValue;
+                externalStateAware.RequestNextSolution();
+            }
+            UpdateBestSolution(); // TODO: Every next solution should call this so we should not need it here???
         }
     }
 }
