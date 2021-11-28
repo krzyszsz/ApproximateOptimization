@@ -9,7 +9,9 @@ namespace ApproximateOptimization
 
         public SimulatedAnnealing(T simulatedAnnealingParams)
             : base(simulatedAnnealingParams)
-        { }
+        {
+            random = new Random(simulatedAnnealingParams.randomSeed);
+        }
 
         protected override void NextSolution()
         {
