@@ -9,9 +9,14 @@
         /// Returns an optimizer employing MultithreadedOptimizer to run SimulatedAnnealingWithLocalAreaBinarySearch.
         /// </summary>
         public static ConcreteCompositeOptimizer GetCompositeOptiizer(
-            ConcreteMuiltiThreadedOptimizerParams optimizerParams)
+            SimulatedAnnealingWithLocalAreaBinarySearchParams optimizerParams, int threads = 8)
         {
-            return new ConcreteCompositeOptimizer(optimizerParams);
+            return new ConcreteCompositeOptimizer(
+                new ConcreteMuiltiThreadedOptimizerParams(
+                optimizerParams)
+                {
+                    threadCount = threads
+                });
         }
 
         /// <summary>

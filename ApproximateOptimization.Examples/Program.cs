@@ -10,12 +10,13 @@ namespace ApproximateOptimizationExamples
         {
             // Finds maximum of sin(x) * cos(y) for range x: 0..1 and y: 0..1
             var func = (double[] vector) => Math.Sin(vector[0]) * Math.Cos(vector[1]);
-            var optimizer = OptimizerFactory.GetCompositeOptiizer(new ConcreteMuiltiThreadedOptimizerParams
-            {
-                getValue = func,
-                dimension = 2,
-                maxIterations = 100,
-            });
+            var optimizer = OptimizerFactory.GetCompositeOptiizer(
+                new SimulatedAnnealingWithLocalAreaBinarySearchParams
+                {
+                    getValue = func,
+                    dimension = 2,
+                    maxIterations = 100,
+                });
             optimizer.FindMaximum();
             Console.WriteLine(
                 $"Maximum value {optimizer.SolutionValue} was found for " +
@@ -46,13 +47,13 @@ namespace ApproximateOptimizationExamples
                 .Sum(point => Math.Abs(regressionLine(coefficients, point) - point.y));
             // Below: We need to flip the sign of the function to minimize it rather than maximize it.
             var minusErrorFunc = (double[] coefficients) => -errorFunction(coefficients);
-            var optimizer = OptimizerFactory.GetAutoSizingCompositeOptmizer(
-                new ConcreteMuiltiThreadedOptimizerParams
+
+            var optimizer = OptimizerFactory.GetCompositeOptiizer(
+                new SimulatedAnnealingWithLocalAreaBinarySearchParams
                 {
                     getValue = minusErrorFunc,
                     dimension = 2,
-                }
-           );
+                }); 
             optimizer.FindMaximum();
             Console.WriteLine(
                 $"Found regression line " +

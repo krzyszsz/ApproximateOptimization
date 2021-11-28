@@ -5,10 +5,10 @@
     /// </summary>
     public class ConcreteMuiltiThreadedOptimizerParams : MultiThreadedOptimizerParams<SimulatedAnnealingWithLocalAreaBinarySearchParams>
     {
-        public ConcreteMuiltiThreadedOptimizerParams()
+        public ConcreteMuiltiThreadedOptimizerParams(SimulatedAnnealingWithLocalAreaBinarySearchParams problemParameters)
         {
             createSolutionFinder = (int threadNumber) => new SimulatedAnnealingWithLocalAreaBinarySearch<SimulatedAnnealingWithLocalAreaBinarySearchParams>(actualOptimizerParams);
-            actualOptimizerParams = new SimulatedAnnealingWithLocalAreaBinarySearchParams();
+            actualOptimizerParams = problemParameters;
         }
     }
 }
