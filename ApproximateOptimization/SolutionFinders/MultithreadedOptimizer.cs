@@ -76,10 +76,5 @@ namespace ApproximateOptimization
                 }
             }
         }
-
-        public void Initialize(T solutionFinderParams)
-        {
-            throw new NotImplementedException(); // TODO: REmove this method!!!
-        }
     }
 }

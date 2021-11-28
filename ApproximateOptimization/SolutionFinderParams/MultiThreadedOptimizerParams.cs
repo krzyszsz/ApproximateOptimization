@@ -4,7 +4,7 @@ namespace ApproximateOptimization
 {
     public class MultiThreadedOptimizerParams<T> : BaseSolutionFinderParams where T: BaseSolutionFinderParams, new()
     {
-        public T actualOptimizerParams { get; set; } = new T();
+        public T actualOptimizerParams { get; set; }
         public Func<int, ISolutionFinder<T>> createSolutionFinder { get; set; }
         public int threadCount { get; set; } = 8;
         public ILogger logger { get; set; } = ThreadSafeConsoleLogger.Instance;
