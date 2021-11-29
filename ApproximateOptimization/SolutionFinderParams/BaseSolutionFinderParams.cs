@@ -33,7 +33,7 @@ namespace ApproximateOptimization
         /// <summary>
         /// Maximum number of iterations: one of the possible conditions to stop looking for solutions.
         /// </summary>
-        public long maxSimulatedAnnealingIterations { get; set; } = -1;
+        public long maxIterations { get; set; } = -1;
 
         /// <summary>
         /// Range defined for each dimension. When omtted, all dimensions have assumed range 0..1.
@@ -42,7 +42,7 @@ namespace ApproximateOptimization
 
         public virtual void Validate()
         {
-            if (maxSimulatedAnnealingIterations == -1 && timeLimit == default(TimeSpan))
+            if (maxIterations == -1 && timeLimit == default(TimeSpan))
             {
                 throw new ArgumentException("Missing timeLimit or maxIterations argument. Without them the algorithm would never stop!");
             }

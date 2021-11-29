@@ -15,7 +15,7 @@ namespace ApproximateOptimizationExamples
                 {
                     getValue = func,
                     dimension = 2,
-                    maxSimulatedAnnealingIterations = 100,
+                    maxIterations = 100,
                 });
             optimizer.FindMaximum();
             Console.WriteLine(
@@ -53,7 +53,7 @@ namespace ApproximateOptimizationExamples
                 {
                     getValue = minusErrorFunc,
                     dimension = 2,
-                    maxSimulatedAnnealingIterations = 100,
+                    maxIterations = 100,
                 }); 
             optimizer.FindMaximum();
             Console.WriteLine(
@@ -92,7 +92,7 @@ namespace ApproximateOptimizationExamples
                 {
                     getValue = minusErrorFunc,
                     dimension = 2,
-                    maxSimulatedAnnealingIterations = 100,
+                    maxIterations = 100,
                 }
            );
             Console.WriteLine(optimizer.SolutionFound && optimizer.SolutionValue < 0.1

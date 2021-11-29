@@ -12,7 +12,7 @@ namespace ApproximateOptimization.Tests
                 {
                     getValue = scoreFunc,
                     dimension = 2,
-                    maxSimulatedAnnealingIterations = 100,
+                    maxIterations = 100,
                 });
         }
 
