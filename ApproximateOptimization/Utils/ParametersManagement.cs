@@ -20,7 +20,7 @@ namespace ApproximateOptimization.Utils
             return solutionRange;
         }
 
-        internal static void ProcessStandarParametersForConstructor<T>(this T solutionFinderParams) where T : BaseSolutionFinderParams
+        internal static void ProcessStandardParametersForConstructor<T>(this T solutionFinderParams) where T : BaseSolutionFinderParams
         {
             if (solutionFinderParams == null)
             {

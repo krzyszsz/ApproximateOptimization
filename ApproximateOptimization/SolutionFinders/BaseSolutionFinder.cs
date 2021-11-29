@@ -24,7 +24,7 @@ namespace ApproximateOptimization
 
         public BaseSolutionFinder(T solutionFinderParams)
         {
-            solutionFinderParams.ProcessStandarParametersForConstructor();
+            solutionFinderParams.ProcessStandardParametersForConstructor();
             problemParameters = solutionFinderParams;
             BestSolutionSoFar = new double[problemParameters.dimension];
             currentSolution = new double[problemParameters.dimension];
@@ -48,7 +48,7 @@ namespace ApproximateOptimization
             var sw = new Stopwatch();
             sw.Start();
             while (
-                (problemParameters.maxIterations > 0 && iterations < problemParameters.maxIterations) || 
+                (problemParameters.maxSimulatedAnnealingIterations > 0 && iterations < problemParameters.maxSimulatedAnnealingIterations) || 
                 (problemParameters.timeLimit != default && sw.Elapsed < problemParameters.timeLimit))
             {
                 iterations++;

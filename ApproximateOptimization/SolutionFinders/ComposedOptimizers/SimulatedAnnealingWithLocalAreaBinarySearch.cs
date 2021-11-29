@@ -25,7 +25,7 @@ namespace ApproximateOptimization
                     getValue = searchParams.getValue,
                     iterationCount = searchParams.maxIterationsGradientSearch,
                     jumpLengthIterations = searchParams.maxIterationsGradientJumps,
-                    maxIterations = searchParams.maxIterations,
+                    maxSimulatedAnnealingIterations = searchParams.maxSimulatedAnnealingIterations,
                     solutionRange = searchParams.solutionRange,
                     timeLimit = searchParams.timeLimit,
                 };
@@ -39,7 +39,7 @@ namespace ApproximateOptimization
                 {
                     dimension = searchParams.dimension,
                     getValue = searchParams.getValue,
-                    maxIterations = searchParams.maxIterations,
+                    maxSimulatedAnnealingIterations = searchParams.maxSimulatedAnnealingIterations,
                     maxBinarySearchIterations = searchParams.binarySearchIterationCount,
                     iterationsPerDimension = searchParams.binarySearchIterationsPerDimension,
                     solutionRange = searchParams.solutionRange,
