@@ -18,12 +18,25 @@ namespace ApproximateOptimization
     /// </summary>
     public class LocalAreaBinarySearch<T> : BaseSolutionFinder<T> where T : LocalAreaBinarySearchParams
     {
+        private ExternallyInjectedOptimizerState externalState;
+
         public LocalAreaBinarySearch(T searchParams)
             : base(searchParams)
-        { }
+        {
+            externalState = ((IExternalOptimazerAware)problemParameters)?.externalOptimizerState;
+            if (externalState != null)
+            {
+                BestSolutionSoFar = externalState.BestSolutionSoFar;
+                currentSolution = externalState.CurrentSolution;
+            }
+        }
 
         protected override void NextSolution()
         {
+            if (externalState != null)
+            {
+                SolutionValue = externalState.SolutionValue;
+            }
             if (isSelfContained)
             {
                 Array.Copy(BestSolutionSoFar, currentSolution, problemParameters.dimension);
@@ -33,10 +46,7 @@ namespace ApproximateOptimization
             {
                 OptimizeInSingleDimension(i);
             }
-            if (isSelfContained)
-            {
-                UpdateBestSolution();
-            }
+            UpdateBestSolution();
         }
 
         private double GetValueWithDimensionReplaced(int dimension, double value)

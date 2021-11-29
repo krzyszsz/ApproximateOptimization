@@ -15,29 +15,34 @@ namespace ApproximateOptimization
         const double delta = 0.00001; // Any number below 0.5 could work?
         private double[] direction;
         private double diagonalLength;
+        private ExternallyInjectedOptimizerState externalState;
 
         public GradientAscentOptimizer(T searchParams)
             :base(searchParams)
         {
             direction = new double[searchParams.dimension];
+            externalState = ((IExternalOptimazerAware)problemParameters)?.externalOptimizerState;
+            if (externalState != null)
+            {
+                BestSolutionSoFar = externalState.BestSolutionSoFar;
+                currentSolution = externalState.CurrentSolution;
+            }
         }
 
         protected override void NextSolution()
         {
-            if (isSelfContained)
+            if (externalState != null)
             {
-                Array.Copy(BestSolutionSoFar, currentSolution, problemParameters.dimension);
+                SolutionValue = externalState.SolutionValue;
             }
+            Array.Copy(BestSolutionSoFar, currentSolution, problemParameters.dimension);
             for (int i = 0; i < problemParameters.iterationCount; i++)
             {
                 var smallIncrement = problemParameters.MaxJump * delta;
                 FindDirection(smallIncrement);
                 FindJumpLength();
             }
-            if (isSelfContained)
-            {
-                UpdateBestSolution();
-            }
+            UpdateBestSolution();
         }
 
         private void ApplyJump(double jumpLength)

@@ -57,9 +57,6 @@ namespace ApproximateOptimization
             {
                 BestSolutionSoFar = BestSolutionSoFar,
                 CurrentSolution = currentSolution,
-                Dimension = problemParameters.dimension,
-                ScoreFunction = problemParameters.getValue,
-                SolutionRange = problemParameters.solutionRange,
             };
         }
 
@@ -89,7 +86,7 @@ namespace ApproximateOptimization
                 externalStateAware.SolutionValue = SolutionValue;
                 externalStateAware.RequestNextSolution();
             }
-            UpdateBestSolution(); // TODO: Every next solution should call this so we should not need it here???
+            // UpdateBestSolution(); // Every wrapped optimizer calls it, so it's not needed here
         }
     }
 }
