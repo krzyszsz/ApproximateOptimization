@@ -5,9 +5,12 @@ namespace ApproximateOptimization.Tests
 {
     public class GradientAscentOptmizerTests
     {
-        private GradientAscentOptimizer GetSut()
+        private GradientAscentOptimizer GetSut(Func<double[], double> func)
         {
-            return new GradientAscentOptimizer();
+            return new GradientAscentOptimizer(new SimulatedAnnealingParams
+            {
+
+            });
         }
 
         [Test]

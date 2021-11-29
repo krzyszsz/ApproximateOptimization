@@ -5,9 +5,12 @@ namespace ApproximateOptimization.Tests
 {
     public class SimulatedAnnealingWithLocalAreaBinarySearchTests
     {
-        private SimulatedAnnealingWithLocalAreaBinarySearch GetSut()
+        private SimulatedAnnealingWithLocalAreaBinarySearch GetSut(Func<double[], double> func)
         {
-            return new SimulatedAnnealingWithLocalAreaBinarySearch();
+            return new SimulatedAnnealingWithLocalAreaBinarySearch(new SimulatedAnnealingParams
+            {
+
+            });
         }
 
         [Test]

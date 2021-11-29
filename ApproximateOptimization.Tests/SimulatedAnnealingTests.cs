@@ -5,6 +5,14 @@ namespace ApproximateOptimization.Tests
 {
     public class SimulatedAnnealingTests
     {
+        private SimulatedAnnealing GetSut(Func<double[], double> func)
+        {
+            return new SimulatedAnnealing(new SimulatedAnnealingParams
+            {
+
+            });
+        }
+
         [Test]
         public void SaFindsGoodSolutionForLinearFunctionGrowingInBothDimentions()
         {

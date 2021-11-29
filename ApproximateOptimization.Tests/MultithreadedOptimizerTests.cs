@@ -5,7 +5,7 @@ namespace ApproximateOptimization.Tests
 {
     public class MultithreadedOptmizerTests
     {
-        private MultithreadedOptimizer GetSut()
+        private MultithreadedOptimizer GetSut(Func<double[], double> func)
         {
             return new MultithreadedOptimizer((threadId) => new SimulatedAnnealing(0.99, threadId));
         }

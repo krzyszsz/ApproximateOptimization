@@ -5,7 +5,7 @@ namespace ApproximateOptimization.Tests
 {
     public class LocalAreaBinarySearchTests
     {
-        private LocalAreaBinarySearch GetSut()
+        private LocalAreaBinarySearch GetSut(Func<double[], double> func)
         {
             return new LocalAreaBinarySearch();
         }
