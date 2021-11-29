@@ -5,18 +5,24 @@ namespace ApproximateOptimization.Tests
 {
     public class AutoTuningTests
     {
-        private AutoTuningFinder GetSut()
+        private ConcreteAutoTuningFinder GetSut(Func<double[], double> scoreFunc)
         {
-            return new AutoTuningFinder(() => new SimulatedAnnealing(0.99), 2);
+            return OptimizerFactory.GetAutoSizingCompositeOptmizer(
+                new SimulatedAnnealingWithLocalAreaBinarySearchParams
+                {
+                    getValue = scoreFunc,
+                    dimension = 2,
+                    maxSimulatedAnnealingIterations = 100,
+                });
         }
 
         [Test]
         public void FindsGoodSolutionForLinearFunctionGrowingInBothDimentions()
         {
             Func<double[], double> func = (double[] vector) => vector[0] + vector[1];
-            var sut = GetSut();
+            var sut = GetSut(func);
 
-            sut.FindMaximum(2, func, default(TimeSpan), 100);
+            sut.FindMaximum();
 
             Assert.That(sut.BestSolutionSoFar.Length, Is.EqualTo(2));
             Assert.That(sut.BestSolutionSoFar[0], Is.GreaterThan(115));
@@ -28,9 +34,9 @@ namespace ApproximateOptimization.Tests
         public void FindsGoodSolutionForLinearFuncDecreasingInBothDimensions()
         {
             Func<double[], double> func = (double[] vector) => -vector[0] - vector[1];
-            var sut = GetSut();
+            var sut = GetSut(func);
 
-            sut.FindMaximum(2, func, default(TimeSpan), 100);
+            sut.FindMaximum();
 
             Assert.That(sut.BestSolutionSoFar.Length, Is.EqualTo(2));
             Assert.That(sut.BestSolutionSoFar[0], Is.LessThanOrEqualTo(-115));
@@ -43,12 +49,12 @@ namespace ApproximateOptimization.Tests
         {
             Func<double[], double> func = (double[] vector) =>
                 Math.Sin(vector[0] * (2 * Math.PI)) + Math.Cos((vector[1] - 0.4) * (2 * Math.PI));
-            var sut = GetSut();
+            var sut = GetSut(func);
             double expectedX = 0.25;
             double expectedY = 0.4;
             double expectedBestValue = 2;
 
-            sut.FindMaximum(2, func, default(TimeSpan), 1000);
+            sut.FindMaximum();
 
             Assert.That(sut.BestSolutionSoFar.Length, Is.EqualTo(2));
             Assert.That(sut.SolutionFound, Is.EqualTo(true));
@@ -61,12 +67,12 @@ namespace ApproximateOptimization.Tests
         {
             Func<double[], double> func = (double[] vector) =>
                 Math.Sin(vector[0] * (2 * Math.PI) / 5) + Math.Cos((vector[1] / 6 - 0.4) * (2 * Math.PI));
-            var sut = GetSut();
+            var sut = GetSut(func);
             double expectedX = 0.25 * 5;
             double expectedY = 0.4 * 6;
             double expectedBestValue = 2;
 
-            sut.FindMaximum(2, func, default(TimeSpan), 1000);
+            sut.FindMaximum();
 
             Assert.That(sut.BestSolutionSoFar.Length, Is.EqualTo(2));
             Assert.That(sut.SolutionFound, Is.EqualTo(true));
