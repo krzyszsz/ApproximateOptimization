@@ -35,7 +35,6 @@ namespace ApproximateOptimization
             {
                 SolutionValue = externalState.SolutionValue;
             }
-            Array.Copy(BestSolutionSoFar, currentSolution, problemParameters.dimension);
             for (int i = 0; i < problemParameters.iterationCount; i++)
             {
                 var smallIncrement = problemParameters.MaxJump * delta;
