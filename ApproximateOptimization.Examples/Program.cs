@@ -48,7 +48,7 @@ namespace ApproximateOptimizationExamples
             // Below: We need to flip the sign of the function to minimize it rather than maximize it.
             var minusErrorFunc = (double[] coefficients) => -errorFunction(coefficients);
 
-            var optimizer = OptimizerFactory.GetCompositeOptiizer(
+            var optimizer = OptimizerFactory.GetAutoSizingCompositeOptmizer(
                 new SimulatedAnnealingWithLocalAreaBinarySearchParams
                 {
                     getValue = minusErrorFunc,
