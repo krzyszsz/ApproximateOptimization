@@ -42,13 +42,13 @@ namespace ApproximateOptimization
                         var rangeWidth = solutionRange[i][1] - solutionRange[i][0];
                         if (solutionFinder.BestSolutionSoFar[i] - solutionRange[i][0] < 0.01 * rangeWidth)
                         {
-                            solutionRange[i][1] = solutionRange[i][0] + rangeWidth * 0.5;
-                            solutionRange[i][0] -= rangeWidth * 10;
+                            solutionRange[i][0] = solutionRange[i][0] - rangeWidth * 1.5;
+                            solutionRange[i][1] = solutionRange[i][1] - rangeWidth * 0.5;
                             requiresRecalculation = true;
                         } else if (solutionRange[i][1] - solutionFinder.BestSolutionSoFar[i] < 0.01 * rangeWidth)
                         {
-                            solutionRange[i][0] = solutionRange[i][1] - rangeWidth * 0.5;
-                            solutionRange[i][1] += rangeWidth * 10;
+                            solutionRange[i][0] = solutionRange[i][0] + rangeWidth * 0.5;
+                            solutionRange[i][1] = solutionRange[i][1] + rangeWidth * 1.5;
                             requiresRecalculation = true;
                         }
                     }
