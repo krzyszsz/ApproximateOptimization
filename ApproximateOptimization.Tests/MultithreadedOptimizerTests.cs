@@ -16,7 +16,7 @@ namespace ApproximateOptimization.Tests
                             getValue = func,
                             dimension = 2,
                             maxIterations = 100,
-                        })
+                        }),
                 }
                 );
         }

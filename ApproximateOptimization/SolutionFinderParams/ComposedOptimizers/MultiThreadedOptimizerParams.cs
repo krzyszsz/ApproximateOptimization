@@ -4,7 +4,6 @@ namespace ApproximateOptimization
 {
     public class MultiThreadedOptimizerParams<T> where T: new()
     {
-        public T actualOptimizerParams { get; set; }
         public Func<int, ISolutionFinder<T>> createSolutionFinder { get; set; }
         public int threadCount { get; set; } = 8;
         public ILogger logger { get; set; } = ThreadSafeConsoleLogger.Instance;
@@ -14,10 +13,6 @@ namespace ApproximateOptimization
             if (createSolutionFinder == null)
             {
                 throw new ArgumentException("Missing createSolutionFinder argument.");
-            }
-            if (actualOptimizerParams == null)
-            {
-                throw new ArgumentException("Missing actualOptimizerParams argument.");
             }
             if (threadCount < 1)
             {

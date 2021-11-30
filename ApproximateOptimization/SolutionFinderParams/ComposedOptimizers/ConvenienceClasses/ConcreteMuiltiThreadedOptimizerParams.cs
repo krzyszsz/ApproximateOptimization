@@ -7,8 +7,7 @@
     {
         public ConcreteMuiltiThreadedOptimizerParams(SimulatedAnnealingWithLocalAreaBinarySearchParams problemParameters)
         {
-            createSolutionFinder = (int threadNumber) => new SimulatedAnnealingWithLocalAreaBinarySearch<SimulatedAnnealingWithLocalAreaBinarySearchParams>(actualOptimizerParams);
-            actualOptimizerParams = problemParameters;
+            createSolutionFinder = (int threadNumber) => new SimulatedAnnealingWithLocalAreaBinarySearch<SimulatedAnnealingWithLocalAreaBinarySearchParams>(problemParameters);
         }
     }
 }
