@@ -1,3 +1,11 @@
+# This is still work in progress! Please do not use at the moment. #
+
+
+
+
+
+
+
 # Approximate Optimization / Generic Problem Solver
 This optimizer / solver can find solutions for problems where you can express the solution as an array of numbers and you can provide a function that tells the solver how good any particular array of numbers is. It rarely finds accurate solutions but for many problems they are "accurate enough".
 
