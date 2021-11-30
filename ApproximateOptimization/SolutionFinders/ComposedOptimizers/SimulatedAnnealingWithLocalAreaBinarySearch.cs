@@ -35,7 +35,7 @@ namespace ApproximateOptimization
         {
             return new ExternallyInjectedOptimizerState
             {
-                BestSolutionSoFar = BestSolutionSoFar,
+                BestSolutionSoFar = new double[problemParameters.dimension],
                 CurrentSolution = currentSolution,
                 CurrentSolutionAtStart = new double[problemParameters.dimension],
             };
@@ -47,6 +47,7 @@ namespace ApproximateOptimization
             var externalStateAware = ((IExternalOptimazerAware)gradientAscentOptimizerParams).externalOptimizerState;
             externalStateAware.SolutionValue = currentValue;
             Array.Copy(currentSolution, externalStateAware.CurrentSolutionAtStart, problemParameters.dimension);
+            Array.Copy(currentSolution, externalStateAware.BestSolutionSoFar, problemParameters.dimension);
             externalStateAware.RequestNextSolution();
             if (externalStateAware.SolutionValue > SolutionValue)
             {

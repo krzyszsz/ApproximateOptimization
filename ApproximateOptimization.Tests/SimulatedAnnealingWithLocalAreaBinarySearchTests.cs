@@ -11,7 +11,7 @@ namespace ApproximateOptimization.Tests
             {
                 getValue = func,
                 dimension = 2,
-                maxIterations = 30,
+                maxIterations = 3,
                 temperatureMultiplier = 0.9
             });
         }

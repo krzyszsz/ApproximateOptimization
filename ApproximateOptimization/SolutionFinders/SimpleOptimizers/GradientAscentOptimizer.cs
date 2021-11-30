@@ -79,13 +79,15 @@ namespace ApproximateOptimization
         {
             var a = currentSolution[i];
             var b = a + smallIncrement;
+            var reversingMultiplier = 1.0;
             if (b > problemParameters.solutionRange[i][1])
             {
                 var tmp = a;
                 a = b;
                 b = tmp;
+                reversingMultiplier = -1;
             }
-            direction[i] = (GetValueForReplacedDimension(i, b) - GetValueForReplacedDimension(i, a)) / (b - a);
+            direction[i] = reversingMultiplier * (GetValueForReplacedDimension(i, b) - GetValueForReplacedDimension(i, a)) / (b - a);
         }
 
         private double GetVectorLength(double[] vector)
