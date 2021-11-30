@@ -48,10 +48,10 @@ namespace ApproximateOptimization.Tests
         public void FindsGoodSolutionForSinCos()
         {
             Func<double[], double> func = (double[] vector) =>
-                Math.Sin(vector[0] * (2 * Math.PI)) + Math.Cos((vector[1] - 0.4) * (2 * Math.PI));
+                Math.Sin(vector[0]/100 * (2 * Math.PI)) + Math.Cos((vector[1]/123 - 0.4) * (2 * Math.PI));
             var sut = GetSut(func);
-            double expectedX = 0.25;
-            double expectedY = 0.4;
+            double expectedX = 0.25*100;
+            double expectedY = 0.4*123;
             double expectedBestValue = 2;
 
             sut.FindMaximum();

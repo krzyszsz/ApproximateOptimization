@@ -33,11 +33,16 @@
             return new ConcreteAutoTuningFinder(new ConcreteAutoTuningParams
             {
                 maxAttempts = maxReadjustments,
-                solutionFinderFactoryMethod = () => new ConcreteCompositeOptimizer(
+                dimension = optimizerParams.dimension,
+                solutionFinderFactoryMethod = (solutionRange) =>
+                {
+                    optimizerParams.solutionRange = solutionRange;
+                    return new ConcreteCompositeOptimizer(
                     new ConcreteMuiltiThreadedOptimizerParams(optimizerParams)
                     {
-                        threadCount = threads
-                    })
+                        threadCount = threads,
+                    });
+                }
             });
         }
     }

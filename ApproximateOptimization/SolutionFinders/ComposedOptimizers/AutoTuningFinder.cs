@@ -16,7 +16,7 @@ namespace ApproximateOptimization
         public AutoTuningFinder(T problemParameters)
         {
             this.problemParameters = problemParameters;
-            solutionFinder = problemParameters.solutionFinderFactoryMethod();
+            solutionFinder = problemParameters.solutionFinderFactoryMethod(problemParameters.solutionRange);
         }
 
         public double[] BestSolutionSoFar => solutionFinder.BestSolutionSoFar;
@@ -32,7 +32,7 @@ namespace ApproximateOptimization
             var attempts = problemParameters.maxAttempts;
             do
             {
-                solutionFinder = problemParameters.solutionFinderFactoryMethod();
+                solutionFinder = problemParameters.solutionFinderFactoryMethod(solutionRange);
                 solutionFinder.FindMaximum();
                 if (solutionFinder.SolutionFound)
                 {
