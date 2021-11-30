@@ -13,7 +13,7 @@ namespace ApproximateOptimization
             random = new Random(simulatedAnnealingParams.randomSeed);
         }
 
-        protected override void NextSolution()
+        protected override double NextSolution()
         {
             for (int i=0; i< problemParameters.dimension; i++)
             {
@@ -23,7 +23,7 @@ namespace ApproximateOptimization
                     Math.Min(problemParameters.solutionRange[i][1], currentSolution[i]));
             }
             temperature *= problemParameters.temperatureMultiplier;
-            UpdateBestSolution();
+            return GetCurrentValueAndUpdateBest();
         }
     }
 }

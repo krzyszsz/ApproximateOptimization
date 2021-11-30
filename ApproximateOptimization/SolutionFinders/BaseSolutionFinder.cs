@@ -20,7 +20,7 @@ namespace ApproximateOptimization
         /// Implementations of this method should update "currentSolution" and not change "BestSolutionSoFar"
         /// but they can read "BestSolutionSoFar" to create next iteration based on it.
         /// </summary>
-        protected abstract void NextSolution();
+        protected abstract double NextSolution();
 
         public BaseSolutionFinder(T solutionFinderParams)
         {
@@ -55,11 +55,10 @@ namespace ApproximateOptimization
                 NextSolution();
             }
             sw.Stop();
-            SolutionValue = SolutionValue;
             SolutionFound = true;
         }
 
-        protected void UpdateBestSolution()
+        protected double GetCurrentValueAndUpdateBest()
         {
             var value = problemParameters.getValue(currentSolution);
             if (value > SolutionValue)
@@ -67,6 +66,7 @@ namespace ApproximateOptimization
                 Array.Copy(currentSolution, BestSolutionSoFar, problemParameters.dimension);
                 SolutionValue = value;
             }
+            return value;
         }
 
         protected void SetInitialSolution()

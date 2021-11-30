@@ -9,46 +9,26 @@ namespace ApproximateOptimization
     /// </summary>
     public class SimulatedAnnealingWithLocalAreaBinarySearch<T> : SimulatedAnnealing<T> where T: SimulatedAnnealingWithLocalAreaBinarySearchParams
     {
-        private LocalAreaBinarySearchParams localAreaBinarySearchParams;
-        private LocalAreaBinarySearch<LocalAreaBinarySearchParams> localAreaBinarySearch;
         private GradientAscentOptimizerParams gradientAscentOptimizerParams;
         private GradientAscentOptimizer<GradientAscentOptimizerParams> gradientAscentOptimizer;
 
         public SimulatedAnnealingWithLocalAreaBinarySearch(T searchParams)
             : base(searchParams)
         {
-            if (searchParams.gradientOptimizerEnabled)
+            gradientAscentOptimizerParams = new GradientAscentOptimizerParams
             {
-                gradientAscentOptimizerParams = new GradientAscentOptimizerParams
-                {
-                    dimension = searchParams.dimension,
-                    getValue = searchParams.getValue,
-                    iterationCount = searchParams.maxIterationsGradientSearch,
-                    jumpLengthIterations = searchParams.maxIterationsGradientJumps,
-                    maxIterations = searchParams.maxIterations,
-                    solutionRange = searchParams.solutionRange,
-                    timeLimit = searchParams.timeLimit,
-                };
-                ((IExternalOptimazerAware)gradientAscentOptimizerParams).externalOptimizerState = GetExternallyInjectedOptimizerState();
-                gradientAscentOptimizer = new GradientAscentOptimizer<GradientAscentOptimizerParams>(
-                    gradientAscentOptimizerParams);
-            }
-            if (searchParams.localBinarySearchEnabled)
-            {
-                localAreaBinarySearchParams = new LocalAreaBinarySearchParams
-                {
-                    dimension = searchParams.dimension,
-                    getValue = searchParams.getValue,
-                    maxIterations = searchParams.maxIterations,
-                    maxBinarySearchIterations = searchParams.binarySearchIterationCount,
-                    iterationsPerDimension = searchParams.binarySearchIterationsPerDimension,
-                    solutionRange = searchParams.solutionRange,
-                    timeLimit = searchParams.timeLimit,
-                };
-                ((IExternalOptimazerAware)localAreaBinarySearchParams).externalOptimizerState = GetExternallyInjectedOptimizerState();
-                localAreaBinarySearch = new LocalAreaBinarySearch<LocalAreaBinarySearchParams>(
-                    localAreaBinarySearchParams);
-            }
+                dimension = searchParams.dimension,
+                getValue = searchParams.getValue,
+                iterationCount = searchParams.maxIterationsGradientSearch,
+                jumpLengthIterations = searchParams.maxIterationsGradientJumps,
+                maxIterations = searchParams.maxIterations,
+                solutionRange = searchParams.solutionRange,
+                timeLimit = searchParams.timeLimit,
+            };
+            ((IExternalOptimazerAware)gradientAscentOptimizerParams).externalOptimizerState = GetExternallyInjectedOptimizerState();
+            gradientAscentOptimizer = new GradientAscentOptimizer<GradientAscentOptimizerParams>(
+                gradientAscentOptimizerParams);
+            gradientAscentOptimizerParams.MaxJump = problemParameters.localAreaMultiplier * temperature;
         }
 
         private ExternallyInjectedOptimizerState GetExternallyInjectedOptimizerState()
@@ -57,36 +37,25 @@ namespace ApproximateOptimization
             {
                 BestSolutionSoFar = BestSolutionSoFar,
                 CurrentSolution = currentSolution,
+                CurrentSolutionAtStart = new double[problemParameters.dimension],
             };
         }
 
-        protected override void NextSolution()
+        protected override double NextSolution()
         {
-            base.NextSolution();
-
-            var currentValue = problemParameters.getValue(currentSolution);
-            if (currentValue > SolutionValue)
+            var currentValue = base.NextSolution();
+            var externalStateAware = ((IExternalOptimazerAware)gradientAscentOptimizerParams).externalOptimizerState;
+            externalStateAware.SolutionValue = currentValue;
+            Array.Copy(currentSolution, externalStateAware.CurrentSolutionAtStart, problemParameters.dimension);
+            externalStateAware.RequestNextSolution();
+            if (externalStateAware.SolutionValue > SolutionValue)
             {
-                Array.Copy(currentSolution, BestSolutionSoFar, problemParameters.dimension);
-                SolutionValue = currentValue;
+                Array.Copy(externalStateAware.BestSolutionSoFar, BestSolutionSoFar, problemParameters.dimension);
+                // Array.Copy(externalStateAware.BestSolutionSoFar, currentSolution, problemParameters.dimension);
+                SolutionValue = externalStateAware.SolutionValue;
             }
-
-            if (problemParameters.gradientOptimizerEnabled)
-            {
-                gradientAscentOptimizerParams.MaxJump = problemParameters.localAreaMultiplier * temperature;
-                var externalStateAware = ((IExternalOptimazerAware)gradientAscentOptimizerParams).externalOptimizerState;
-                externalStateAware.SolutionValue = SolutionValue;
-                externalStateAware.RequestNextSolution();
-            }
-
-            if (problemParameters.localBinarySearchEnabled)
-            {
-                localAreaBinarySearchParams.localArea = problemParameters.localAreaMultiplier * temperature;
-                var externalStateAware = ((IExternalOptimazerAware)localAreaBinarySearchParams).externalOptimizerState;
-                externalStateAware.SolutionValue = SolutionValue;
-                externalStateAware.RequestNextSolution();
-            }
-            // UpdateBestSolution(); // Every wrapped optimizer calls it, so it's not needed here
+            gradientAscentOptimizerParams.MaxJump = problemParameters.localAreaMultiplier * temperature;
+            return currentValue;
         }
     }
 }

@@ -6,7 +6,8 @@ namespace ApproximateOptimization
     {
         public double[] CurrentSolution { get; set; }
         public double[] BestSolutionSoFar { get; set; }
+        public double[] CurrentSolutionAtStart { get; set; }
         public double SolutionValue { get; set; }
-        public Action RequestNextSolution { get; set; }
+        public Func<double> RequestNextSolution { get; set; }
     }
 }

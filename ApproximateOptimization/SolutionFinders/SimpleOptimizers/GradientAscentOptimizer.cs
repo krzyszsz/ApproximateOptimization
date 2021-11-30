@@ -24,24 +24,30 @@ namespace ApproximateOptimization
             externalState = ((IExternalOptimazerAware)problemParameters)?.externalOptimizerState;
             if (externalState != null)
             {
-                BestSolutionSoFar = externalState.BestSolutionSoFar;
+                BestSolutionSoFar = externalState.CurrentSolutionAtStart;
                 currentSolution = externalState.CurrentSolution;
             }
         }
 
-        protected override void NextSolution()
+        protected override double NextSolution()
         {
             if (externalState != null)
             {
                 SolutionValue = externalState.SolutionValue;
             }
+            var smallIncrement = problemParameters.MaxJump * delta;
             for (int i = 0; i < problemParameters.iterationCount; i++)
             {
-                var smallIncrement = problemParameters.MaxJump * delta;
                 FindDirection(smallIncrement);
                 FindJumpLength();
             }
-            UpdateBestSolution();
+            var currentValue = GetCurrentValueAndUpdateBest();
+            if (externalState != null)
+            {
+                externalState.SolutionValue = currentValue;
+                Array.Copy(BestSolutionSoFar, externalState.BestSolutionSoFar, problemParameters.dimension);
+            }
+            return currentValue;
         }
 
         private void ApplyJump(double jumpLength)
@@ -148,19 +154,15 @@ namespace ApproximateOptimization
                         valueForBestJumpLength = justBelowMidValue;
                     }
                 }
-                else if (change < 0)
-                {
-                    rangeEnd = justAboveMid;
-                }
                 else
                 {
-                    break;
+                    rangeEnd = justAboveMid;
                 }
             }
             if (valueForBestJumpLength > SolutionValue)
             {
                 ApplyJump(bestJumpLength);
-                UpdateBestSolution();
+                GetCurrentValueAndUpdateBest();
             }
         }
     }

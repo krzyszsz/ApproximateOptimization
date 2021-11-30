@@ -31,22 +31,22 @@ namespace ApproximateOptimization
             }
         }
 
-        protected override void NextSolution()
+        protected override double NextSolution()
         {
             if (externalState != null)
             {
                 SolutionValue = externalState.SolutionValue;
             }
-            if (isSelfContained)
-            {
-                Array.Copy(BestSolutionSoFar, currentSolution, problemParameters.dimension);
-            }
+            //if (isSelfContained)
+            //{
+            //    Array.Copy(BestSolutionSoFar, currentSolution, problemParameters.dimension);
+            //}
             for (int x = 0; x < problemParameters.maxBinarySearchIterations; x++)
                 for (int i = 0; i < problemParameters.dimension; i++)
             {
                 OptimizeInSingleDimension(i);
             }
-            UpdateBestSolution();
+            return GetCurrentValueAndUpdateBest();
         }
 
         private double GetValueWithDimensionReplaced(int dimension, double value)

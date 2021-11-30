@@ -4,8 +4,6 @@ namespace ApproximateOptimization
 {
     public class SimulatedAnnealingWithLocalAreaBinarySearchParams : SimulatedAnnealingParams
     {
-        public bool localBinarySearchEnabled { get; set; } = false;
-        public bool gradientOptimizerEnabled { get; set; } = true;
         public double localAreaMultiplier { get; set; } = 0.2;
         public int binarySearchIterationCount { get; set; } = 3;
         public int binarySearchIterationsPerDimension { get; set; } = 10;
@@ -15,10 +13,6 @@ namespace ApproximateOptimization
         public override void Validate()
         {
             base.Validate();
-            if (!localBinarySearchEnabled && !gradientOptimizerEnabled)
-            {
-                throw new ArgumentException("Both types of optimizers are disabled: gradientOptimizerEnabled && localBinarySearchEnabled. Please use standard SimulatedAnnealing instead.");
-            }
             if (localAreaMultiplier <= 0 || localAreaMultiplier >= 1)
             {
                 throw new ArgumentException("localAreaMultiplier multiplier should be a number greater than 0 and less than 1.");
