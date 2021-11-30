@@ -7,7 +7,7 @@ namespace ApproximateOptimization.Tests
     {
         private ConcreteAutoTuningFinder GetSut(Func<double[], double> scoreFunc)
         {
-            return OptimizerFactory.GetAutoSizingCompositeOptmizer(
+            return OptimizerFactory.GetAutoScaledCompositeOptmizer(
                 new SimulatedAnnealingWithLocalAreaBinarySearchParams
                 {
                     getValue = scoreFunc,

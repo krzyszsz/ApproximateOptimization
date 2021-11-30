@@ -24,7 +24,7 @@
         /// It runs the "internal" optimizer multiple times until results for all dimensions fall inside
         /// of the search range (or the number of iterations exceeds the configured maximum).
         /// </summary>
-        public static ConcreteAutoTuningFinder GetAutoSizingCompositeOptmizer(
+        public static ConcreteAutoTuningFinder GetAutoScaledCompositeOptmizer(
             SimulatedAnnealingWithLocalAreaBinarySearchParams optimizerParams,
             int maxReadjustments = 50,
             int threads = 8

@@ -48,7 +48,7 @@ namespace ApproximateOptimizationExamples
             // Below: We need to flip the sign of the function to minimize it rather than maximize it.
             var minusErrorFunc = (double[] coefficients) => -errorFunction(coefficients);
 
-            var optimizer = OptimizerFactory.GetAutoSizingCompositeOptmizer(
+            var optimizer = OptimizerFactory.GetAutoScaledCompositeOptmizer(
                 new SimulatedAnnealingWithLocalAreaBinarySearchParams
                 {
                     getValue = minusErrorFunc,
@@ -87,7 +87,7 @@ namespace ApproximateOptimizationExamples
                 .Sum(sides => Math.Abs(sides[0](variables) - sides[1](variables)));
             // Below: We need to flip the sign of the error function to minimize it rather than maximize it.
             var minusErrorFunc = (double[] variables) => -errorFunction(variables);
-            var optimizer = OptimizerFactory.GetAutoSizingCompositeOptmizer(
+            var optimizer = OptimizerFactory.GetAutoScaledCompositeOptmizer(
                 new SimulatedAnnealingWithLocalAreaBinarySearchParams
                 {
                     getValue = minusErrorFunc,
@@ -95,6 +95,7 @@ namespace ApproximateOptimizationExamples
                     maxIterations = 100,
                 }
            );
+            optimizer.FindMaximum();
             Console.WriteLine(optimizer.SolutionFound && optimizer.SolutionValue < 0.1
                 ? $"Equations' solution: x = {optimizer.BestSolutionSoFar[0]:N4} " +
                 $"y = {optimizer.BestSolutionSoFar[1]:N4}"
