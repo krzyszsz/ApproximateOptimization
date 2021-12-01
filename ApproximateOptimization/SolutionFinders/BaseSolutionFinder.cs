@@ -1,15 +1,14 @@
-﻿using System;
+﻿using ApproximateOptimization.Utils;
+using System;
 using System.Diagnostics;
-using System.Linq;
 
 namespace ApproximateOptimization
 {
-    public abstract class BaseSolutionFinder : ISolutionFinder
+    public abstract class BaseSolutionFinder<T> : ISolutionFinder<T> where T : BaseSolutionFinderParams
     {
+        protected bool isSelfContained;
         protected double[] currentSolution;
-        protected int dimension;
-        protected Func<double[], double> getValue;
-        protected double[][] solutionRange;
+        protected T problemParameters;
 
         public double[] BestSolutionSoFar { get; protected set; }
 
@@ -17,83 +16,65 @@ namespace ApproximateOptimization
 
         public bool SolutionFound { get; private set; }
 
-        protected virtual void SetInitialSolution()
-        {
-            currentSolution = new double[dimension];
-        }
-
         /// <summary>
         /// Implementations of this method should update "currentSolution" and not change "BestSolutionSoFar"
         /// but they can read "BestSolutionSoFar" to create next iteration based on it.
         /// </summary>
-        protected abstract void NextSolution();
+        protected abstract double NextSolution();
 
-        protected virtual void OnInitialized()
+        public BaseSolutionFinder(T solutionFinderParams)
         {
+            solutionFinderParams.ProcessStandardParametersForConstructor();
+            problemParameters = solutionFinderParams;
+            BestSolutionSoFar = new double[problemParameters.dimension];
+            currentSolution = new double[problemParameters.dimension];
+            var paramsFromExternalOptimizer = problemParameters as IExternalOptimazerAware;
+            if (paramsFromExternalOptimizer?.externalOptimizerState != null)
+            {
+                paramsFromExternalOptimizer.externalOptimizerState.RequestNextSolution = NextSolution;
+            }
+            else
+            {
+                isSelfContained = true;
+                SetInitialSolution();
+            }
         }
 
-        public void FindMaximum(
-            int dimension,
-            Func<double[], double> getValue,
-            TimeSpan timeLimit = default,
-            long maxIterations=-1,
-            double[][] solutionRange=null)
+        public void FindMaximum()
         {
-            ValidateArguments(dimension, timeLimit, maxIterations, solutionRange);
-            this.getValue = getValue;
-            this.dimension = dimension;
-            this.solutionRange = solutionRange ?? GetDefaultSolutionRange(dimension);
-            SetInitialSolution();
-            BestSolutionSoFar = new double[dimension];
-            OnInitialized();
-            Array.Copy(currentSolution, BestSolutionSoFar, dimension);
-            SolutionValue = getValue(BestSolutionSoFar);
+            Array.Copy(currentSolution, BestSolutionSoFar, problemParameters.dimension);
+            SolutionValue = problemParameters.getValue(BestSolutionSoFar);
             long iterations = 0;
             var sw = new Stopwatch();
             sw.Start();
-            while ((maxIterations > 0 && iterations < maxIterations) || (timeLimit != default && sw.Elapsed < timeLimit))
+            while (
+                (problemParameters.maxIterations > 0 && iterations < problemParameters.maxIterations) || 
+                (problemParameters.timeLimit != default && sw.Elapsed < problemParameters.timeLimit))
             {
                 iterations++;
                 NextSolution();
-                var value = getValue(currentSolution);
-                if (value > SolutionValue)
-                {
-                    Array.Copy(currentSolution, BestSolutionSoFar, dimension);
-                    SolutionValue = value;
-                }
             }
             sw.Stop();
-            SolutionValue = SolutionValue;
             SolutionFound = true;
         }
 
-        internal static double[][] GetDefaultSolutionRange(int dimension)
+        protected double GetCurrentValueAndUpdateBest()
         {
-            double[][] solutionRange = new double[dimension][];
-            for (int i = 0; i < dimension; i++)
+            var value = problemParameters.getValue(currentSolution);
+            if (value > SolutionValue)
             {
-                solutionRange[i] = new double[2];
-                solutionRange[i][0] = 0;
-                solutionRange[i][1] = 1;
+                Array.Copy(currentSolution, BestSolutionSoFar, problemParameters.dimension);
+                SolutionValue = value;
             }
-            return solutionRange;
+            return value;
         }
 
-        internal static void ValidateArguments(int dimension, TimeSpan timeLimit, long maxIterations, double[][] solutionRange)
+        protected void SetInitialSolution()
         {
-            if (maxIterations == -1 && timeLimit == default(TimeSpan))
+            for (int i = 0; i < problemParameters.dimension; i++)
             {
-                throw new ArgumentException("Missing timeLimit or maxIterations argument. Without them the algorithm would never stop!");
-            }
-            if (solutionRange != null && solutionRange.Length != dimension)
-            {
-                throw new ArgumentException(
-                    $"Incorrect range dimension. Expected: {dimension}x2 but got first dimension: {solutionRange.Length}");
-            }
-            if (solutionRange != null && solutionRange.Any(x => x.Length != 2))
-            {
-                throw new ArgumentException(
-                    $"Incorrect range dimension. Expected: {dimension}x2 but got second dimension: {solutionRange.First(x => x.Length != 2).Length}");
+                var rangeWidth = problemParameters.solutionRange[i][1] - problemParameters.solutionRange[i][0];
+                currentSolution[i] = problemParameters.solutionRange[i][0] + rangeWidth / 2;
             }
         }
     }

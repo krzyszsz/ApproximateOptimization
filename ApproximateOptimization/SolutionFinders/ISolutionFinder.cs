@@ -1,30 +1,27 @@
-﻿using System;
-
-namespace ApproximateOptimization
+﻿namespace ApproximateOptimization
 {
-    public interface ISolutionFinder
+
+    public interface ISolutionFinder<T>
     {
         /// <summary>
-        /// Returns the solution with the best valuation.
-        /// Solution is a vector of dimension given as the first argument where all numbers are in the range 0..1.
+        /// Runs the actual solving algorithm. This may take considerable time.
         /// </summary>
-        /// <param name="dimension">The dimension </param>
-        /// <param name="getValue">A func that for each solution provides number indicating how good the solution is.
-        /// The higher the number, the better the solution.</param>
-        /// <param name="timeLimit">Time limit after which the algorithm will not attempt any next iterations.</param>
-        /// <param name="maxIterations">Algorithm stops after given number of iterations. Argument ignored when negative.</param>
-        /// <param name="solutionRange">Range defined for each dimension. When omtted, all dimensions have assumed range 0..1.</param>
-        void FindMaximum(
-            int dimension,
-            Func<double[], double> getValue,
-            TimeSpan timeLimit = default,
-            long maxIterations=-1,
-            double[][] solutionRange = null);
+        void FindMaximum();
 
+        /// <summary>
+        /// After running the search, the best found solution can be found in this property.
+        /// </summary>
         double[] BestSolutionSoFar { get; }
 
+        /// <summary>
+        /// A score of the best found solution.
+        /// You may need to check this property to establish how good is the solution found in "BestSolutionSoFar".
+        /// </summary>
         double SolutionValue { get; }
 
+        /// <summary>
+        /// A flag indicating if any solution was found (even one with a bad SolutionValue).
+        /// </summary>
         bool SolutionFound { get;  }
     }
 }

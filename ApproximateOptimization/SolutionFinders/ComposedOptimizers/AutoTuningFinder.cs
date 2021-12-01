@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApproximateOptimization.Utils;
+using System;
 
 namespace ApproximateOptimization
 {
@@ -7,16 +8,15 @@ namespace ApproximateOptimization
     /// It's much slower to use this class because it runs the actual solution finder multiple times.
     /// Also: it does not narrow the initial range, it can only widen it.
     /// </summary>
-    public class AutoTuningFinder : ISolutionFinder
+    public class AutoTuningFinder<T, P> : ISolutionFinder<T> where T: AutoTuningParams<P> where P : BaseSolutionFinderParams
     {
-        private readonly Func<ISolutionFinder> solutionFinderFactoryMethod;
-        private int attempts;
-        private ISolutionFinder solutionFinder;
+        private ISolutionFinder<P> solutionFinder;
+        private T problemParameters;
 
-        public AutoTuningFinder(Func<ISolutionFinder> solutionFinderFactoryMethod, int maxAttempts=50)
+        public AutoTuningFinder(T problemParameters)
         {
-            this.solutionFinderFactoryMethod = solutionFinderFactoryMethod;
-            this.attempts = maxAttempts;
+            this.problemParameters = problemParameters;
+            solutionFinder = problemParameters.solutionFinderFactoryMethod(problemParameters.solutionRange);
         }
 
         public double[] BestSolutionSoFar => solutionFinder.BestSolutionSoFar;
@@ -25,29 +25,30 @@ namespace ApproximateOptimization
 
         public bool SolutionFound => solutionFinder.SolutionFound;
 
-        public void FindMaximum(int dimension, Func<double[], double> getValue, TimeSpan timeLimit = default, long maxIterations = -1, double[][] solutionRange = null)
+        public void FindMaximum()
         {
-            solutionRange = solutionRange ?? BaseSolutionFinder.GetDefaultSolutionRange(dimension);
+            var solutionRange = problemParameters.solutionRange ?? ParametersManagement.GetDefaultSolutionRange(problemParameters.dimension);
             bool requiresRecalculation = false;
+            var attempts = problemParameters.maxAttempts;
             do
             {
-                solutionFinder = solutionFinderFactoryMethod();
-                solutionFinder.FindMaximum(dimension, getValue, timeLimit, maxIterations, solutionRange);
+                solutionFinder = problemParameters.solutionFinderFactoryMethod(solutionRange);
+                solutionFinder.FindMaximum();
                 if (solutionFinder.SolutionFound)
                 {
                     requiresRecalculation = false;
-                    for (var i = 0; i < dimension; i++)
+                    for (var i = 0; i < problemParameters.dimension; i++)
                     {
                         var rangeWidth = solutionRange[i][1] - solutionRange[i][0];
                         if (solutionFinder.BestSolutionSoFar[i] - solutionRange[i][0] < 0.01 * rangeWidth)
                         {
-                            solutionRange[i][1] = solutionRange[i][0] + rangeWidth * 0.5;
-                            solutionRange[i][0] -= rangeWidth * 10;
+                            solutionRange[i][0] = solutionRange[i][0] - rangeWidth * 1.5;
+                            solutionRange[i][1] = solutionRange[i][1] - rangeWidth * 0.5;
                             requiresRecalculation = true;
                         } else if (solutionRange[i][1] - solutionFinder.BestSolutionSoFar[i] < 0.01 * rangeWidth)
                         {
-                            solutionRange[i][0] = solutionRange[i][1] - rangeWidth * 0.5;
-                            solutionRange[i][1] += rangeWidth * 10;
+                            solutionRange[i][0] = solutionRange[i][0] + rangeWidth * 0.5;
+                            solutionRange[i][1] = solutionRange[i][1] + rangeWidth * 1.5;
                             requiresRecalculation = true;
                         }
                     }
