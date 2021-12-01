@@ -2,12 +2,12 @@
 
 namespace ApproximateOptimization
 {
-    public class GradientAscentOptimizerParams : BaseOptimizerParams, IExternalOptimazerAware
+    public class GradientAscentOptimizerParams : BaseOptimizerParams, IExternalOptimizerAware
     {
         public long iterationCount { get; set; } = 20;
         public long jumpLengthIterations { get; set; } = 20;
         public double MaxJump { get; set; } = 1.0;
-        ExternallyInjectedOptimizerState IExternalOptimazerAware.externalOptimizerState { get; set; }
+        ExternallyInjectedOptimizerState IExternalOptimizerAware.externalOptimizerState { get; set; }
 
         public override void Validate()
         {

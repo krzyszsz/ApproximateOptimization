@@ -22,13 +22,13 @@ namespace ApproximateOptimization
         /// </summary>
         protected abstract double NextSolution();
 
-        public BaseOptimizer(T solutionFinderParams)
+        public BaseOptimizer(T optimizerParams)
         {
-            solutionFinderParams.ProcessStandardParametersForConstructor();
-            problemParameters = solutionFinderParams;
+            optimizerParams.ProcessStandardParametersForConstructor();
+            problemParameters = optimizerParams;
             BestSolutionSoFar = new double[problemParameters.dimension];
             currentSolution = new double[problemParameters.dimension];
-            var paramsFromExternalOptimizer = problemParameters as IExternalOptimazerAware;
+            var paramsFromExternalOptimizer = problemParameters as IExternalOptimizerAware;
             if (paramsFromExternalOptimizer?.externalOptimizerState != null)
             {
                 paramsFromExternalOptimizer.externalOptimizerState.RequestNextSolution = NextSolution;

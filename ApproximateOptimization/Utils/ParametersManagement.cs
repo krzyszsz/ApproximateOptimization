@@ -20,17 +20,17 @@ namespace ApproximateOptimization.Utils
             return solutionRange;
         }
 
-        internal static void ProcessStandardParametersForConstructor<T>(this T solutionFinderParams) where T : BaseOptimizerParams
+        internal static void ProcessStandardParametersForConstructor<T>(this T optimizerParams) where T : BaseOptimizerParams
         {
-            if (solutionFinderParams == null)
+            if (optimizerParams == null)
             {
-                throw new ArgumentNullException(nameof(solutionFinderParams));
+                throw new ArgumentNullException(nameof(optimizerParams));
             }
-            if (solutionFinderParams.solutionRange == null)
+            if (optimizerParams.solutionRange == null)
             {
-                solutionFinderParams.solutionRange = GetDefaultSolutionRange(solutionFinderParams.dimension);
+                optimizerParams.solutionRange = GetDefaultSolutionRange(optimizerParams.dimension);
             }
-            solutionFinderParams.Validate();
+            optimizerParams.Validate();
         }
     }
 }

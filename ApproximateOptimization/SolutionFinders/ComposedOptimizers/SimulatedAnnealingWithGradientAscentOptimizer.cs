@@ -3,7 +3,7 @@
 namespace ApproximateOptimization
 {
     /// <summary>
-    /// This combines multiple solution finders to improve results for some problems:
+    /// This combines multiple optimizers to improve results for some problems:
     /// After each iteration of simulated annealing it runs GradientAscentOptimizer
     /// to find local maximum in the area.
     /// </summary>
@@ -25,7 +25,7 @@ namespace ApproximateOptimization
                 solutionRange = searchParams.solutionRange,
                 timeLimit = searchParams.timeLimit,
             };
-            ((IExternalOptimazerAware)gradientAscentOptimizerParams).externalOptimizerState = GetExternallyInjectedOptimizerState();
+            ((IExternalOptimizerAware)gradientAscentOptimizerParams).externalOptimizerState = GetExternallyInjectedOptimizerState();
             gradientAscentOptimizer = new GradientAscentOptimizer<GradientAscentOptimizerParams>(
                 gradientAscentOptimizerParams);
             gradientAscentOptimizerParams.MaxJump = problemParameters.localAreaMultiplier * temperature;
@@ -44,7 +44,7 @@ namespace ApproximateOptimization
         protected override double NextSolution()
         {
             var currentValue = base.NextSolution();
-            var externalStateAware = ((IExternalOptimazerAware)gradientAscentOptimizerParams).externalOptimizerState;
+            var externalStateAware = ((IExternalOptimizerAware)gradientAscentOptimizerParams).externalOptimizerState;
             externalStateAware.SolutionValue = currentValue;
             Array.Copy(currentSolution, externalStateAware.CurrentSolutionAtStart, problemParameters.dimension);
             Array.Copy(currentSolution, externalStateAware.BestSolutionSoFar, problemParameters.dimension);
