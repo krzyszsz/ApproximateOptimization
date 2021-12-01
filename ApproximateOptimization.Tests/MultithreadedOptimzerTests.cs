@@ -3,7 +3,7 @@ using System;
 
 namespace ApproximateOptimization.Tests
 {
-    public class MultithreadedOptmizerTests
+    public class MultithreadedOptimizerTests
     {
         private MultithreadedOptimizer<SimulatedAnnealingOptimizerParams> GetSut(Func<double[], double> func)
         {

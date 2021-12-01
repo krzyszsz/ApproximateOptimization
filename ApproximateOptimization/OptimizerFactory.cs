@@ -12,10 +12,10 @@
         /// <param name="threads">Number of threads to run.</param>
         /// <param name="rangeDiscovery">Range discovery (by default it's disabled).
         /// Please be aware that it may be misleading;
-        /// it's better to give the expected range in the beginning because range discovery is very simpe
-        /// and only widens the range when the maximum is on the end of the range; 
+        /// it's better to give the expected range in the beginning because range discovery is very simple
+        /// and only widens the range when the maximum is found at the end of the range; 
         /// you may accidentally have a local maximum inside of the range and range discovery
-        /// will not trigger range widening).
+        /// will not trigger range widening, potentially missing global maximum).
         /// </param>
         /// <returns>An optimizer employing MultithreadedOptimizer to run SimulatedAnnealingWithGradientAscent</returns>
         public static IOptimizer GetCompositeOptimizer(

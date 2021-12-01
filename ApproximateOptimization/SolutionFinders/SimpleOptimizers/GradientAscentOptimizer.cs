@@ -5,7 +5,7 @@ namespace ApproximateOptimization
 {
     /// <summary>
     /// Runs gradient ascent optimization:
-    /// 1. For current point, it finds gradinet in all dimensions (save it as "direction" vector)
+    /// 1. For current point, it finds gradient in all dimensions (save it as "direction" vector)
     /// 2. Finds the length of the jump along the "direction" using binary search in the range 0..MaxJump
     ///    by attempting "jumpLengthIterations" different lengths.
     /// -> Actions 1&2 are executed "iterationCount" times.
