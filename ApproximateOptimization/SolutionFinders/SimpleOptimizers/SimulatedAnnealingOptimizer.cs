@@ -2,12 +2,12 @@
 
 namespace ApproximateOptimization
 {
-    public class SimulatedAnnealing<T> : BaseSolutionFinder<T> where T : SimulatedAnnealingParams
+    public class SimulatedAnnealingOptimizer<T> : BaseOptimizer<T> where T : SimulatedAnnealingOptimizerParams
     {
         protected double temperature;
         protected readonly Random random;
 
-        public SimulatedAnnealing(T simulatedAnnealingParams)
+        public SimulatedAnnealingOptimizer(T simulatedAnnealingParams)
             : base(simulatedAnnealingParams)
         {
             random = new Random(simulatedAnnealingParams.randomSeed);

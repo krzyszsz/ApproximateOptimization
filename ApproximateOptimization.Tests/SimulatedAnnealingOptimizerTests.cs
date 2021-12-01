@@ -3,12 +3,12 @@ using System;
 
 namespace ApproximateOptimization.Tests
 {
-    public class SimulatedAnnealingTests
+    public class SimulatedAnnealingOptimizerTests
     {
-        private SimulatedAnnealing<SimulatedAnnealingParams> GetSut(Func<double[], double> func)
+        private SimulatedAnnealingOptimizer<SimulatedAnnealingOptimizerParams> GetSut(Func<double[], double> func)
         {
-            return new SimulatedAnnealing<SimulatedAnnealingParams>(
-            new SimulatedAnnealingParams
+            return new SimulatedAnnealingOptimizer<SimulatedAnnealingOptimizerParams>(
+            new SimulatedAnnealingOptimizerParams
             {
                 getValue = func,
                 dimension = 2,

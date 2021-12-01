@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace ApproximateOptimization
 {
-    public class BaseSolutionFinderParams
+    public class BaseOptimizerParams
     {
         /// <summary>
         /// Dimension is the size of array that is a solution of the problem.
@@ -59,7 +59,7 @@ namespace ApproximateOptimization
             if (solutionRange != null && solutionRange.Any(x => x.Length != 2))
             {
                 throw new ArgumentException(
-                    $"Incorrect range dimension. Expected: {dimension}x2 but got second dimension: {solutionRange.First(x => x.Length != 2).Length}");
+                    $"Incorrect solution range size. Expected: {dimension}x2 but got second dimension: {solutionRange.First(x => x.Length != 2).Length}");
             }
         }
     }

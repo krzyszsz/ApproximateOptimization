@@ -10,7 +10,7 @@ namespace ApproximateOptimization
     ///    by attempting "jumpLengthIterations" different lengths.
     /// -> Actions 1&2 are executed "iterationCount" times.
     /// </summary>
-    public class GradientAscentOptimizer<T> : BaseSolutionFinder<T> where T: GradientAscentOptimizerParams
+    public class GradientAscentOptimizer<T> : BaseOptimizer<T> where T: GradientAscentOptimizerParams
     {
         const double delta = 0.00001; // Any number below 0.5 could work?
         private double[] direction;

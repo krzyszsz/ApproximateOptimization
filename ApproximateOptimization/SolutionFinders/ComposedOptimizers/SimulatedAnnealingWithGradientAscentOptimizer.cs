@@ -4,15 +4,15 @@ namespace ApproximateOptimization
 {
     /// <summary>
     /// This combines multiple solution finders to improve results for some problems:
-    /// After each iteration of simulated annealing it runs LocalAreaBinarySearch / GradientAscentOptimizer
-    /// with narrowing down local area.
+    /// After each iteration of simulated annealing it runs GradientAscentOptimizer
+    /// to find local maximum in the area.
     /// </summary>
-    public class SimulatedAnnealingWithLocalAreaBinarySearch<T> : SimulatedAnnealing<T> where T: SimulatedAnnealingWithLocalAreaBinarySearchParams
+    public class SimulatedAnnealingWithGradientAscentOptimizer<T> : SimulatedAnnealingOptimizer<T> where T: SimulatedAnnealingWithGradientAscentOptimizerParams
     {
         private GradientAscentOptimizerParams gradientAscentOptimizerParams;
         private GradientAscentOptimizer<GradientAscentOptimizerParams> gradientAscentOptimizer;
 
-        public SimulatedAnnealingWithLocalAreaBinarySearch(T searchParams)
+        public SimulatedAnnealingWithGradientAscentOptimizer(T searchParams)
             : base(searchParams)
         {
             gradientAscentOptimizerParams = new GradientAscentOptimizerParams

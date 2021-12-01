@@ -5,10 +5,10 @@ namespace ApproximateOptimization.Tests
 {
     public class CompositeOptmizerTests
     {
-        private ConcreteCompositeOptimizer GetSut(Func<double[], double> func)
+        private IOptimizer GetSut(Func<double[], double> func)
         {
-            return OptimizerFactory.GetCompositeOptiizer(
-                new SimulatedAnnealingWithLocalAreaBinarySearchParams
+            return OptimizerFactory.GetCompositeOptimizer(
+                new SimulatedAnnealingWithGradientAscentOptimizerParams
                 {
                     getValue = func,
                     dimension = 2,

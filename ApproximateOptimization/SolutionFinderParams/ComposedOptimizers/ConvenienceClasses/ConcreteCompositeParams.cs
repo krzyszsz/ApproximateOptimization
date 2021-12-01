@@ -1,10 +1,10 @@
 ﻿namespace ApproximateOptimization
 {
-    public class ConcreteCompositeParams : CompositeOptimizerParams<SimulatedAnnealingWithLocalAreaBinarySearchParams>
+    public class ConcreteCompositeParams : CompositeOptimizerParams<SimulatedAnnealingWithGradientAscentOptimizerParams>
     {
-        public ConcreteCompositeParams(SimulatedAnnealingWithLocalAreaBinarySearchParams problemParameters)
+        public ConcreteCompositeParams(SimulatedAnnealingWithGradientAscentOptimizerParams problemParameters)
         {
-            createSolutionFinder = (int threadId) => new SimulatedAnnealingWithLocalAreaBinarySearch<SimulatedAnnealingWithLocalAreaBinarySearchParams>(problemParameters);
+            createOptimizer = (int threadId) => new SimulatedAnnealingWithGradientAscentOptimizer<SimulatedAnnealingWithGradientAscentOptimizerParams>(problemParameters);
         }
     }
 }

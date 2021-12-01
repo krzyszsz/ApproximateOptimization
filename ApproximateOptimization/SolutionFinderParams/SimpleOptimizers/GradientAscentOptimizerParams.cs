@@ -2,7 +2,7 @@
 
 namespace ApproximateOptimization
 {
-    public class GradientAscentOptimizerParams : BaseSolutionFinderParams, IExternalOptimazerAware
+    public class GradientAscentOptimizerParams : BaseOptimizerParams, IExternalOptimazerAware
     {
         public long iterationCount { get; set; } = 20;
         public long jumpLengthIterations { get; set; } = 20;

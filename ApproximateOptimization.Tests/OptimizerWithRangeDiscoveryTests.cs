@@ -3,17 +3,26 @@ using System;
 
 namespace ApproximateOptimization.Tests
 {
-    public class AutoTuningTests
+    public class OptimizerWithRangeDiscoveryTests
     {
-        private ConcreteAutoTuningFinder GetSut(Func<double[], double> scoreFunc)
+        private IOptimizer GetSut(Func<double[], double> scoreFunc)
         {
-            return OptimizerFactory.GetAutoScaledCompositeOptmizer(
-                new SimulatedAnnealingWithLocalAreaBinarySearchParams
+            return new ConcreteOptimizerWithRangeDiscovery(new ConcreteOptimizerWithRangeDiscoveryParams
+            {
+                maxAttempts = 50,
+                dimension = 2,
+                optimizerFactoryMethod = (solutionRange) =>
                 {
-                    getValue = scoreFunc,
-                    dimension = 2,
-                    maxIterations = 100,
-                });
+                    return new SimulatedAnnealingOptimizer<SimulatedAnnealingOptimizerParams>(
+                    new SimulatedAnnealingOptimizerParams
+                    {
+                        dimension = 2,
+                        getValue = scoreFunc,
+                        maxIterations = 100,
+                        solutionRange = solutionRange,
+                    });
+                }
+            });
         }
 
         [Test]
