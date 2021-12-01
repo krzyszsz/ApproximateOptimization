@@ -7,7 +7,7 @@
 
 
 # Approximate Optimization / Generic Problem Solver
-This optimizer / solver can find solutions for problems where you can express the solution as an array of numbers and can provide a function that tells the solver how good any particular array of numbers is. It rarely finds accurate solutions but for many problems they are "accurate enough".
+A simple heuristic optimizer finding solutions of problems whose solutions can be expressed as an array of numbers and you can provide a function telling the optimizer how good any particular array of numbers is. It rarely finds accurate solutions but for many problems they are "accurate enough".
 
 # Technical Details
 As shown in the examples below, the easiest usage of the optimizer is via CompositeOptimizer which finds the solution using two alternating stages: simulated annealing is a probabilistic method scattering possible solutions across the whole multi-dimensional space and in the second stage gradient ascent to systematically move towards the local maximum.
