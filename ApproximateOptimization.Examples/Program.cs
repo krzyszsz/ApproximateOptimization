@@ -33,13 +33,13 @@ namespace ApproximateOptimizationExamples
             // (imagine we could use trygonometric functions to make a slow version
             // of discrete frequency transformation).
 
-            // Please note the usage of AutoTuningFinder to automate range detection.
+            // Please note the usage of a different optimizer to automate range detection.
 
             var points = new Point[] {
-                new Point{ x = 13.2, y = 2.3 },
-                new Point{ x = 23.3, y = 3.4 },
-                new Point{ x = 33.6, y = 4.1 },
-                new Point{ x = 34.7, y = 5.3 },
+                new Point{ x = 1.32, y = 23 },
+                new Point{ x = 2.33, y = 34 },
+                new Point{ x = 3.36, y = 41 },
+                new Point{ x = 3.47, y = 53 },
             };
             var regressionLine =
                 (double[] coefficients, Point point) => (coefficients[0] * point.x) + coefficients[1];
@@ -60,7 +60,7 @@ namespace ApproximateOptimizationExamples
                 $"Found regression line " +
                 $"y = {optimizer.BestSolutionSoFar[0]:N4}*x + {optimizer.BestSolutionSoFar[1]:N4}");
             // This prints:
-            // Found regression line y = 0.1089*x + 0.8625
+            // Found regression line y = 10.8911*x + 8.6238
         }
 
         public static void Example3_Equation_solver()
