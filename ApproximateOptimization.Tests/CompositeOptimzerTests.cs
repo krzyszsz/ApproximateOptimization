@@ -3,16 +3,17 @@ using System;
 
 namespace ApproximateOptimization.Tests
 {
-    public class GradientAscentOptmizerTests
+    public class CompositeOptimizerTests
     {
-        private GradientAscentOptimizer<GradientAscentOptimizerParams> GetSut(Func<double[], double> func)
+        private IOptimizer GetSut(Func<double[], double> func)
         {
-            return new GradientAscentOptimizer<GradientAscentOptimizerParams>(new GradientAscentOptimizerParams
-            {
-                getValue = func,
-                dimension = 2,
-                maxIterations = 1,
-            });
+            return OptimizerFactory.GetCompositeOptimizer(
+                new SimulatedAnnealingWithGradientAscentOptimizerParams
+                {
+                    getValue = func,
+                    dimension = 2,
+                    maxIterations = 100,
+                });
         }
 
         [Test]

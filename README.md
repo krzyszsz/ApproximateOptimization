@@ -9,7 +9,7 @@
 # Approximate Optimization / Generic Problem Solver
 This optimizer / solver can find solutions for problems where you can express the solution as an array of numbers and can provide a function that tells the solver how good any particular array of numbers is. It rarely finds accurate solutions but for many problems they are "accurate enough".
 
-# Techincal Details
+# Technical Details
 As shown in the examples below, the easiest usage of the optimizer is via CompositeOptimizer which finds the solution using two alternating stages: simulated annealing is a probabilistic method scattering possible solutions across the whole multi-dimensional space and in the second stage gradient ascent to systematically move towards the local maximum.
 
 The implementation aims to limit memory allocations to improve performance and also runs multiple solvers in parallel threads.
@@ -48,14 +48,14 @@ public static void Example2_Linear_regression()
     // This example finds a simple regression line for a couple of points.
     // To do that we need to minimize the sum of vertical distances to our line.
     // This obviously can use more complex regression models, not only lines
-    // (imagine we could use trygonometric functions to make a slow version
+    // (imagine we could use trigonometric functions to make a slow version
     // of discrete frequency transformation).
 
     // Please note range discovery parameter. It's convenient but may be misleading;
     // it's better to give the expected range in the beginning because range discovery
-    // is very simpe and only widens the range when the maximum is at the end of the range; 
+    // is very simple and only widens the range when the maximum is at the end of the range; 
     // you may accidentally have a local maximum inside of the range and range discovery
-    // will not trigger range widening).
+    // will not trigger range widening, potentially missing global maximum).
 
     var points = new Point[] {
         new Point{ x = 1.32, y = 23 },
