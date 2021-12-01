@@ -8,15 +8,15 @@ namespace ApproximateOptimization
     /// It's much slower to use this class because it runs the actual solution finder multiple times.
     /// Also: it does not narrow the initial range, it can only widen it.
     /// </summary>
-    public class AutoTuningFinder<T, P> : ISolutionFinder<T> where T: AutoTuningParams<P> where P : BaseSolutionFinderParams
+    public class OptimizerWithRangeDiscovery<T, P> : IOptimizer where T: OptimizerWithRangeDiscoveryParams<P> where P : BaseOptimizerParams
     {
-        private ISolutionFinder<P> solutionFinder;
+        private IOptimizer solutionFinder;
         private T problemParameters;
 
-        public AutoTuningFinder(T problemParameters)
+        public OptimizerWithRangeDiscovery(T problemParameters)
         {
             this.problemParameters = problemParameters;
-            solutionFinder = problemParameters.solutionFinderFactoryMethod(problemParameters.solutionRange);
+            solutionFinder = problemParameters.optimizerFactoryMethod(problemParameters.solutionRange);
         }
 
         public double[] BestSolutionSoFar => solutionFinder.BestSolutionSoFar;
@@ -32,7 +32,7 @@ namespace ApproximateOptimization
             var attempts = problemParameters.maxAttempts;
             do
             {
-                solutionFinder = problemParameters.solutionFinderFactoryMethod(solutionRange);
+                solutionFinder = problemParameters.optimizerFactoryMethod(solutionRange);
                 solutionFinder.FindMaximum();
                 if (solutionFinder.SolutionFound)
                 {

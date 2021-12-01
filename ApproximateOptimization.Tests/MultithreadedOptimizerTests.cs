@@ -5,13 +5,13 @@ namespace ApproximateOptimization.Tests
 {
     public class MultithreadedOptmizerTests
     {
-        private MultithreadedOptimizer<SimulatedAnnealingParams> GetSut(Func<double[], double> func)
+        private MultithreadedOptimizer<SimulatedAnnealingOptimizerParams> GetSut(Func<double[], double> func)
         {
-            return new MultithreadedOptimizer<SimulatedAnnealingParams>(
-                new MultiThreadedOptimizerParams<SimulatedAnnealingParams>
+            return new MultithreadedOptimizer<SimulatedAnnealingOptimizerParams>(
+                new MultiThreadedOptimizerParams<SimulatedAnnealingOptimizerParams>
                 {
-                    createSolutionFinder = (threadId) => new SimulatedAnnealing<SimulatedAnnealingParams>(
-                        new SimulatedAnnealingParams
+                    createOptimizer = (threadId) => new SimulatedAnnealingOptimizer<SimulatedAnnealingOptimizerParams>(
+                        new SimulatedAnnealingOptimizerParams
                         {
                             getValue = func,
                             dimension = 2,

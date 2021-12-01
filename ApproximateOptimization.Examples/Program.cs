@@ -10,8 +10,8 @@ namespace ApproximateOptimizationExamples
         {
             // Finds maximum of sin(x) * cos(y) for range x: 0..1 and y: 0..1
             var func = (double[] vector) => Math.Sin(vector[0]) * Math.Cos(vector[1]);
-            var optimizer = OptimizerFactory.GetCompositeOptiizer(
-                new SimulatedAnnealingWithLocalAreaBinarySearchParams
+            var optimizer = OptimizerFactory.GetCompositeOptimizer(
+                new SimulatedAnnealingWithGradientAscentOptimizerParams
                 {
                     getValue = func,
                     dimension = 2,
@@ -20,9 +20,9 @@ namespace ApproximateOptimizationExamples
             optimizer.FindMaximum();
             Console.WriteLine(
                 $"Maximum value {optimizer.SolutionValue} was found for " +
-                $"x={optimizer.BestSolutionSoFar[0]} and y={optimizer.BestSolutionSoFar[1]} (x&y in 0..1).");
+                $"x={optimizer.BestSolutionSoFar[0]:N4} and y={optimizer.BestSolutionSoFar[1]:N4} (x&y in 0..1).");
             // This prints:
-            // Maximum value 0.8414709848078965 was found for x=1 and y=0 (x&y in 0..1).
+            // Maximum value 0.8414708661335348 was found for x=1.0000 and y=0.0005 (x&y in 0..1).
         }
 
         public static void Example2_Linear_regression()
@@ -33,7 +33,11 @@ namespace ApproximateOptimizationExamples
             // (imagine we could use trygonometric functions to make a slow version
             // of discrete frequency transformation).
 
-            // Please note the usage of a different optimizer to automate range detection.
+            // Please note range discovery parameter. It's convenient but may be misleading;
+            // it's better to give the expected range in the beginning because range discovery
+            // is very simpe and only widens the range when the maximum is at the end of the range; 
+            // you may accidentally have a local maximum inside of the range and range discovery
+            // will not trigger range widening).
 
             var points = new Point[] {
                 new Point{ x = 1.32, y = 23 },
@@ -48,13 +52,13 @@ namespace ApproximateOptimizationExamples
             // Below: We need to flip the sign of the function to minimize it rather than maximize it.
             var minusErrorFunc = (double[] coefficients) => -errorFunction(coefficients);
 
-            var optimizer = OptimizerFactory.GetAutoScaledCompositeOptmizer(
-                new SimulatedAnnealingWithLocalAreaBinarySearchParams
+            var optimizer = OptimizerFactory.GetCompositeOptimizer(
+                new SimulatedAnnealingWithGradientAscentOptimizerParams
                 {
                     getValue = minusErrorFunc,
                     dimension = 2,
                     maxIterations = 100,
-                }); 
+                }, rangeDiscovery: true); 
             optimizer.FindMaximum();
             Console.WriteLine(
                 $"Found regression line " +
@@ -87,14 +91,13 @@ namespace ApproximateOptimizationExamples
                 .Sum(sides => Math.Abs(sides[0](variables) - sides[1](variables)));
             // Below: We need to flip the sign of the error function to minimize it rather than maximize it.
             var minusErrorFunc = (double[] variables) => -errorFunction(variables);
-            var optimizer = OptimizerFactory.GetAutoScaledCompositeOptmizer(
-                new SimulatedAnnealingWithLocalAreaBinarySearchParams
+            var optimizer = OptimizerFactory.GetCompositeOptimizer(
+                new SimulatedAnnealingWithGradientAscentOptimizerParams
                 {
                     getValue = minusErrorFunc,
                     dimension = 2,
                     maxIterations = 100,
-                }
-           );
+                }, rangeDiscovery: true);
             optimizer.FindMaximum();
             Console.WriteLine(optimizer.SolutionFound && optimizer.SolutionValue < 0.1
                 ? $"Equations' solution: x = {optimizer.BestSolutionSoFar[0]:N4} " +

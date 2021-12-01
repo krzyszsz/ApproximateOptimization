@@ -2,6 +2,6 @@
 
 namespace ApproximateOptimization
 {
-    public class CompositeOptimizerParams<T> : MultiThreadedOptimizerParams<T> where T : BaseSolutionFinderParams, new()
+    public class CompositeOptimizerParams<T> : MultiThreadedOptimizerParams<T> where T : BaseOptimizerParams, new()
     { }
 }

@@ -3,11 +3,11 @@ using System;
 
 namespace ApproximateOptimization.Tests
 {
-    public class SimulatedAnnealingWithLocalAreaBinarySearchTests
+    public class SimulatedAnnealingWithGradientAscentOptimizerTests
     {
-        private SimulatedAnnealingWithLocalAreaBinarySearch<SimulatedAnnealingWithLocalAreaBinarySearchParams> GetSut(Func<double[], double> func)
+        private SimulatedAnnealingWithGradientAscentOptimizer<SimulatedAnnealingWithGradientAscentOptimizerParams> GetSut(Func<double[], double> func)
         {
-            return new SimulatedAnnealingWithLocalAreaBinarySearch<SimulatedAnnealingWithLocalAreaBinarySearchParams>(new SimulatedAnnealingWithLocalAreaBinarySearchParams
+            return new SimulatedAnnealingWithGradientAscentOptimizer<SimulatedAnnealingWithGradientAscentOptimizerParams>(new SimulatedAnnealingWithGradientAscentOptimizerParams
             {
                 getValue = func,
                 dimension = 2,

@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace ApproximateOptimization
 {
-    public abstract class BaseSolutionFinder<T> : ISolutionFinder<T> where T : BaseSolutionFinderParams
+    public abstract class BaseOptimizer<T> : IOptimizer where T : BaseOptimizerParams
     {
         protected bool isSelfContained;
         protected double[] currentSolution;
@@ -22,7 +22,7 @@ namespace ApproximateOptimization
         /// </summary>
         protected abstract double NextSolution();
 
-        public BaseSolutionFinder(T solutionFinderParams)
+        public BaseOptimizer(T solutionFinderParams)
         {
             solutionFinderParams.ProcessStandardParametersForConstructor();
             problemParameters = solutionFinderParams;

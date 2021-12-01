@@ -2,7 +2,7 @@
 
 namespace ApproximateOptimization
 {
-    public class SimulatedAnnealingParams : BaseSolutionFinderParams
+    public class SimulatedAnnealingOptimizerParams : BaseOptimizerParams
     {
         /// <summary>
         /// After every iteration the temperature used in the algorithm is multiplied by this value
@@ -27,7 +27,7 @@ namespace ApproximateOptimization
             base.Validate();
             if (temperatureMultiplier <= 0 || temperatureMultiplier >= 1)
             {
-                throw new ArgumentException("Temperature multiplier should be a number greater than 0 and less than 1.");
+                throw new ArgumentException("TemperatureMultiplier should be a number greater than 0 and less than 1.");
             }
         }
     }

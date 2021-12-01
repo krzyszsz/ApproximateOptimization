@@ -9,7 +9,7 @@ namespace ApproximateOptimization
     /// therefore it can be efficient to run each of them in a separate thread
     /// (assuming that value function can also use constant memory).
     /// </summary>
-    public class MultithreadedOptimizer<T> : ISolutionFinder<T> where T: new()
+    public class MultithreadedOptimizer<T> : IOptimizer where T: new()
     {
         private MultiThreadedOptimizerParams<T> problemParameters;
 
@@ -32,17 +32,17 @@ namespace ApproximateOptimization
         public void FindMaximum()
         {
             var threads = new Thread[problemParameters.threadCount];
-            var solutionFinders = new ISolutionFinder<T>[problemParameters.threadCount];
+            var solutionFinders = new IOptimizer[problemParameters.threadCount];
             double[][] solutions = new double[problemParameters.threadCount][];
 
             for (int i=0; i< problemParameters.threadCount; i++)
             {
                 var thread = new Thread((object threadId) => {
                     int threadIdInt = (int)threadId;
-                    ISolutionFinder<T> solutionFinder;
+                    IOptimizer solutionFinder;
                     try
                     {
-                        solutionFinder = problemParameters.createSolutionFinder(threadIdInt);
+                        solutionFinder = problemParameters.createOptimizer(threadIdInt);
                         solutionFinders[threadIdInt] = solutionFinder;
                     }
                     catch (Exception e)

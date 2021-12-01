@@ -2,11 +2,9 @@
 
 namespace ApproximateOptimization
 {
-    public class SimulatedAnnealingWithLocalAreaBinarySearchParams : SimulatedAnnealingParams
+    public class SimulatedAnnealingWithGradientAscentOptimizerParams : SimulatedAnnealingOptimizerParams
     {
         public double localAreaMultiplier { get; set; } = 0.4;
-        public int binarySearchIterationCount { get; set; } = 3;
-        public int binarySearchIterationsPerDimension { get; set; } = 10;
         public int maxIterationsGradientSearch { get; set; } = 20;
         public int maxIterationsGradientJumps { get; set; } = 20;
 

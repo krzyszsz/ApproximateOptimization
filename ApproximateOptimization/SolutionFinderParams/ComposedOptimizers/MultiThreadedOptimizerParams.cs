@@ -4,15 +4,15 @@ namespace ApproximateOptimization
 {
     public class MultiThreadedOptimizerParams<T> where T: new()
     {
-        public Func<int, ISolutionFinder<T>> createSolutionFinder { get; set; }
+        public Func<int, IOptimizer> createOptimizer { get; set; }
         public int threadCount { get; set; } = 8;
         public ILogger logger { get; set; } = ThreadSafeConsoleLogger.Instance;
 
         public virtual void Validate()
         {
-            if (createSolutionFinder == null)
+            if (createOptimizer == null)
             {
-                throw new ArgumentException("Missing createSolutionFinder argument.");
+                throw new ArgumentException("Missing createOptimizer argument.");
             }
             if (threadCount < 1)
             {
