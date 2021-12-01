@@ -21,7 +21,7 @@ namespace ApproximateOptimization
             :base(searchParams)
         {
             direction = new double[searchParams.dimension];
-            externalState = ((IExternalOptimazerAware)problemParameters)?.externalOptimizerState;
+            externalState = ((IExternalOptimizerAware)problemParameters)?.externalOptimizerState;
             if (externalState != null)
             {
                 BestSolutionSoFar = externalState.CurrentSolutionAtStart;

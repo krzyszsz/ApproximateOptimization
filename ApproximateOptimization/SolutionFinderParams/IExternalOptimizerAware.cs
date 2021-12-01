@@ -1,6 +1,6 @@
 ﻿namespace ApproximateOptimization
 {
-    public interface IExternalOptimazerAware
+    public interface IExternalOptimizerAware
     {
         ExternallyInjectedOptimizerState externalOptimizerState { get; set; }
     }

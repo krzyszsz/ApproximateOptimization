@@ -5,7 +5,7 @@ using ApproximateOptimization.Utils;
 namespace ApproximateOptimization
 {
     /// <summary>
-    /// All solution finders in this project work on local array with no memory allocations,
+    /// All optimizers in this project work on local array with no memory allocations,
     /// therefore it can be efficient to run each of them in a separate thread
     /// (assuming that value function can also use constant memory).
     /// </summary>
@@ -32,32 +32,32 @@ namespace ApproximateOptimization
         public void FindMaximum()
         {
             var threads = new Thread[problemParameters.threadCount];
-            var solutionFinders = new IOptimizer[problemParameters.threadCount];
+            var optimizers = new IOptimizer[problemParameters.threadCount];
             double[][] solutions = new double[problemParameters.threadCount][];
 
             for (int i=0; i< problemParameters.threadCount; i++)
             {
                 var thread = new Thread((object threadId) => {
                     int threadIdInt = (int)threadId;
-                    IOptimizer solutionFinder;
+                    IOptimizer optimizer;
                     try
                     {
-                        solutionFinder = problemParameters.createOptimizer(threadIdInt);
-                        solutionFinders[threadIdInt] = solutionFinder;
+                        optimizer = problemParameters.createOptimizer(threadIdInt);
+                        optimizers[threadIdInt] = optimizer;
                     }
                     catch (Exception e)
                     {
-                        problemParameters.logger.Error($"Error while creating solution finder in thread ${threadId}: ${e}");
+                        problemParameters.logger.Error($"Error while creating an optimizer in thread ${threadId}: ${e}");
                         return;
                     }
 
                     try
                     {
-                        solutionFinder.FindMaximum();
+                        optimizer.FindMaximum();
                     }
                     catch (Exception e)
                     {
-                        problemParameters.logger.Error($"Error while running solution finder in thread ${threadId}: ${e}");
+                        problemParameters.logger.Error($"Error while running an optimizer in thread ${threadId}: ${e}");
                     }
                 });
                 threads[i] = thread;
@@ -72,11 +72,11 @@ namespace ApproximateOptimization
 
             for (int i=0; i< problemParameters.threadCount; i++)
             {
-                if ((solutionFinders[i]?.SolutionFound ?? false) &&
-                    (!SolutionFound || SolutionValue < solutionFinders[i].SolutionValue))
+                if ((optimizers[i]?.SolutionFound ?? false) &&
+                    (!SolutionFound || SolutionValue < optimizers[i].SolutionValue))
                 {
-                    SolutionValue = solutionFinders[i].SolutionValue;
-                    BestSolutionSoFar = solutionFinders[i].BestSolutionSoFar;
+                    SolutionValue = optimizers[i].SolutionValue;
+                    BestSolutionSoFar = optimizers[i].BestSolutionSoFar;
                     SolutionFound = true;
                 }
             }
