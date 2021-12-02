@@ -23,7 +23,7 @@ namespace ApproximateOptimization
         /// It should not throw exceptions for any array of numbers with the size "dimension"
         /// and it should not modify the input array. 
         /// </summary>
-        public Func<double[], double> getValue { get; set; }
+        public Func<double[], double> scoreFunction { get; set; }
 
         /// <summary>
         /// Time limit: one of the possible conditions to stop looking for solutions.

@@ -13,7 +13,7 @@ namespace ApproximateOptimization.Tests
                     createOptimizer = (threadId) => new SimulatedAnnealingOptimizer<SimulatedAnnealingOptimizerParams>(
                         new SimulatedAnnealingOptimizerParams
                         {
-                            getValue = func,
+                            scoreFunction = func,
                             dimension = 2,
                             maxIterations = 100,
                         }),
@@ -67,5 +67,8 @@ namespace ApproximateOptimization.Tests
             Assert.That(sut.BestSolutionSoFar[1], Is.EqualTo(expectedY).Within(0.01));
             Assert.That(sut.SolutionValue, Is.EqualTo(expectedBestValue).Within(0.01));
         }
+
+
+
     }
 }
