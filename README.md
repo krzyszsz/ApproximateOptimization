@@ -1,11 +1,3 @@
-# This is still work in progress! Please do not use at the moment. #
-
-
-
-
-
-
-
 # Approximate Optimization / Generic Problem Solver
 A simple heuristic optimizer finding solution expressed as an array of numbers where a function can be provided telling the optimizer how good any particular array of numbers is. It rarely finds accurate solutions but for many problems they are "accurate enough".
 
@@ -31,7 +23,7 @@ public static void Example1_FindMaximum()
     var optimizer = OptimizerFactory.GetCompositeOptimizer(
         new SimulatedAnnealingWithGradientAscentOptimizerParams
         {
-            getValue = func,
+            scoreFunction = func,
             dimension = 2,
             maxIterations = 100,
         });
@@ -73,7 +65,7 @@ public static void Example2_Linear_regression()
     var optimizer = OptimizerFactory.GetCompositeOptimizer(
         new SimulatedAnnealingWithGradientAscentOptimizerParams
         {
-            getValue = minusErrorFunc,
+            scoreFunction = minusErrorFunc,
             dimension = 2,
             maxIterations = 100,
         }, rangeDiscovery: true); 
@@ -112,9 +104,10 @@ public static void Example3_Equation_solver()
     var optimizer = OptimizerFactory.GetCompositeOptimizer(
         new SimulatedAnnealingWithGradientAscentOptimizerParams
         {
-            getValue = minusErrorFunc,
+            scoreFunction = minusErrorFunc,
             dimension = 2,
             maxIterations = 100,
+            solutionRange = new[] { new[] { -10.0, +10.0 }, new[] { -10.0, +10.0 } },
         }, rangeDiscovery: true);
     optimizer.FindMaximum();
     Console.WriteLine(optimizer.SolutionFound && optimizer.SolutionValue < 0.1
@@ -122,6 +115,12 @@ public static void Example3_Equation_solver()
         $"y = {optimizer.BestSolutionSoFar[1]:N4}"
         : "Solution not found.");
     // This prints:
-    // Equations' solution: x = 0.6047 y = 0.3721
+    // Equations' solution: x = 0.6046 y = 0.3721
 }
 ```
+
+# How accurate are the results? How long does it need to run?
+It depends on the actual problem: if it converges to a single solution and you can use only gradient ascent optimizer, the result will be instant and very accurate. But for problems with multiple local maxima, the optimizer should start with a lot of iterations of simulated annealing. You can have a look at [unit tests](https://github.com/krzyszsz/ApproximateOptimization/blob/master/ApproximateOptimization.Tests/CompositeOptimzerTests.cs) in this project that demonstrate the precision of the results for various configurations. Obviously some problems don't have the properties necessary to use this tool (for example, this optimizer will not find the maximum of white noise easily because finding one high value of white noise does not imply that other high values are in the local area).
+
+# Motivation
+I have built this library for myself for some unspecified future projects around ML.
