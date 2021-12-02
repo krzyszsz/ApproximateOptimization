@@ -4,11 +4,11 @@ A simple heuristic optimizer finding solution expressed as an array of numbers w
 # Technical Details
 As shown in the examples below, the easiest usage of the optimizer is via CompositeOptimizer which finds the solution using two alternating stages: simulated annealing is a probabilistic method scattering possible solutions across the whole multi-dimensional space and in the second stage gradient ascent to systematically move towards the local maximum.
 
-The implementation aims to limit memory allocations to improve performance and also runs multiple solvers in parallel threads.
+The implementation aims to limit memory allocations to improve performance and also runs multiple optimizers in parallel threads.
 
 Please note that when the range is not provided, only 0..1 is searched for all dimensions - see example 1. For automatic range discovery (slow!), see example 2 employing rangeDiscovery. Also, by default the optimizer finds maximum, but you can flip the sign of the function to find minimum (examples 2 and 3).
 
-This is definitely not the most advanced solver you can find but (hopefully) it is simple and easy to customize & extend.
+This is definitely not the most advanced optimizer you can find but (hopefully) it is simple and easy to customize & extend.
 
 # Examples
 ```c#

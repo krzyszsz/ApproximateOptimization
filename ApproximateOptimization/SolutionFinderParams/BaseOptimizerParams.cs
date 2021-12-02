@@ -15,7 +15,7 @@ namespace ApproximateOptimization
         /// one number indicating how good the solution is, in relation to other possible solutions.
         /// The higher the returned number, the more preferable it is.
         /// 
-        /// By providing this function, you actually define the problem to be found by this solver
+        /// By providing this function, you actually define the problem to be found by this optimizer
         /// which will attempt to find the array of numbers with the highest score.
         /// 
         /// This function should be possibly fast because it will be called multiple times

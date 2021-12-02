@@ -8,7 +8,7 @@ namespace ApproximateOptimization
     /// 1. For current point, it finds gradient in all dimensions (save it as "direction" vector)
     /// 2. Finds the length of the jump along the "direction" using binary search in the range 0..MaxJump
     ///    by attempting "jumpLengthIterations" different lengths.
-    /// -> Actions 1&2 are executed "iterationCount" times.
+    /// -> Actions 1&2 are executed "iterationsNumber" times.
     /// </summary>
     public class GradientAscentOptimizer<T> : BaseOptimizer<T> where T: GradientAscentOptimizerParams
     {
