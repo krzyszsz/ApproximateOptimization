@@ -7,14 +7,15 @@ namespace ApproximateOptimization
     /// After each iteration of simulated annealing it runs GradientAscentOptimizer
     /// to find local maximum in the area.
     /// </summary>
-    public class SimulatedAnnealingWithGradientAscentOptimizer<T> : SimulatedAnnealingOptimizer<T> where T: SimulatedAnnealingWithGradientAscentOptimizerParams
+    public class SimulatedAnnealingWithGradientAscentOptimizer : SimulatedAnnealingOptimizer
     {
         private GradientAscentOptimizerParams gradientAscentOptimizerParams;
-        private GradientAscentOptimizer<GradientAscentOptimizerParams> gradientAscentOptimizer;
+        private SimulatedAnnealingWithGradientAscentOptimizerParams problemParameters;
 
-        public SimulatedAnnealingWithGradientAscentOptimizer(T searchParams)
+        public SimulatedAnnealingWithGradientAscentOptimizer(SimulatedAnnealingWithGradientAscentOptimizerParams searchParams)
             : base(searchParams)
         {
+            problemParameters = searchParams;
             gradientAscentOptimizerParams = new GradientAscentOptimizerParams
             {
                 dimension = searchParams.dimension,
@@ -28,7 +29,7 @@ namespace ApproximateOptimization
                 timeLimit = searchParams.timeLimit,
             };
             ((IExternalOptimizerAware)gradientAscentOptimizerParams).externalOptimizerState = GetExternallyInjectedOptimizerState();
-            gradientAscentOptimizer = new GradientAscentOptimizer<GradientAscentOptimizerParams>(
+            var gradientAscentOptimizer = new GradientAscentOptimizer(
                 gradientAscentOptimizerParams);
             gradientAscentOptimizerParams.MaxJump = problemParameters.localAreaMultiplier * temperature;
         }

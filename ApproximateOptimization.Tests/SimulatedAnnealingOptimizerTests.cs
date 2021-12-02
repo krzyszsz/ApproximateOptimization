@@ -12,7 +12,7 @@ namespace ApproximateOptimization.Tests
                 double temperatureMultiplier = 0.9,
                 double initialTemperature=2.0)
         {
-            return new SimulatedAnnealingOptimizer<SimulatedAnnealingOptimizerParams>(
+            return new SimulatedAnnealingOptimizer(
             new SimulatedAnnealingOptimizerParams
             {
                 scoreFunction = func,

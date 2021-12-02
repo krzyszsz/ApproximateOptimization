@@ -4,11 +4,11 @@ using System.Diagnostics;
 
 namespace ApproximateOptimization
 {
-    public abstract class BaseOptimizer<T> : IOptimizer where T : BaseOptimizerParams
+    public abstract class BaseOptimizer : IOptimizer
     {
         protected bool isSelfContained;
         protected double[] currentSolution;
-        protected T problemParameters;
+        private BaseOptimizerParams problemParameters;
 
         public double[] BestSolutionSoFar { get; protected set; }
 
@@ -22,7 +22,7 @@ namespace ApproximateOptimization
         /// </summary>
         protected abstract double NextSolution();
 
-        public BaseOptimizer(T optimizerParams)
+        public BaseOptimizer(BaseOptimizerParams optimizerParams)
         {
             optimizerParams.ProcessStandardParametersForConstructor();
             problemParameters = optimizerParams;

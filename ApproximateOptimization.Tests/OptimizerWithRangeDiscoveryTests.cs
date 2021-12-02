@@ -17,7 +17,7 @@ namespace ApproximateOptimization.Tests
                 dimension = 2,
                 optimizerFactoryMethod = (solutionRange) =>
                 {
-                    return new SimulatedAnnealingOptimizer<SimulatedAnnealingOptimizerParams>(
+                    return new SimulatedAnnealingOptimizer(
                     new SimulatedAnnealingOptimizerParams
                     {
                         dimension = 2,

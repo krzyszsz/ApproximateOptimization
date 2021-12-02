@@ -5,9 +5,9 @@ namespace ApproximateOptimization.Tests
 {
     public class GradientAscentOptimizerTests
     {
-        private GradientAscentOptimizer<GradientAscentOptimizerParams> GetSut(Func<double[], double> func, int iterationsNumber = 20)
+        private IOptimizer GetSut(Func<double[], double> func, int iterationsNumber = 20)
         {
-            return new GradientAscentOptimizer<GradientAscentOptimizerParams>(new GradientAscentOptimizerParams
+            return new GradientAscentOptimizer(new GradientAscentOptimizerParams
             {
                 scoreFunction = func,
                 dimension = 2,

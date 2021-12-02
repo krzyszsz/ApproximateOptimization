@@ -45,9 +45,10 @@ public static void Example2_Linear_regression()
 
     // Please note range discovery parameter. It's convenient but may be misleading;
     // it's better to give the expected range in the beginning because range discovery
-    // is very simple and only widens the range when the maximum is at the end of the range; 
-    // you may accidentally have a local maximum inside of the range and range discovery
-    // will not trigger range widening, potentially missing global maximum).
+    // is very simple and only widens the range when the found maximum is at the edge
+    // of the range.
+    // You may accidentally have a local maximum inside of the range and range
+    // discovery will not trigger range widening, potentially missing global maximum).
 
     var points = new Point[] {
         new Point{ x = 1.32, y = 23 },
@@ -120,7 +121,7 @@ public static void Example3_Equation_solver()
 ```
 
 # How accurate are the results? How long does it need to run?
-It depends on the actual problem: if it converges to a single solution and you can use only gradient ascent optimizer, the result will be instant and very accurate. But for problems with multiple local maxima, the optimizer should start with a lot of iterations of simulated annealing. You can have a look at unit tests [HERE](https://github.com/krzyszsz/ApproximateOptimization/blob/master/ApproximateOptimization.Tests/CompositeOptimzerTests.cs#L85) and [HERE](https://github.com/krzyszsz/ApproximateOptimization/blob/master/ApproximateOptimization.Tests/GradientAscentOptimzerTests.cs#L66) and [HERE](https://github.com/krzyszsz/ApproximateOptimization/blob/master/ApproximateOptimization.Tests/SimulatedAnnealingOptimizerTests.cs#L73) in this project that demonstrate the precision of the results for various configurations. Obviously some problems don't have the properties necessary to use this tool (for example, this optimizer will not find the maximum of white noise easily because finding one high value of white noise does not imply that other high values are in the local area).
+It depends on the actual problem: if it converges to a single solution and you can use only gradient ascent optimizer, the result will be nearly instant and very accurate. But for problems with multiple local maxima, the optimizer should start with a lot of iterations of simulated annealing. You can have a look at unit tests [HERE](https://github.com/krzyszsz/ApproximateOptimization/blob/master/ApproximateOptimization.Tests/CompositeOptimzerTests.cs#L85) and [HERE](https://github.com/krzyszsz/ApproximateOptimization/blob/master/ApproximateOptimization.Tests/GradientAscentOptimzerTests.cs#L66) and [HERE](https://github.com/krzyszsz/ApproximateOptimization/blob/master/ApproximateOptimization.Tests/SimulatedAnnealingOptimizerTests.cs#L73) in this project which demonstrate the accuracy of the results for various configurations. Obviously, some problems don't have the properties necessary to use this tool (for example, this optimizer will not find the maximum of white noise easily because finding one high value of white noise does not imply that other high values are in the local area).
 
 # Motivation
 I have built this library for myself for some unspecified future projects around ML.

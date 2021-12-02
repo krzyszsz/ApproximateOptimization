@@ -7,7 +7,7 @@
     {
         public ConcreteMultiThreadedOptimizerParams(SimulatedAnnealingWithGradientAscentOptimizerParams problemParameters)
         {
-            createOptimizer = (int threadNumber) => new SimulatedAnnealingWithGradientAscentOptimizer<SimulatedAnnealingWithGradientAscentOptimizerParams>(problemParameters);
+            createOptimizer = (int threadNumber) => new SimulatedAnnealingWithGradientAscentOptimizer(problemParameters);
         }
     }
 }

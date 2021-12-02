@@ -4,7 +4,7 @@
     {
         public ConcreteCompositeParams(SimulatedAnnealingWithGradientAscentOptimizerParams problemParameters)
         {
-            createOptimizer = (int threadId) => new SimulatedAnnealingWithGradientAscentOptimizer<SimulatedAnnealingWithGradientAscentOptimizerParams>(problemParameters);
+            createOptimizer = (int threadId) => new SimulatedAnnealingWithGradientAscentOptimizer(problemParameters);
         }
     }
 }

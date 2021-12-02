@@ -10,16 +10,18 @@ namespace ApproximateOptimization
     ///    by attempting "jumpLengthIterations" different lengths.
     /// -> Actions 1&2 are executed "iterationsNumber" times.
     /// </summary>
-    public class GradientAscentOptimizer<T> : BaseOptimizer<T> where T: GradientAscentOptimizerParams
+    public class GradientAscentOptimizer: BaseOptimizer
     {
         const double delta = 0.00001; // Any number below 0.5 could work?
         private double[] direction;
         private double diagonalLength;
         private ExternallyInjectedOptimizerState externalState;
+        private GradientAscentOptimizerParams problemParameters;
 
-        public GradientAscentOptimizer(T searchParams)
+        public GradientAscentOptimizer(GradientAscentOptimizerParams searchParams)
             :base(searchParams)
         {
+            problemParameters = searchParams;
             direction = new double[searchParams.dimension];
             externalState = ((IExternalOptimizerAware)problemParameters)?.externalOptimizerState;
             if (externalState != null)

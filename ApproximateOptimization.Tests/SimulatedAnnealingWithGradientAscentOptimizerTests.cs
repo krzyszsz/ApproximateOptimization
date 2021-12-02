@@ -5,13 +5,13 @@ namespace ApproximateOptimization.Tests
 {
     public class SimulatedAnnealingWithGradientAscentOptimizerTests
     {
-        private SimulatedAnnealingWithGradientAscentOptimizer<SimulatedAnnealingWithGradientAscentOptimizerParams> GetSut(
+        private IOptimizer GetSut(
             Func<double[], double> func,
             long maxIterations=100,
             double temperatureMultiplier=0.95,
             double initialTemperature=5.0)
         {
-            return new SimulatedAnnealingWithGradientAscentOptimizer<SimulatedAnnealingWithGradientAscentOptimizerParams>(new SimulatedAnnealingWithGradientAscentOptimizerParams
+            return new SimulatedAnnealingWithGradientAscentOptimizer(new SimulatedAnnealingWithGradientAscentOptimizerParams
             {
                 scoreFunction = func,
                 dimension = 2,

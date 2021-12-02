@@ -35,9 +35,10 @@ namespace ApproximateOptimizationExamples
 
             // Please note range discovery parameter. It's convenient but may be misleading;
             // it's better to give the expected range in the beginning because range discovery
-            // is very simple and only widens the range when the maximum is at the end of the range; 
-            // you may accidentally have a local maximum inside of the range and range discovery
-            // will not trigger range widening, potentially missing global maximum).
+            // is very simple and only widens the range when the found maximum is at the edge
+            // of the range.
+            // You may accidentally have a local maximum inside of the range and range
+            // discovery will not trigger range widening, potentially missing global maximum).
 
             var points = new Point[] {
                 new Point{ x = 1.32, y = 23 },
