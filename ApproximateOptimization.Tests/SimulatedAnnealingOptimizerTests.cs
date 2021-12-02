@@ -15,7 +15,7 @@ namespace ApproximateOptimization.Tests
             return new SimulatedAnnealingOptimizer<SimulatedAnnealingOptimizerParams>(
             new SimulatedAnnealingOptimizerParams
             {
-                getValue = func,
+                scoreFunction = func,
                 dimension = 2,
                 maxIterations = maxIterations,
                 temperatureMultiplier = temperatureMultiplier,

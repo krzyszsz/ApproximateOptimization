@@ -9,7 +9,7 @@ namespace ApproximateOptimization.Tests
         {
             return new GradientAscentOptimizer<GradientAscentOptimizerParams>(new GradientAscentOptimizerParams
             {
-                getValue = func,
+                scoreFunction = func,
                 dimension = 2,
                 maxIterations = 1,
                 gradientFollowingIterations = iterationCount

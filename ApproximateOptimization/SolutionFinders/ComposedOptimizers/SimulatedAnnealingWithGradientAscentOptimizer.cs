@@ -18,7 +18,7 @@ namespace ApproximateOptimization
             gradientAscentOptimizerParams = new GradientAscentOptimizerParams
             {
                 dimension = searchParams.dimension,
-                getValue = searchParams.getValue,
+                scoreFunction = searchParams.scoreFunction,
                 gradientFollowingIterations = searchParams.gradientFollowingIterations,
                 jumpLengthIterationsFinal = searchParams.jumpLengthIterationsFinal,
                 jumpLengthIterationsInitial = searchParams.jumpLengthIterationsInitial,

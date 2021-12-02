@@ -62,19 +62,19 @@ namespace ApproximateOptimization
             }
         }
 
-        private double GetValueForReplacedDimension(int i, double x)
+        private double GetScoreForReplacedDimension(int i, double x)
         {
             var initialValue = currentSolution[i];
             currentSolution[i] = x;
-            var result = problemParameters.getValue(currentSolution);
+            var result = problemParameters.scoreFunction(currentSolution);
             currentSolution[i] = initialValue;
             return result;
         }
 
-        private double GetValueForJump(double jumpLength)
+        private double GetScoreForJump(double jumpLength)
         {
             ApplyJump(jumpLength);
-            return problemParameters.getValue(currentSolution);
+            return problemParameters.scoreFunction(currentSolution);
         }
 
         private void FindGradientForDimension(int i, double smallIncrement)
@@ -89,7 +89,7 @@ namespace ApproximateOptimization
                 b = tmp;
                 reversingMultiplier = -1;
             }
-            direction[i] = reversingMultiplier * (GetValueForReplacedDimension(i, b) - GetValueForReplacedDimension(i, a)) / (b - a);
+            direction[i] = reversingMultiplier * (GetScoreForReplacedDimension(i, b) - GetScoreForReplacedDimension(i, a)) / (b - a);
         }
 
         private double GetVectorLength(double[] vector)
@@ -144,8 +144,8 @@ namespace ApproximateOptimization
                 var justBelowMid = mid - smallIncrement;
                 if (justAboveMid == justBelowMid) break;
 
-                var justAboveMidValue = GetValueForJump(justAboveMid);
-                var justBelowMidValue = GetValueForJump(justBelowMid);
+                var justAboveMidValue = GetScoreForJump(justAboveMid);
+                var justBelowMidValue = GetScoreForJump(justBelowMid);
                 var change = justAboveMidValue - justBelowMidValue;
 
                 if (change > 0)

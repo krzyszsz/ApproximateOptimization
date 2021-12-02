@@ -13,7 +13,7 @@ namespace ApproximateOptimization.Tests
         {
             return new SimulatedAnnealingWithGradientAscentOptimizer<SimulatedAnnealingWithGradientAscentOptimizerParams>(new SimulatedAnnealingWithGradientAscentOptimizerParams
             {
-                getValue = func,
+                scoreFunction = func,
                 dimension = 2,
                 maxIterations = maxIterations,
                 temperatureMultiplier = temperatureMultiplier,

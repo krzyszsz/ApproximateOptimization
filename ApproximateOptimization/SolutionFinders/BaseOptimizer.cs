@@ -43,7 +43,7 @@ namespace ApproximateOptimization
         public void FindMaximum()
         {
             Array.Copy(currentSolution, BestSolutionSoFar, problemParameters.dimension);
-            SolutionValue = problemParameters.getValue(BestSolutionSoFar);
+            SolutionValue = problemParameters.scoreFunction(BestSolutionSoFar);
             long iterations = 0;
             var sw = new Stopwatch();
             sw.Start();
@@ -60,7 +60,7 @@ namespace ApproximateOptimization
 
         protected double GetCurrentValueAndUpdateBest()
         {
-            var value = problemParameters.getValue(currentSolution);
+            var value = problemParameters.scoreFunction(currentSolution);
             if (value > SolutionValue)
             {
                 Array.Copy(currentSolution, BestSolutionSoFar, problemParameters.dimension);
