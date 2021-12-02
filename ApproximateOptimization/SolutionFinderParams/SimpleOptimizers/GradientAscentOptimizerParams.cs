@@ -4,8 +4,10 @@ namespace ApproximateOptimization
 {
     public class GradientAscentOptimizerParams : BaseOptimizerParams, IExternalOptimizerAware
     {
-        public long iterationCount { get; set; } = 20;
-        public long jumpLengthIterations { get; set; } = 20;
+        public long gradientFollowingIterations { get; set; } = 20;
+        public int jumpLengthIterationsFinal { get; set; } = 20;
+        public int jumpLengthIterationsInitial { get; set; } = 6;
+        public int finalJumpsNumber { get; set; } = 6;
         public double MaxJump { get; set; } = 1.0;
         ExternallyInjectedOptimizerState IExternalOptimizerAware.externalOptimizerState { get; set; }
 

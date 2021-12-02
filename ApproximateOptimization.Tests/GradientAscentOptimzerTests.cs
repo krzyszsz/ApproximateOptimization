@@ -5,13 +5,14 @@ namespace ApproximateOptimization.Tests
 {
     public class GradientAscentOptimizerTests
     {
-        private GradientAscentOptimizer<GradientAscentOptimizerParams> GetSut(Func<double[], double> func)
+        private GradientAscentOptimizer<GradientAscentOptimizerParams> GetSut(Func<double[], double> func, int iterationCount = 20)
         {
             return new GradientAscentOptimizer<GradientAscentOptimizerParams>(new GradientAscentOptimizerParams
             {
-                getValue = func,
+                scoreFunction = func,
                 dimension = 2,
                 maxIterations = 1,
+                gradientFollowingIterations = iterationCount
             });
         }
 
@@ -61,5 +62,32 @@ namespace ApproximateOptimization.Tests
             Assert.That(sut.BestSolutionSoFar[1], Is.EqualTo(expectedY).Within(0.01));
             Assert.That(sut.SolutionValue, Is.EqualTo(expectedBestValue).Within(0.01));
         }
+
+        [TestCase(0.00001, 17)]
+        [TestCase(0.0001, 14)]
+        [TestCase(0.001, 10)]
+        [TestCase(0.01, 6)]
+        public void FindsGoodSolutionAcrossWholeRange(double precision, int iterationCount)
+        {
+            Random random = new Random(0);
+            for (int i = 0; i < 100; i++)
+            {
+                double expectedX = random.NextDouble();
+                double expectedY = random.NextDouble();
+                double expectedBestValue = random.NextDouble();
+                Func<double[], double> func = (double[] vector) =>
+                    -Math.Pow(vector[0] - expectedX, 2) - Math.Pow(vector[1] - expectedY, 2) + expectedBestValue;
+                var sut = GetSut(func, iterationCount);
+
+                sut.FindMaximum();
+
+                Assert.That(sut.BestSolutionSoFar.Length, Is.EqualTo(2));
+                Assert.That(sut.SolutionFound, Is.EqualTo(true));
+                Assert.That(sut.BestSolutionSoFar[0], Is.EqualTo(expectedX).Within(precision));
+                Assert.That(sut.BestSolutionSoFar[1], Is.EqualTo(expectedY).Within(precision));
+                Assert.That(sut.SolutionValue, Is.EqualTo(expectedBestValue).Within(precision));
+            }
+        }
     }
+
 }
