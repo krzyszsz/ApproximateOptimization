@@ -81,17 +81,9 @@ namespace ApproximateOptimization
 
         private void FindGradientForDimension(int i, double smallIncrement)
         {
-            var a = currentSolution[i];
-            var b = a + smallIncrement;
-            var reversingMultiplier = 1.0;
-            if (b > problemParameters.solutionRange[i][1])
-            {
-                var tmp = a;
-                a = b;
-                b = tmp;
-                reversingMultiplier = -1;
-            }
-            direction[i] = reversingMultiplier * (GetScoreForReplacedDimension(i, b) - GetScoreForReplacedDimension(i, a)) / (b - a);
+            var a = currentSolution[i] - smallIncrement;
+            var b = currentSolution[i] + smallIncrement;
+            direction[i] = (GetScoreForReplacedDimension(i, b) - GetScoreForReplacedDimension(i, a)) / (b - a);
         }
 
         private double GetVectorLength(double[] vector)
