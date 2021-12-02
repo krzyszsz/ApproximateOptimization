@@ -7,9 +7,9 @@ namespace ApproximateOptimization.Tests
     {
         private IOptimizer GetSut(
             Func<double[], double> func,
-            long maxIterations=45,
+            long maxIterations=5,
             double temperatureMultiplier=0.95,
-            double initialTemperature=5.0)
+            double initialTemperature=50.0)
         {
             return new SimulatedAnnealingWithGradientAscentOptimizer(new SimulatedAnnealingWithGradientAscentOptimizerParams
             {
