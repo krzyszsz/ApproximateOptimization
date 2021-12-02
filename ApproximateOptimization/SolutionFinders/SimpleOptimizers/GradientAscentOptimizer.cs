@@ -36,10 +36,12 @@ namespace ApproximateOptimization
                 SolutionValue = externalState.SolutionValue;
             }
             var smallIncrement = problemParameters.MaxJump * delta;
-            for (int i = 0; i < problemParameters.iterationCount; i++)
+            for (int i = 0; i < problemParameters.gradientFollowingIterations; i++)
             {
                 FindDirection(smallIncrement);
-                FindJumpLength();
+                var moreAccurateJumpLengths =
+                    problemParameters.gradientFollowingIterations - i <= problemParameters.finalJumpsNumber;
+                FindJumpLength(moreAccurateJumpLengths);
             }
             var currentValue = GetCurrentValueAndUpdateBest();
             if (externalState != null)
@@ -122,12 +124,14 @@ namespace ApproximateOptimization
             diagonalLength = Math.Sqrt(diagonalLength);
         }
 
-        private void FindJumpLength()
+        private void FindJumpLength(bool moreAccurateJumpLengths)
         {
             var rangeBegin = 0.0;
             var rangeEnd = problemParameters.MaxJump * diagonalLength;
 
-            var iterationsLeft = problemParameters.iterationCount;
+            var iterationsLeft = moreAccurateJumpLengths
+                ? problemParameters.jumpLengthIterationsFinal
+                : problemParameters.jumpLengthIterationsInitial;
             var bestJumpLength = 0.0;
             var valueForBestJumpLength = SolutionValue;
 

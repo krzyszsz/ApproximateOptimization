@@ -19,8 +19,10 @@ namespace ApproximateOptimization
             {
                 dimension = searchParams.dimension,
                 getValue = searchParams.getValue,
-                iterationCount = searchParams.maxIterationsGradientSearch,
-                jumpLengthIterations = searchParams.maxIterationsGradientJumps,
+                gradientFollowingIterations = searchParams.gradientFollowingIterations,
+                jumpLengthIterationsFinal = searchParams.jumpLengthIterationsFinal,
+                jumpLengthIterationsInitial = searchParams.jumpLengthIterationsInitial,
+                finalJumpsNumber = searchParams.finalJumpsNumber,
                 maxIterations = searchParams.maxIterations,
                 solutionRange = searchParams.solutionRange,
                 timeLimit = searchParams.timeLimit,
