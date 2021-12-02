@@ -46,6 +46,7 @@ namespace ApproximateOptimization
 
         protected override double NextSolution()
         {
+            gradientAscentOptimizerParams.MaxJump = problemParameters.localAreaMultiplier * temperature;
             var currentValue = base.NextSolution();
             var externalStateAware = ((IExternalOptimizerAware)gradientAscentOptimizerParams).externalOptimizerState;
             externalStateAware.SolutionValue = currentValue;

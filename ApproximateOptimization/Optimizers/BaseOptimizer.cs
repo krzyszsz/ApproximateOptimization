@@ -6,7 +6,6 @@ namespace ApproximateOptimization
 {
     public abstract class BaseOptimizer : IOptimizer
     {
-        protected bool isSelfContained;
         protected double[] currentSolution;
         private BaseOptimizerParams problemParameters;
 
@@ -35,7 +34,6 @@ namespace ApproximateOptimization
             }
             else
             {
-                isSelfContained = true;
                 SetInitialSolution();
             }
         }
