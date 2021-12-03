@@ -9,7 +9,9 @@ namespace ApproximateOptimization.Tests
             Func<double[], double> func,
             long maxIterations=5,
             double temperatureMultiplier=0.95,
-            double initialTemperature=50.0)
+            double initialTemperature=50.0,
+            double localAreaMultiplier=0.2
+            )
         {
             return new SimulatedAnnealingWithGradientAscentOptimizer(new SimulatedAnnealingWithGradientAscentOptimizerParams
             {
@@ -17,7 +19,8 @@ namespace ApproximateOptimization.Tests
                 dimension = 2,
                 maxIterations = maxIterations,
                 temperatureMultiplier = temperatureMultiplier,
-                initialTemperature = initialTemperature
+                initialTemperature = initialTemperature,
+                localAreaMultiplier = localAreaMultiplier
             });
         }
 
@@ -103,10 +106,10 @@ namespace ApproximateOptimization.Tests
                 double expectedLocalY = random.NextDouble();
                 Func<double[], double> func = (double[] vector) =>
                     -Math.Pow(vector[0] - expectedX, 2) - Math.Pow(vector[1] - expectedY, 2)
-                    + ((Math.Abs(vector[0] - expectedX) < 0.1 && Math.Abs(vector[1] - expectedY) < 0.1)
+                    + ((Math.Abs(vector[0] - expectedX) < 0.2 && Math.Abs(vector[1] - expectedY) < 0.2)
                     ? 0
                     : -Math.Pow(vector[0] - expectedLocalX, 2) / 2 - Math.Pow(vector[1] - expectedLocalY, 2) / 2);
-                var sut = GetSut(func, maxIterations: 70, initialTemperature: 5, temperatureMultiplier: 0.95);
+                var sut = GetSut(func, maxIterations: 18, initialTemperature: 5, temperatureMultiplier: 0.99);
 
                 sut.FindMaximum();
 

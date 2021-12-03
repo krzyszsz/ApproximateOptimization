@@ -7,7 +7,7 @@ namespace ApproximateOptimization.Tests
     {
         private IOptimizer GetSut(
             Func<double[], double> scoreFunc,
-            long maxIterations = 100,
+            long maxIterations = 80,
             double temperatureMultiplier = 0.9,
             double initialTemperature = 2.0)
         {

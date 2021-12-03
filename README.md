@@ -1,5 +1,3 @@
-# This is still work in progress
-
 # Approximate Optimization / Generic Problem Solver
 A simple heuristic optimizer finding solution expressed as an array of numbers where a function can be provided telling the optimizer how good any particular array of numbers is. It rarely finds accurate solutions but for many problems they are "accurate enough".
 

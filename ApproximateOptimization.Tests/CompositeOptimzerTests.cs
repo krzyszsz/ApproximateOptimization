@@ -12,7 +12,7 @@ namespace ApproximateOptimization.Tests
                 {
                     scoreFunction = func,
                     dimension = 2,
-                    maxIterations = 45,
+                    maxIterations = 5,
                     solutionRange = range ?? new[] { new[] { 0.0, 1.0 }, new[] { 0.0, 1.0 } },
                 });
         }

@@ -46,20 +46,19 @@ namespace ApproximateOptimization
 
         protected override double NextSolution()
         {
-            gradientAscentOptimizerParams.MaxJump = problemParameters.localAreaMultiplier * temperature;
+            gradientAscentOptimizerParams.MaxJump = problemParameters.localAreaMultiplier * temperature / problemParameters.initialTemperature;
             var currentValue = base.NextSolution();
             var externalStateAware = ((IExternalOptimizerAware)gradientAscentOptimizerParams).externalOptimizerState;
             externalStateAware.SolutionValue = currentValue;
             Array.Copy(currentSolution, externalStateAware.CurrentSolutionAtStart, problemParameters.dimension);
             Array.Copy(currentSolution, externalStateAware.BestSolutionSoFar, problemParameters.dimension);
-            externalStateAware.RequestNextSolution();
-            if (externalStateAware.SolutionValue > SolutionValue)
+            currentValue = externalStateAware.RequestNextSolution();
+            if (currentValue > SolutionValue)
             {
                 Array.Copy(externalStateAware.BestSolutionSoFar, BestSolutionSoFar, problemParameters.dimension);
                 // Array.Copy(externalStateAware.BestSolutionSoFar, currentSolution, problemParameters.dimension);
-                SolutionValue = externalStateAware.SolutionValue;
+                SolutionValue = currentValue;
             }
-            gradientAscentOptimizerParams.MaxJump = problemParameters.localAreaMultiplier * temperature;
             return currentValue;
         }
     }

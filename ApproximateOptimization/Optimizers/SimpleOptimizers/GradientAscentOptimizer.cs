@@ -12,7 +12,7 @@ namespace ApproximateOptimization
     /// </summary>
     public class GradientAscentOptimizer: BaseOptimizer
     {
-        const double delta = 0.00001; // Any number below 0.5 could work?
+        const double delta = 0.001;
         private double[] direction;
         private double diagonalLength;
         private ExternallyInjectedOptimizerState externalState;

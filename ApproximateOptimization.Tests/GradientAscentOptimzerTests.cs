@@ -63,10 +63,7 @@ namespace ApproximateOptimization.Tests
             Assert.That(sut.SolutionValue, Is.EqualTo(expectedBestValue).Within(0.01));
         }
 
-        [TestCase(0.00001, 17)]
-        [TestCase(0.0001, 14)]
-        [TestCase(0.001, 10)]
-        [TestCase(0.01, 6)]
+        [TestCase(0.000001, 1)]
         public void FindsGoodSolutionAcrossWholeRange(double precision, int iterationsNumber)
         {
             Random random = new Random(0);

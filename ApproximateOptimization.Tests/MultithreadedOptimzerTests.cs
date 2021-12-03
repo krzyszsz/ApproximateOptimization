@@ -15,7 +15,7 @@ namespace ApproximateOptimization.Tests
                         {
                             scoreFunction = func,
                             dimension = 2,
-                            maxIterations = 100,
+                            maxIterations = 70,
                         }),
                 }
                 );
