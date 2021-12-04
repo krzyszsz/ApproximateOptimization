@@ -30,7 +30,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build ApproximateOptimization.sln --configuration release /p:Version=${{ steps.gitversion.outputs.VERSION }} /p:AssemblyVersion=${{ steps.gitversion.outputs.VERSION }} /p:InformationalVersion=${{ steps.gitversion.outputs.VERSION }} --no-restore --include-symbols
+      run: dotnet build ApproximateOptimization.sln --configuration release /p:Version=${{ steps.gitversion.outputs.VERSION }} /p:AssemblyVersion=${{ steps.gitversion.outputs.VERSION }} /p:InformationalVersion=${{ steps.gitversion.outputs.VERSION }} --no-restore
     - name: Test
       run: dotnet test --configuration Release /p:Version=${{ steps.gitversion.outputs.VERSION }} --no-build --verbosity normal
     - name: Push generated package to GitHub registry
