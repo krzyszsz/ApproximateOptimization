@@ -99,7 +99,7 @@ namespace ApproximateOptimizationExamples
                     dimension = 2,
                     maxIterations = 100,
                     solutionRange = new[] { new[] { -10.0, +10.0 }, new[] { -10.0, +10.0 } },
-                }, rangeDiscovery: true);
+                }, rangeDiscovery: false);
             optimizer.FindMaximum();
             Console.WriteLine(optimizer.SolutionFound && optimizer.SolutionValue < 0.1
                 ? $"Equations' solution: x = {optimizer.BestSolutionSoFar[0]:N4} " +

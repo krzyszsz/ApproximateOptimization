@@ -38,11 +38,11 @@ namespace ApproximateOptimization
                 SolutionValue = externalState.SolutionValue;
             }
             var smallIncrement = problemParameters.MaxJump * delta;
-            for (int i = 0; i < problemParameters.gradientFollowingIterations; i++)
+            for (int i = 0; i < problemParameters.maxIterations; i++)
             {
                 FindDirection(smallIncrement);
                 var moreAccurateJumpLengths =
-                    problemParameters.gradientFollowingIterations - i <= problemParameters.finalJumpsNumber;
+                    problemParameters.maxIterations - i <= problemParameters.finalJumpsNumber;
                 FindJumpLength(moreAccurateJumpLengths);
             }
             var currentValue = GetCurrentValueAndUpdateBest();

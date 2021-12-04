@@ -11,8 +11,7 @@ namespace ApproximateOptimization.Tests
             {
                 scoreFunction = func,
                 dimension = 2,
-                maxIterations = 1,
-                gradientFollowingIterations = iterationsNumber
+                maxIterations = iterationsNumber
             });
         }
 

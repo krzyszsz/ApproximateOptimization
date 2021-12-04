@@ -1,12 +1,12 @@
 # Approximate Optimization / Generic Problem Solver
-A simple heuristic optimizer finding solution expressed as an array of numbers where a function can be provided telling the optimizer how good any particular array of numbers is. It rarely finds accurate solutions but for many problems they are "accurate enough".
+A simple heuristic optimizer finding a solution expressed as an array of numbers where a function can be provided telling the optimizer how good any particular array of numbers is. It rarely finds accurate solutions but for many problems they are "accurate enough".
 
 # Technical Details
 As shown in the examples below, the easiest usage of the optimizer is via CompositeOptimizer which finds the solution using two alternating stages: simulated annealing is a probabilistic method scattering possible solutions across the whole multi-dimensional space and in the second stage gradient ascent to systematically move towards the local maximum.
 
 The implementation aims to limit memory allocations to improve performance and also runs multiple optimizers in parallel threads.
 
-Please note that when the range is not provided, only 0..1 is searched for all dimensions - see example 1. For automatic range discovery (slow!), see example 2 employing rangeDiscovery. Also, by default the optimizer finds maximum, but you can flip the sign of the function to find minimum (examples 2 and 3).
+Please note that when the range is not provided, only 0..1 is searched for all dimensions - see example 1. For automatic range discovery (slow and misleading!), see example 2 employing rangeDiscovery and example 3 with provided search range. Also, by default the optimizer finds maximum, but you can flip the sign of the function to find minimum (examples 2 and 3).
 
 This is definitely not the most advanced optimizer you can find but (hopefully) it is simple and easy to customize & extend.
 
@@ -107,7 +107,7 @@ public static void Example3_Equation_solver()
             dimension = 2,
             maxIterations = 100,
             solutionRange = new[] { new[] { -10.0, +10.0 }, new[] { -10.0, +10.0 } },
-        }, rangeDiscovery: true);
+        }, rangeDiscovery: false);
     optimizer.FindMaximum();
     Console.WriteLine(optimizer.SolutionFound && optimizer.SolutionValue < 0.1
         ? $"Equations' solution: x = {optimizer.BestSolutionSoFar[0]:N4} " +
@@ -119,7 +119,7 @@ public static void Example3_Equation_solver()
 ```
 
 # How accurate are the results? How long does it need to run?
-It depends on the actual problem: if it converges to a single solution and you can use only gradient ascent optimizer, the result will be nearly instant and very accurate. But for problems with multiple local maxima, the optimizer should start with a lot of iterations of simulated annealing. You can have a look at unit tests [HERE](https://github.com/krzyszsz/ApproximateOptimization/blob/master/ApproximateOptimization.Tests/CompositeOptimzerTests.cs#L85) and [HERE](https://github.com/krzyszsz/ApproximateOptimization/blob/master/ApproximateOptimization.Tests/GradientAscentOptimzerTests.cs#L66) and [HERE](https://github.com/krzyszsz/ApproximateOptimization/blob/master/ApproximateOptimization.Tests/SimulatedAnnealingOptimizerTests.cs#L73) in this project which demonstrate the accuracy of the results for various configurations. Obviously, some problems don't have the properties necessary to use this tool (for example, this optimizer will not find the maximum of white noise easily because finding one high value of white noise does not imply that other high values are in the local area).
+It depends on the actual problem: if it converges to a single solution and you can use only gradient ascent optimizer, the result will be nearly instant and very accurate. But for problems with multiple local maxima, even worse: desly packed in clusters, the optimizer should start with a lot of iterations of simulated annealing. You can have a look at unit tests [HERE](https://github.com/krzyszsz/ApproximateOptimization/blob/master/ApproximateOptimization.Tests/CompositeOptimzerTests.cs#L85) and [HERE](https://github.com/krzyszsz/ApproximateOptimization/blob/master/ApproximateOptimization.Tests/GradientAscentOptimzerTests.cs#L66) and [HERE](https://github.com/krzyszsz/ApproximateOptimization/blob/master/ApproximateOptimization.Tests/SimulatedAnnealingOptimizerTests.cs#L73) in this project which demonstrate the accuracy of the results for various configurations. Obviously, some problems don't have the properties necessary to use this tool (for example, this optimizer will not find the maximum of white noise easily because finding one high value of white noise does not imply that other high values are in the local area).
 
 # Motivation
-I have built this library for myself for some unspecified future projects around ML.
+I have built this library for myself for some unspecified future projects around ML. I could just use some existing library but I think it's often better to use a tool that you understand well than a more avanced tool which you can't configure properly.
