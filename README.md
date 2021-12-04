@@ -21,6 +21,8 @@ dotnet add package ApproximateOptimization
 // but these examples below demonstrate basic usage of the solver / optimizer and show that it can be useful
 // as a tool to deal with much wider class of problems, as a more generic tool for data analysis.
 
+using ApproximateOptimization;
+
 public static void Example1_FindMaximum()
 {
     // Finds maximum of sin(x) * cos(y) for range x: 0..1 and y: 0..1
