@@ -1,0 +1,7 @@
+mode: Mainline
+branches:
+  feature:
+    tag: beta
+  master: {}
+ignore:
+  sha: []

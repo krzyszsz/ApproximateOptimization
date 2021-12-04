@@ -3,6 +3,9 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>net6.0</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/krzyszsz/ApproximateOptimization</RepositoryUrl>
+    <Authors>Krzysztof Janiszewski</Authors>
   </PropertyGroup>
 
 </Project>
