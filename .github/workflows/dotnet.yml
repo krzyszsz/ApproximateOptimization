@@ -32,5 +32,9 @@ jobs:
       run: dotnet build ApproximateOptimization.sln --configuration release /p:Version=${{ steps.gitversion.outputs.VERSION }} /p:AssemblyVersion=${{ steps.gitversion.outputs.VERSION }} /p:InformationalVersion=${{ steps.gitversion.outputs.VERSION }} --no-restore
     - name: Test
       run: dotnet test --configuration Release /p:Version=${{ steps.gitversion.outputs.VERSION }} --no-build --verbosity normal
+    - name: Tag version
+      if: github.event_name == 'push' || github.event.pull_request.merged == true
+      run: git tag ${{ steps.gitversion.outputs.VERSION }} master; git push origin ${{ steps.gitversion.outputs.VERSION }}
     - name: Push generated package to GitHub registry
+      if: github.event_name == 'push' || github.event.pull_request.merged == true
       run: dotnet nuget push ./ApproximateOptimization/bin/Release/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{secrets.NUGET_API_KEY}}
