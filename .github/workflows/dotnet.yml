@@ -30,7 +30,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build ApiResponse.sln --configuration release /p:Version=${{ steps.gitversion.outputs.AssemblySemVer }} /p:AssemblyVersion=${{ steps.gitversion.outputs.AssemblySemVer }} /p:InformationalVersion=${{ steps.gitversion.outputs.InformationalVersion }} --no-restore
+      run: dotnet build ApproximateOptimization.sln --configuration release /p:Version=${{ steps.gitversion.outputs.AssemblySemVer }} /p:AssemblyVersion=${{ steps.gitversion.outputs.AssemblySemVer }} /p:InformationalVersion=${{ steps.gitversion.outputs.InformationalVersion }} --no-restore
     - name: Test
       run: dotnet test --configuration Release /p:Version=${{ steps.gitversion.outputs.AssemblySemVer }} --no-build --verbosity normal
     - name: Package nuget
