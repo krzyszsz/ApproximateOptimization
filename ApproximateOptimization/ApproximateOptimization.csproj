@@ -10,10 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="shortReadme.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
+	<None Include="shortReadme.md" Pack="true" PackagePath=""/>
   </ItemGroup>
 
 </Project>
