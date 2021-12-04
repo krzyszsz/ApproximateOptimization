@@ -10,6 +10,11 @@ Please note that when the range is not provided, only 0..1 is searched for all d
 
 This is definitely not the most advanced optimizer you can find but (hopefully) it is simple and easy to customize & extend.
 
+# Installation
+```bash
+dotnet add package ApproximateOptimization
+```
+
 # Examples
 ```c#
 // Note: There are more accurate and faster algorithms for the below problems which are problem-specific
@@ -122,4 +127,4 @@ public static void Example3_Equation_solver()
 It depends on the actual problem: if it converges to a single solution and you can use only gradient ascent optimizer, the result will be nearly instant and very accurate. But for problems with multiple local maxima, or even worse: local maxima densly packed in clusters, the optimizer should start with a lot of iterations of simulated annealing. You can have a look at unit tests [HERE](https://github.com/krzyszsz/ApproximateOptimization/blob/master/ApproximateOptimization.Tests/CompositeOptimzerTests.cs#L85) and [HERE](https://github.com/krzyszsz/ApproximateOptimization/blob/master/ApproximateOptimization.Tests/GradientAscentOptimzerTests.cs#L66) and [HERE](https://github.com/krzyszsz/ApproximateOptimization/blob/master/ApproximateOptimization.Tests/SimulatedAnnealingOptimizerTests.cs#L73) in this project which demonstrates the accuracy of the results for various configurations. Obviously, some problems don't have the properties necessary to use this tool (for example, this optimizer will not work well for "white noise" because finding one high value of white noise does not imply that other high values are in the local area).
 
 # Motivation
-I have built this library for myself for some unspecified future projects around ML. I could just use some existing library but I think it's often better to use a tool that you understand well than a more advanced tool which you can't configure properly.
+I have built this library for myself for some unspecified future projects around ML. I could have used an existing library which could work fine but I think it's often better to use a tool that I understand well than a more advanced tool whose configuration may be confusing.
