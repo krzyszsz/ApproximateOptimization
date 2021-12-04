@@ -8,11 +8,11 @@
     <Authors>Krzysztof Janiszewski</Authors>
     <PackageReadmeFile>shortReadme.md</PackageReadmeFile>
     <Description>A simple heuristic optimizer based on simulated annealing with gradient ascent search.</Description>
-    <PackageLicenseFile>C:\Users\kj\source\repos\ApproximateOptimization\LICENSE</PackageLicenseFile>
+    <PackageLicenseFile>..\LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/krzyszsz/ApproximateOptimization</PackageProjectUrl>
     <SignAssembly>True</SignAssembly>
     <DelaySign>False</DelaySign>
-    <AssemblyOriginatorKeyFile>C:\Users\kj\source\repos\ApproximateOptimization\keyForAssemblyIdentity.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\keyForAssemblyIdentity.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
