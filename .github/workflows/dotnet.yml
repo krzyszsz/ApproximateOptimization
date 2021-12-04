@@ -34,4 +34,4 @@ jobs:
     - name: Test
       run: dotnet test --configuration Release /p:Version=${{ steps.gitversion.outputs.VERSION }} --no-build --verbosity normal
     - name: Push generated package to GitHub registry
-      run: ls -R; pwd; dotnet nuget push ./ApproximateOptimization/bin/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{secrets.NUGET_API_KEY}}
+      run: dotnet nuget push ./ApproximateOptimization/bin/Release/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{secrets.NUGET_API_KEY}}
