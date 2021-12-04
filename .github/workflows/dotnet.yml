@@ -14,8 +14,6 @@ jobs:
     steps:
     - name: Install GitVersion
       uses: codacy/git-version@2.4.0
-      with:
-          versionSpec: '5.x'
     - name: Checkout Code
       uses: actions/checkout@v2
       with:
