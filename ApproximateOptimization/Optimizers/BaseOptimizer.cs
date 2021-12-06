@@ -46,8 +46,8 @@ namespace ApproximateOptimization
             var sw = new Stopwatch();
             sw.Start();
             while (
-                (problemParameters.maxIterations > 0 && iterations < problemParameters.maxIterations) || 
-                (problemParameters.timeLimit != default && sw.Elapsed < problemParameters.timeLimit))
+                (problemParameters.maxIterations <= 0 || iterations < problemParameters.maxIterations) && 
+                (problemParameters.timeLimit == default || sw.Elapsed < problemParameters.timeLimit))
             {
                 iterations++;
                 NextSolution();
