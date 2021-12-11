@@ -48,7 +48,7 @@ namespace ApproximateOptimization
 
         public virtual void Validate()
         {
-            if (maxIterations == -1 && timeLimit == default(TimeSpan))
+            if (maxIterations == -1 && timeLimit == default(TimeSpan) && CancellationToken == default(CancellationToken))
             {
                 throw new ArgumentException("Missing timeLimit or maxIterations argument. Without them the algorithm would never stop!");
             }

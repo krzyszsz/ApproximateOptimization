@@ -53,13 +53,16 @@ namespace ApproximateOptimization
             long iterations = 0;
             var sw = new Stopwatch();
             sw.Start();
-            while (
-                (problemParameters.maxIterations > 0 && iterations < problemParameters.maxIterations) || 
-                (problemParameters.timeLimit != default && sw.Elapsed < problemParameters.timeLimit) ||
-                (problemParameters.CancellationToken != default(CancellationToken) && !problemParameters.CancellationToken.IsCancellationRequested)) 
+            while (true)
             {
                 iterations++;
                 NextSolution();
+
+                if (problemParameters.maxIterations > 0 && iterations >= problemParameters.maxIterations) break;
+                if (problemParameters.timeLimit != default && sw.Elapsed >= problemParameters.timeLimit) break;
+                if (problemParameters.CancellationToken != default(CancellationToken)
+                    && problemParameters.CancellationToken.IsCancellationRequested)
+                    break;
             }
             sw.Stop();
             ElapsedTime = sw.Elapsed;

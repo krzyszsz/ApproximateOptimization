@@ -101,6 +101,7 @@ namespace ApproximateOptimization.Tests
             _ = Task.Run(() => sut.FindMaximum());
             await Task.Delay(100);
             c.Cancel();
+            await Task.Delay(1000);
 
             Assert.That(sut.BestSolutionSoFar.Length, Is.EqualTo(2));
             Assert.That(sut.SolutionFound, Is.EqualTo(true));
