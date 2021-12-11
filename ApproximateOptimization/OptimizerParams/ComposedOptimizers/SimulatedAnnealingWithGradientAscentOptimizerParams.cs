@@ -15,7 +15,7 @@ namespace ApproximateOptimization
             base.Validate();
             if (LocalAreaMultiplier <= 0 || LocalAreaMultiplier >= 1)
             {
-                throw new ArgumentException("localAreaMultiplier multiplier should be a number greater than 0 and less than 1.");
+                throw new ArgumentException("LocalAreaMultiplier should be a number greater than 0 and less than 1.");
             }
         }
     }

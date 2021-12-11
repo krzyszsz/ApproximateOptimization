@@ -17,6 +17,8 @@
         /// you may accidentally have a local maximum inside of the range and range discovery
         /// will not trigger range widening, potentially missing global maximum).
         /// </param>
+        /// <param name="rangeDiscoveryMaxAttempts">Maximum number of times the optimizer will be run
+        /// with widening solution range. Parameter only works when rangeDiscovery is passed as true.</param>
         /// <returns>An optimizer employing MultithreadedOptimizer to run SimulatedAnnealingWithGradientAscent</returns>
         public static IOptimizer GetCompositeOptimizer(
             SimulatedAnnealingWithGradientAscentOptimizerParams optimizerParams, int threads = 8, bool rangeDiscovery = false, int rangeDiscoveryMaxAttempts=50)

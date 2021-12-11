@@ -29,9 +29,7 @@ namespace ApproximateOptimizationExamples
         {
             // This example finds a simple regression line for a couple of points.
             // To do that we need to minimize the sum of vertical distances to our line.
-            // This obviously can use more complex regression models, not only lines
-            // (imagine we could use trigonometric functions to make a slow version
-            // of discrete frequency transformation).
+            // This obviously can use more complex regression models, not only lines.
 
             // Please note range discovery parameter. It's convenient but may be misleading;
             // it's better to give the expected range in the beginning because range discovery

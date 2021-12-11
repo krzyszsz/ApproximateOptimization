@@ -37,12 +37,12 @@ namespace ApproximateOptimization
         public long MaxIterations { get; set; } = -1;
 
         /// <summary>
-        /// CancellationToken passed into optimizer to better control its lifetimee optimizer.
+        /// CancellationToken passed into optimizer to better control its lifetime optimizer.
         /// </summary>
         public CancellationToken CancellationToken { get; set; } = default(CancellationToken);
 
         /// <summary>
-        /// Range defined for each dimension. When omtted, all dimensions have assumed range 0..1.
+        /// Range defined for each dimension. When omitted, all dimensions have assumed range 0..1.
         /// </summary>
         public double[][] SolutionRange { get; set; } = null;
 

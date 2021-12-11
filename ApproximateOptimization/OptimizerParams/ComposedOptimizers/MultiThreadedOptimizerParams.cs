@@ -12,7 +12,7 @@ namespace ApproximateOptimization
         {
             if (CreateOptimizer == null)
             {
-                throw new ArgumentException("Missing createOptimizer argument.");
+                throw new ArgumentException("Missing CreateOptimizer argument.");
             }
             if (ThreadCount < 1)
             {
@@ -20,7 +20,7 @@ namespace ApproximateOptimization
             }
             if (Logger == null)
             {
-                throw new ArgumentException("Missing logger argument.");
+                throw new ArgumentException("Missing Logger argument.");
             }
         }
     }
