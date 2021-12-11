@@ -10,7 +10,6 @@ namespace ApproximateOptimization
         /// </summary>
         public double TemperatureMultiplier { get; set; } = 0.9;
 
-
         /// <summary>
         /// Having initial temperature above 1.0 gives us a number of initial iterations
         /// where the whole solution area is taken into account.
