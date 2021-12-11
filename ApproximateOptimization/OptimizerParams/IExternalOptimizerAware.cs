@@ -2,6 +2,6 @@
 {
     public interface IExternalOptimizerAware
     {
-        ExternallyInjectedOptimizerState externalOptimizerState { get; set; }
+        ExternallyInjectedOptimizerState ExternalOptimizerState { get; set; }
     }
 }

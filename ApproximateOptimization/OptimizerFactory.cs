@@ -27,21 +27,21 @@
                     new ConcreteMultiThreadedOptimizerParams(
                     optimizerParams)
                     {
-                        threadCount = threads
+                        ThreadCount = threads
                     });
             }
             return
                 new ConcreteOptimizerWithRangeDiscovery(new ConcreteOptimizerWithRangeDiscoveryParams
             {
-                maxAttempts = rangeDiscoveryMaxAttempts,
-                dimension = optimizerParams.dimension,
-                optimizerFactoryMethod = (solutionRange) =>
+                MaxAttempts = rangeDiscoveryMaxAttempts,
+                Dimension = optimizerParams.Dimension,
+                OptimizerFactoryMethod = (solutionRange) =>
                 {
-                    optimizerParams.solutionRange = solutionRange;
+                    optimizerParams.SolutionRange = solutionRange;
                     return new ConcreteCompositeOptimizer(
                     new ConcreteMultiThreadedOptimizerParams(optimizerParams)
                     {
-                        threadCount = threads,
+                        ThreadCount = threads,
                     });
                 }
             });

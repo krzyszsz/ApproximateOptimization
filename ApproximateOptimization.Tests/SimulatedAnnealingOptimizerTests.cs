@@ -15,11 +15,11 @@ namespace ApproximateOptimization.Tests
             return new SimulatedAnnealingOptimizer(
             new SimulatedAnnealingOptimizerParams
             {
-                scoreFunction = func,
-                dimension = 2,
-                maxIterations = maxIterations,
-                temperatureMultiplier = temperatureMultiplier,
-                initialTemperature = initialTemperature
+                ScoreFunction = func,
+                Dimension = 2,
+                MaxIterations = maxIterations,
+                TemperatureMultiplier = temperatureMultiplier,
+                InitialTemperature = initialTemperature
             });
         }
 

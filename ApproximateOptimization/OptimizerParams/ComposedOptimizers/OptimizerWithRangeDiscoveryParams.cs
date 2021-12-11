@@ -4,7 +4,7 @@ namespace ApproximateOptimization
 {
     public class OptimizerWithRangeDiscoveryParams<T> : BaseOptimizerParams where T : BaseOptimizerParams
     {
-        public Func<double[][], IOptimizer> optimizerFactoryMethod { get; set; }
-        public int maxAttempts { get; set; } = 50;
+        public Func<double[][], IOptimizer> OptimizerFactoryMethod { get; set; }
+        public int MaxAttempts { get; set; } = 50;
     }
 }

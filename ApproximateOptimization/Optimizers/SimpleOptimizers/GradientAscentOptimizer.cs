@@ -12,78 +12,78 @@ namespace ApproximateOptimization
     /// </summary>
     public class GradientAscentOptimizer: BaseOptimizer
     {
-        const double delta = 0.001;
-        private double[] direction;
-        private double diagonalLength;
-        private ExternallyInjectedOptimizerState externalState;
-        private GradientAscentOptimizerParams problemParameters;
+        const double _delta = 0.001;
+        private double[] _direction;
+        private double _diagonalLength;
+        private ExternallyInjectedOptimizerState _externalState;
+        private GradientAscentOptimizerParams _problemParameters;
 
         public GradientAscentOptimizer(GradientAscentOptimizerParams searchParams)
             :base(searchParams)
         {
-            problemParameters = searchParams;
-            direction = new double[searchParams.dimension];
-            externalState = ((IExternalOptimizerAware)problemParameters)?.externalOptimizerState;
-            if (externalState != null)
+            _problemParameters = searchParams;
+            _direction = new double[searchParams.Dimension];
+            _externalState = ((IExternalOptimizerAware)_problemParameters)?.ExternalOptimizerState;
+            if (_externalState != null)
             {
-                BestSolutionSoFar = externalState.CurrentSolutionAtStart;
-                currentSolution = externalState.CurrentSolution;
+                BestSolutionSoFar = _externalState.CurrentSolutionAtStart;
+                _currentSolution = _externalState.CurrentSolution;
             }
         }
 
         protected override double NextSolution()
         {
-            if (externalState != null)
+            if (_externalState != null)
             {
-                SolutionValue = externalState.SolutionValue;
+                SolutionValue = _externalState.SolutionValue;
             }
-            var smallIncrement = problemParameters.MaxJump * delta;
-            for (int i = 0; i < problemParameters.maxIterations; i++)
+            var smallIncrement = _problemParameters.MaxJump * _delta;
+            for (int i = 0; i < _problemParameters.MaxIterations; i++)
             {
                 FindDirection(smallIncrement);
                 var moreAccurateJumpLengths =
-                    problemParameters.maxIterations - i <= problemParameters.finalJumpsNumber;
+                    _problemParameters.MaxIterations - i <= _problemParameters.FinalJumpsNumber;
                 FindJumpLength(moreAccurateJumpLengths);
             }
             var currentValue = GetCurrentValueAndUpdateBest();
-            if (externalState != null)
+            if (_externalState != null)
             {
-                externalState.SolutionValue = currentValue;
-                Array.Copy(BestSolutionSoFar, externalState.BestSolutionSoFar, problemParameters.dimension);
+                _externalState.SolutionValue = currentValue;
+                Array.Copy(BestSolutionSoFar, _externalState.BestSolutionSoFar, _problemParameters.Dimension);
             }
             return currentValue;
         }
 
         private void ApplyJump(double jumpLength)
         {
-            for (int i = 0; i < problemParameters.dimension; i++)
+            for (int i = 0; i < _problemParameters.Dimension; i++)
             {
-                currentSolution[i] = BestSolutionSoFar[i] + direction[i] * jumpLength / diagonalLength;
-                currentSolution[i] = Math.Max(problemParameters.solutionRange[i][0],
-                    Math.Min(problemParameters.solutionRange[i][1], currentSolution[i]));
+                _currentSolution[i] = BestSolutionSoFar[i] + _direction[i] * jumpLength / _diagonalLength;
+                _currentSolution[i] = Math.Max(_problemParameters.SolutionRange[i][0],
+                    Math.Min(_problemParameters.SolutionRange[i][1], _currentSolution[i]));
             }
         }
 
         private double GetScoreForReplacedDimension(int i, double x)
         {
-            var initialValue = currentSolution[i];
-            currentSolution[i] = x;
-            var result = problemParameters.scoreFunction(currentSolution);
-            currentSolution[i] = initialValue;
+            var initialValue = _currentSolution[i];
+            _currentSolution[i] = x;
+            var result = _problemParameters.ScoreFunction(_currentSolution);
+            _currentSolution[i] = initialValue;
             return result;
         }
 
         private double GetScoreForJump(double jumpLength)
         {
             ApplyJump(jumpLength);
-            return problemParameters.scoreFunction(currentSolution);
+            return _problemParameters.ScoreFunction(_currentSolution);
         }
 
         private void FindGradientForDimension(int i, double smallIncrement)
         {
-            var a = currentSolution[i] - smallIncrement;
-            var b = currentSolution[i] + smallIncrement;
-            direction[i] = (GetScoreForReplacedDimension(i, b) - GetScoreForReplacedDimension(i, a)) / (b - a);
+            var a = _currentSolution[i] - smallIncrement;
+            var b = _currentSolution[i] + smallIncrement;
+            _direction[i] = (GetScoreForReplacedDimension(i, b) - GetScoreForReplacedDimension(i, a)) / (b - a);
         }
 
         private double GetVectorLength(double[] vector)
@@ -93,39 +93,39 @@ namespace ApproximateOptimization
 
         private void FindDirection(double smallIncrement)
         {
-            for (int i = 0; i< problemParameters.dimension; i++)
+            for (int i = 0; i< _problemParameters.Dimension; i++)
             {
-                var rangeWidth = (problemParameters.solutionRange[i][1] - problemParameters.solutionRange[i][0]);
+                var rangeWidth = (_problemParameters.SolutionRange[i][1] - _problemParameters.SolutionRange[i][0]);
                 FindGradientForDimension(i, smallIncrement * rangeWidth);
             }
-            var vectorLength = GetVectorLength(direction);
-            for (int i = 0; i < problemParameters.dimension; i++)
+            var vectorLength = GetVectorLength(_direction);
+            for (int i = 0; i < _problemParameters.Dimension; i++)
             {
-                direction[i] = direction[i] / vectorLength;
+                _direction[i] = _direction[i] / vectorLength;
             }
 
             // Below could be better (diagonalLength could be smaller) but it would be more complex to find it
             // so the distance to the "corner" is good enough.
-            diagonalLength = 0;
-            for (int i = 0; i < problemParameters.dimension; i++)
+            _diagonalLength = 0;
+            for (int i = 0; i < _problemParameters.Dimension; i++)
             {
                 var distance = BestSolutionSoFar[i] -
                     (
-                        direction[i] >= 0 ? problemParameters.solutionRange[i][1] : problemParameters.solutionRange[i][0]
+                        _direction[i] >= 0 ? _problemParameters.SolutionRange[i][1] : _problemParameters.SolutionRange[i][0]
                     );
-                diagonalLength += distance * distance;
+                _diagonalLength += distance * distance;
             }
-            diagonalLength = Math.Sqrt(diagonalLength);
+            _diagonalLength = Math.Sqrt(_diagonalLength);
         }
 
         private void FindJumpLength(bool moreAccurateJumpLengths)
         {
             var rangeBegin = 0.0;
-            var rangeEnd = problemParameters.MaxJump * diagonalLength;
+            var rangeEnd = _problemParameters.MaxJump * _diagonalLength;
 
             var iterationsLeft = moreAccurateJumpLengths
-                ? problemParameters.jumpLengthIterationsFinal
-                : problemParameters.jumpLengthIterationsInitial;
+                ? _problemParameters.JumpLengthIterationsFinal
+                : _problemParameters.JumpLengthIterationsInitial;
             var bestJumpLength = 0.0;
             var valueForBestJumpLength = SolutionValue;
 
@@ -133,7 +133,7 @@ namespace ApproximateOptimization
             {
                 var rangeWidth = rangeEnd - rangeBegin;
                 var mid = rangeBegin + rangeWidth * 0.5;
-                var smallIncrement = delta * rangeWidth;
+                var smallIncrement = _delta * rangeWidth;
                 var justAboveMid = mid + smallIncrement;
                 var justBelowMid = mid - smallIncrement;
                 if (justAboveMid == justBelowMid) break;

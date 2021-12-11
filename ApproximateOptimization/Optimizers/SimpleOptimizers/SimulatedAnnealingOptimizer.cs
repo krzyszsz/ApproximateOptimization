@@ -4,38 +4,38 @@ namespace ApproximateOptimization
 {
     public class SimulatedAnnealingOptimizer : BaseOptimizer
     {
-        protected double temperature;
-        protected readonly Random random;
-        private SimulatedAnnealingOptimizerParams problemParameters;
+        protected double _temperature;
+        protected readonly Random _random;
+        private SimulatedAnnealingOptimizerParams _problemParameters;
 
         public SimulatedAnnealingOptimizer(SimulatedAnnealingOptimizerParams simulatedAnnealingParams)
             : base(simulatedAnnealingParams)
         {
-            random = new Random(simulatedAnnealingParams.randomSeed);
-            temperature = simulatedAnnealingParams.initialTemperature;
-            problemParameters = simulatedAnnealingParams;
+            _random = new Random(simulatedAnnealingParams.RandomSeed);
+            _temperature = simulatedAnnealingParams.InitialTemperature;
+            _problemParameters = simulatedAnnealingParams;
         }
 
         protected override double NextSolution()
         {
-            for (int i=0; i< problemParameters.dimension; i++)
+            for (int i=0; i< _problemParameters.Dimension; i++)
             {
-                var rangeWidth = problemParameters.solutionRange[i][1] - problemParameters.solutionRange[i][0];
-                currentSolution[i] = BestSolutionSoFar[i] + (random.NextDouble() * 2.0 * rangeWidth - rangeWidth) * temperature;
-                if (currentSolution[i] > problemParameters.solutionRange[i][1])
+                var rangeWidth = _problemParameters.SolutionRange[i][1] - _problemParameters.SolutionRange[i][0];
+                _currentSolution[i] = BestSolutionSoFar[i] + (_random.NextDouble() * 2.0 * rangeWidth - rangeWidth) * _temperature;
+                if (_currentSolution[i] > _problemParameters.SolutionRange[i][1])
                 {
-                    var excess = currentSolution[i] - problemParameters.solutionRange[i][0];
+                    var excess = _currentSolution[i] - _problemParameters.SolutionRange[i][0];
                     var excessInRange = excess - Math.Floor(excess / rangeWidth) * rangeWidth;
-                    currentSolution[i] = problemParameters.solutionRange[i][0] + excessInRange;
-                } else if (currentSolution[i] < problemParameters.solutionRange[i][0])
+                    _currentSolution[i] = _problemParameters.SolutionRange[i][0] + excessInRange;
+                } else if (_currentSolution[i] < _problemParameters.SolutionRange[i][0])
                 {
-                    var deficit = problemParameters.solutionRange[i][1] - currentSolution[i];
+                    var deficit = _problemParameters.SolutionRange[i][1] - _currentSolution[i];
                     var deficitInRange = deficit - Math.Floor(deficit / rangeWidth) * rangeWidth;
-                    currentSolution[i] = problemParameters.solutionRange[i][1] - deficitInRange;
+                    _currentSolution[i] = _problemParameters.SolutionRange[i][1] - deficitInRange;
                 }
             }
-            temperature *= problemParameters.temperatureMultiplier;
-            LocalAreaAtTheEnd = temperature;
+            _temperature *= _problemParameters.TemperatureMultiplier;
+            LocalAreaAtTheEnd = _temperature;
             return GetCurrentValueAndUpdateBest();
         }
     }

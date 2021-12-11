@@ -13,19 +13,19 @@ namespace ApproximateOptimization.Tests
         {
             return new ConcreteOptimizerWithRangeDiscovery(new ConcreteOptimizerWithRangeDiscoveryParams
             {
-                maxAttempts = 50,
-                dimension = 2,
-                optimizerFactoryMethod = (solutionRange) =>
+                MaxAttempts = 50,
+                Dimension = 2,
+                OptimizerFactoryMethod = (solutionRange) =>
                 {
                     return new SimulatedAnnealingOptimizer(
                     new SimulatedAnnealingOptimizerParams
                     {
-                        dimension = 2,
-                        scoreFunction = scoreFunc,
-                        solutionRange = solutionRange,
-                        maxIterations = maxIterations,
-                        temperatureMultiplier = temperatureMultiplier,
-                        initialTemperature = initialTemperature
+                        Dimension = 2,
+                        ScoreFunction = scoreFunc,
+                        SolutionRange = solutionRange,
+                        MaxIterations = maxIterations,
+                        TemperatureMultiplier = temperatureMultiplier,
+                        InitialTemperature = initialTemperature
                     });
                 }
             });

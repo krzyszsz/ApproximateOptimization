@@ -13,9 +13,9 @@ namespace ApproximateOptimizationExamples
             var optimizer = OptimizerFactory.GetCompositeOptimizer(
                 new SimulatedAnnealingWithGradientAscentOptimizerParams
                 {
-                    scoreFunction = func,
-                    dimension = 2,
-                    maxIterations = 100,
+                    ScoreFunction = func,
+                    Dimension = 2,
+                    MaxIterations = 100,
                 });
             optimizer.FindMaximum();
             Console.WriteLine(
@@ -56,9 +56,9 @@ namespace ApproximateOptimizationExamples
             var optimizer = OptimizerFactory.GetCompositeOptimizer(
                 new SimulatedAnnealingWithGradientAscentOptimizerParams
                 {
-                    scoreFunction = minusErrorFunc,
-                    dimension = 2,
-                    maxIterations = 100,
+                    ScoreFunction = minusErrorFunc,
+                    Dimension = 2,
+                    MaxIterations = 100,
                 }, rangeDiscovery: true); 
             optimizer.FindMaximum();
             Console.WriteLine(
@@ -95,10 +95,10 @@ namespace ApproximateOptimizationExamples
             var optimizer = OptimizerFactory.GetCompositeOptimizer(
                 new SimulatedAnnealingWithGradientAscentOptimizerParams
                 {
-                    scoreFunction = minusErrorFunc,
-                    dimension = 2,
-                    maxIterations = 100,
-                    solutionRange = new[] { new[] { -10.0, +10.0 }, new[] { -10.0, +10.0 } },
+                    ScoreFunction = minusErrorFunc,
+                    Dimension = 2,
+                    MaxIterations = 100,
+                    SolutionRange = new[] { new[] { -10.0, +10.0 }, new[] { -10.0, +10.0 } },
                 }, rangeDiscovery: false);
             optimizer.FindMaximum();
             Console.WriteLine(optimizer.SolutionFound && optimizer.SolutionValue < 0.1

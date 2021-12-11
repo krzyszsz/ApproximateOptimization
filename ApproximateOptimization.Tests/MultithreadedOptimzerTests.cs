@@ -12,12 +12,12 @@ namespace ApproximateOptimization.Tests
             return new MultithreadedOptimizer<SimulatedAnnealingOptimizerParams>(
                 new MultiThreadedOptimizerParams<SimulatedAnnealingOptimizerParams>
                 {
-                    createOptimizer = (threadId) => new SimulatedAnnealingOptimizer(
+                    CreateOptimizer = (threadId) => new SimulatedAnnealingOptimizer(
                         new SimulatedAnnealingOptimizerParams
                         {
-                            scoreFunction = func,
-                            dimension = 2,
-                            maxIterations = maxIterations,
+                            ScoreFunction = func,
+                            Dimension = 2,
+                            MaxIterations = maxIterations,
                             CancellationToken = cancellationToken
                         }),
                 }
