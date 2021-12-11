@@ -1,6 +1,7 @@
 ﻿using ApproximateOptimization.Utils;
 using System;
 using System.Diagnostics;
+using System.Threading;
 
 namespace ApproximateOptimization
 {
@@ -54,7 +55,8 @@ namespace ApproximateOptimization
             sw.Start();
             while (
                 (problemParameters.maxIterations > 0 && iterations < problemParameters.maxIterations) || 
-                (problemParameters.timeLimit != default && sw.Elapsed < problemParameters.timeLimit))
+                (problemParameters.timeLimit != default && sw.Elapsed < problemParameters.timeLimit) ||
+                (problemParameters.CancellationToken != default(CancellationToken) && !problemParameters.CancellationToken.IsCancellationRequested)) 
             {
                 iterations++;
                 NextSolution();

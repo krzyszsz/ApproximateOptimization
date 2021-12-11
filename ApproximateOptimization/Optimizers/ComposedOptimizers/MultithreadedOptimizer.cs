@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using ApproximateOptimization.Utils;
 
 namespace ApproximateOptimization
 {
@@ -9,7 +8,7 @@ namespace ApproximateOptimization
     /// therefore it can be efficient to run each of them in a separate thread
     /// (assuming that value function can also use constant memory).
     /// </summary>
-    public class MultithreadedOptimizer<T> : IOptimizer where T: new()
+    public class MultithreadedOptimizer<T> : IOptimizer, IOptimizerStats where T: new()
     {
         private MultiThreadedOptimizerParams<T> problemParameters;
 
@@ -29,11 +28,18 @@ namespace ApproximateOptimization
 
         public bool SolutionFound { get; private set; }
 
+        public TimeSpan ElapsedTime { get; private set; }
+
+        public long IterationsExecuted { get; private set; }
+
+        public double LocalAreaAtTheEnd { get; private set; }
+
         public void FindMaximum()
         {
             var threads = new Thread[problemParameters.threadCount];
             var optimizers = new IOptimizer[problemParameters.threadCount];
             double[][] solutions = new double[problemParameters.threadCount][];
+            var lockSyncObject = new object();
 
             for (int i=0; i< problemParameters.threadCount; i++)
             {
@@ -54,6 +60,14 @@ namespace ApproximateOptimization
                     try
                     {
                         optimizer.FindMaximum();
+                        var optimizerStats = optimizer as IOptimizerStats;
+                        if (optimizerStats != null)
+                            lock (lockSyncObject)
+                            {
+                                ElapsedTime = optimizerStats.ElapsedTime; // From the last optimizer, not necessarily best
+                                LocalAreaAtTheEnd = optimizerStats.LocalAreaAtTheEnd; // From the last optimizer, not necessarily best
+                                IterationsExecuted += optimizerStats.IterationsExecuted;
+                            }
                     }
                     catch (Exception e)
                     {

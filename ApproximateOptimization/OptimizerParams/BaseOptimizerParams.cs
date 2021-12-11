@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 
 namespace ApproximateOptimization
 {
@@ -34,6 +35,11 @@ namespace ApproximateOptimization
         /// Maximum number of iterations: one of the possible conditions to stop looking for solutions.
         /// </summary>
         public long maxIterations { get; set; } = -1;
+
+        /// <summary>
+        /// CancellationToken passed into optimizer to better control its lifetimee optimizer.
+        /// </summary>
+        public CancellationToken CancellationToken { get; set; } = default(CancellationToken);
 
         /// <summary>
         /// Range defined for each dimension. When omtted, all dimensions have assumed range 0..1.
