@@ -22,7 +22,7 @@ namespace ApproximateOptimizationExamples
                 $"Maximum value {optimizer.SolutionValue} was found for " +
                 $"x={optimizer.BestSolutionSoFar[0]:N4} and y={optimizer.BestSolutionSoFar[1]:N4} (x&y in 0..1).");
             // This prints:
-            // Maximum value 0.8414708661335348 was found for x=1.0000 and y=0.0005 (x&y in 0..1).
+            // Maximum value 0.8414708661335348 was found for x=1.0000 and y=0.0000 (x&y in 0..1).
         }
 
         public static void Example2_Linear_regression()
