@@ -35,6 +35,7 @@ namespace ApproximateOptimization
                 }
             }
             temperature *= problemParameters.temperatureMultiplier;
+            LocalAreaAtTheEnd = temperature;
             return GetCurrentValueAndUpdateBest();
         }
     }

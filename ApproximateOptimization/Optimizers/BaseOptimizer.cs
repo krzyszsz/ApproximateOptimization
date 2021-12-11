@@ -4,7 +4,8 @@ using System.Diagnostics;
 
 namespace ApproximateOptimization
 {
-    public abstract class BaseOptimizer : IOptimizer
+
+    public abstract class BaseOptimizer : IOptimizer, IOptimizerStats
     {
         protected double[] currentSolution;
         private BaseOptimizerParams problemParameters;
@@ -14,6 +15,12 @@ namespace ApproximateOptimization
         public double SolutionValue { get; protected set; }
 
         public bool SolutionFound { get; private set; }
+
+        public TimeSpan ElapsedTime { get; protected set; }
+
+        public long IterationsExecuted { get; protected set; }
+
+        public double LocalAreaAtTheEnd { get; protected set; }
 
         /// <summary>
         /// Implementations of this method should update "currentSolution" and not change "BestSolutionSoFar"
@@ -53,6 +60,8 @@ namespace ApproximateOptimization
                 NextSolution();
             }
             sw.Stop();
+            ElapsedTime = sw.Elapsed;
+            IterationsExecuted = iterations;
             SolutionFound = true;
         }
 
