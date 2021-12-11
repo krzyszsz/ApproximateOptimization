@@ -1,4 +1,6 @@
-﻿namespace ApproximateOptimization
+﻿using System;
+
+namespace ApproximateOptimization
 {
     public class CompositeOptimizer<T, P> : MultithreadedOptimizer<P>
         where T : MultiThreadedOptimizerParams<P>

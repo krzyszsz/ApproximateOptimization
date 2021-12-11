@@ -19,7 +19,7 @@
         /// </param>
         /// <returns>An optimizer employing MultithreadedOptimizer to run SimulatedAnnealingWithGradientAscent</returns>
         public static IOptimizer GetCompositeOptimizer(
-            SimulatedAnnealingWithGradientAscentOptimizerParams optimizerParams, int threads = 8, bool rangeDiscovery = false)
+            SimulatedAnnealingWithGradientAscentOptimizerParams optimizerParams, int threads = 8, bool rangeDiscovery = false, int rangeDiscoveryMaxAttempts=50)
         {
             if (!rangeDiscovery)
             {
@@ -27,21 +27,21 @@
                     new ConcreteMultiThreadedOptimizerParams(
                     optimizerParams)
                     {
-                        threadCount = threads
+                        ThreadCount = threads
                     });
             }
             return
                 new ConcreteOptimizerWithRangeDiscovery(new ConcreteOptimizerWithRangeDiscoveryParams
             {
-                maxAttempts = 50,
-                dimension = optimizerParams.dimension,
-                optimizerFactoryMethod = (solutionRange) =>
+                MaxAttempts = rangeDiscoveryMaxAttempts,
+                Dimension = optimizerParams.Dimension,
+                OptimizerFactoryMethod = (solutionRange) =>
                 {
-                    optimizerParams.solutionRange = solutionRange;
+                    optimizerParams.SolutionRange = solutionRange;
                     return new ConcreteCompositeOptimizer(
                     new ConcreteMultiThreadedOptimizerParams(optimizerParams)
                     {
-                        threadCount = threads,
+                        ThreadCount = threads,
                     });
                 }
             });

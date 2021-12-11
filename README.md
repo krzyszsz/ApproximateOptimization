@@ -42,6 +42,8 @@ public static void Example1_FindMaximum()
     // Maximum value 0.8414708661335348 was found for x=1.0000 and y=0.0005 (x&y in 0..1).
 }
 
+struct Point { public double x; public double y; }
+
 public static void Example2_Linear_regression()
 {
     // This example finds a simple regression line for a couple of points.
