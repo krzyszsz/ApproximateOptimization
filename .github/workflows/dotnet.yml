@@ -35,7 +35,7 @@ jobs:
       run: dotnet build ApproximateOptimization.sln --configuration release /p:Version=${{ steps.gitversion.outputs.VERSION }} /p:AssemblyVersion=${{ steps.gitversion.outputs.VERSION }} /p:InformationalVersion=${{ steps.gitversion.outputs.VERSION }} --no-restore
     - name: Build
       if: github.event_name != 'push' && github.event.pull_request.merged != true
-      run: dotnet build ApproximateOptimization.sln --configuration release /p:Version=${{ steps.gitversion.outputs.VERSION }} /p:AssemblyVersion=${{ steps.gitversion.outputs.VERSION }} /p:InformationalVersion=${{ steps.gitversion.outputs.VERSION }} --no-restore
+      run: dotnet build ApproximateOptimization.sln --configuration release --no-restore
     - name: Test
       run: dotnet test --configuration Release --no-build --verbosity normal
     - name: Tag version
