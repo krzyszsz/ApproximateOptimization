@@ -78,9 +78,6 @@ namespace ApproximateOptimization.Tests
             Func<double[], double> func = (double[] vector) =>
                 Math.Sin(vector[0] * (2 * Math.PI)) + Math.Cos((vector[1] - 0.4) * (2 * Math.PI));
             var sut = GetSut(func);
-            double expectedX = 0.25;
-            double expectedY = 0.4;
-            double expectedBestValue = 2;
 
             sut.FindMaximum();
 
