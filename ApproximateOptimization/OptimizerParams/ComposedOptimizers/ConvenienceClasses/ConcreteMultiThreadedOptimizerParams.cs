@@ -7,7 +7,11 @@
     {
         public ConcreteMultiThreadedOptimizerParams(SimulatedAnnealingWithGradientAscentOptimizerParams problemParameters)
         {
-            CreateOptimizer = (int threadNumber) => new SimulatedAnnealingWithGradientAscentOptimizer(problemParameters);
+            CreateOptimizer = (int threadNumber) =>
+            {
+                problemParameters.RandomSeed = threadNumber;
+                return new SimulatedAnnealingWithGradientAscentOptimizer(problemParameters);
+            };
         }
     }
 }
