@@ -4,15 +4,15 @@ namespace ApproximateOptimization
 {
     public class GradientAscentOptimizerParams : BaseOptimizerParams, IExternalOptimizerAware
     {
-        public int jumpLengthIterationsFinal { get; set; } = 20;
-        public int jumpLengthIterationsInitial { get; set; } = 6;
-        public int finalJumpsNumber { get; set; } = 6;
+        public int JumpLengthIterationsFinal { get; set; } = 20;
+        public int JumpLengthIterationsInitial { get; set; } = 6;
+        public int FinalJumpsNumber { get; set; } = 6;
         public double MaxJump { get; set; } = 1.0;
-        ExternallyInjectedOptimizerState IExternalOptimizerAware.externalOptimizerState { get; set; }
+        ExternallyInjectedOptimizerState IExternalOptimizerAware.ExternalOptimizerState { get; set; }
 
         public GradientAscentOptimizerParams()
         {
-            maxIterations = maxIterations == 0 ? 20 : maxIterations;
+            MaxIterations = MaxIterations == 0 ? 20 : MaxIterations;
         }
 
         public override void Validate()

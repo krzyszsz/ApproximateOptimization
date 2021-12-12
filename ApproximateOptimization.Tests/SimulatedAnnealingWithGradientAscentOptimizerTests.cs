@@ -15,12 +15,12 @@ namespace ApproximateOptimization.Tests
         {
             return new SimulatedAnnealingWithGradientAscentOptimizer(new SimulatedAnnealingWithGradientAscentOptimizerParams
             {
-                scoreFunction = func,
-                dimension = 2,
-                maxIterations = maxIterations,
-                temperatureMultiplier = temperatureMultiplier,
-                initialTemperature = initialTemperature,
-                localAreaMultiplier = localAreaMultiplier
+                ScoreFunction = func,
+                Dimension = 2,
+                MaxIterations = maxIterations,
+                TemperatureMultiplier = temperatureMultiplier,
+                InitialTemperature = initialTemperature,
+                LocalAreaMultiplier = localAreaMultiplier
             });
         }
 

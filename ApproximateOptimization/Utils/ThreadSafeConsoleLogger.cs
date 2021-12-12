@@ -4,7 +4,7 @@ namespace ApproximateOptimization
 {
     public class ThreadSafeConsoleLogger : ILogger
     {
-        private object syncObject = new object();
+        private object _syncObject = new object();
 
         private ThreadSafeConsoleLogger()
         {}
@@ -13,7 +13,7 @@ namespace ApproximateOptimization
 
         public void Error(string message)
         {
-            lock(syncObject)
+            lock(_syncObject)
             {
                 Console.WriteLine(message);
             }
@@ -21,7 +21,7 @@ namespace ApproximateOptimization
 
         public void Info(string message)
         {
-            lock (syncObject)
+            lock (_syncObject)
             {
                 Console.WriteLine(message);
             }

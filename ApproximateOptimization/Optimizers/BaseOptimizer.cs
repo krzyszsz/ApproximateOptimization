@@ -8,8 +8,8 @@ namespace ApproximateOptimization
 
     public abstract class BaseOptimizer : IOptimizer, IOptimizerStats
     {
-        protected double[] currentSolution;
-        private BaseOptimizerParams problemParameters;
+        protected double[] _currentSolution;
+        private BaseOptimizerParams _problemParameters;
 
         public double[] BestSolutionSoFar { get; protected set; }
 
@@ -32,13 +32,13 @@ namespace ApproximateOptimization
         public BaseOptimizer(BaseOptimizerParams optimizerParams)
         {
             optimizerParams.ProcessStandardParametersForConstructor();
-            problemParameters = optimizerParams;
-            BestSolutionSoFar = new double[problemParameters.dimension];
-            currentSolution = new double[problemParameters.dimension];
-            var paramsFromExternalOptimizer = problemParameters as IExternalOptimizerAware;
-            if (paramsFromExternalOptimizer?.externalOptimizerState != null)
+            _problemParameters = optimizerParams;
+            BestSolutionSoFar = new double[_problemParameters.Dimension];
+            _currentSolution = new double[_problemParameters.Dimension];
+            var paramsFromExternalOptimizer = _problemParameters as IExternalOptimizerAware;
+            if (paramsFromExternalOptimizer?.ExternalOptimizerState != null)
             {
-                paramsFromExternalOptimizer.externalOptimizerState.RequestNextSolution = NextSolution;
+                paramsFromExternalOptimizer.ExternalOptimizerState.RequestNextSolution = NextSolution;
             }
             else
             {
@@ -48,18 +48,21 @@ namespace ApproximateOptimization
 
         public void FindMaximum()
         {
-            Array.Copy(currentSolution, BestSolutionSoFar, problemParameters.dimension);
-            SolutionValue = problemParameters.scoreFunction(BestSolutionSoFar);
+            Array.Copy(_currentSolution, BestSolutionSoFar, _problemParameters.Dimension);
+            SolutionValue = _problemParameters.ScoreFunction(BestSolutionSoFar);
             long iterations = 0;
             var sw = new Stopwatch();
             sw.Start();
-            while (
-                (problemParameters.maxIterations > 0 && iterations < problemParameters.maxIterations) || 
-                (problemParameters.timeLimit != default && sw.Elapsed < problemParameters.timeLimit) ||
-                (problemParameters.CancellationToken != default(CancellationToken) && !problemParameters.CancellationToken.IsCancellationRequested)) 
+            while (true)
             {
                 iterations++;
                 NextSolution();
+
+                if (_problemParameters.MaxIterations > 0 && iterations >= _problemParameters.MaxIterations) break;
+                if (_problemParameters.TimeLimit != default && sw.Elapsed >= _problemParameters.TimeLimit) break;
+                if (_problemParameters.CancellationToken != default(CancellationToken)
+                    && _problemParameters.CancellationToken.IsCancellationRequested)
+                    break;
             }
             sw.Stop();
             ElapsedTime = sw.Elapsed;
@@ -69,10 +72,10 @@ namespace ApproximateOptimization
 
         protected double GetCurrentValueAndUpdateBest()
         {
-            var value = problemParameters.scoreFunction(currentSolution);
+            var value = _problemParameters.ScoreFunction(_currentSolution);
             if (value > SolutionValue)
             {
-                Array.Copy(currentSolution, BestSolutionSoFar, problemParameters.dimension);
+                Array.Copy(_currentSolution, BestSolutionSoFar, _problemParameters.Dimension);
                 SolutionValue = value;
             }
             return value;
@@ -80,10 +83,10 @@ namespace ApproximateOptimization
 
         protected void SetInitialSolution()
         {
-            for (int i = 0; i < problemParameters.dimension; i++)
+            for (int i = 0; i < _problemParameters.Dimension; i++)
             {
-                var rangeWidth = problemParameters.solutionRange[i][1] - problemParameters.solutionRange[i][0];
-                currentSolution[i] = problemParameters.solutionRange[i][0] + rangeWidth / 2;
+                var rangeWidth = _problemParameters.SolutionRange[i][1] - _problemParameters.SolutionRange[i][0];
+                _currentSolution[i] = _problemParameters.SolutionRange[i][0] + rangeWidth / 2;
             }
         }
     }

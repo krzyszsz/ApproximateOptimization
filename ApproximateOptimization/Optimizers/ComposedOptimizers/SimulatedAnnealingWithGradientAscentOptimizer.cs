@@ -9,52 +9,52 @@ namespace ApproximateOptimization
     /// </summary>
     public class SimulatedAnnealingWithGradientAscentOptimizer : SimulatedAnnealingOptimizer
     {
-        private GradientAscentOptimizerParams gradientAscentOptimizerParams;
-        private SimulatedAnnealingWithGradientAscentOptimizerParams problemParameters;
+        private GradientAscentOptimizerParams _gradientAscentOptimizerParams;
+        private SimulatedAnnealingWithGradientAscentOptimizerParams _problemParameters;
 
         public SimulatedAnnealingWithGradientAscentOptimizer(SimulatedAnnealingWithGradientAscentOptimizerParams searchParams)
             : base(searchParams)
         {
-            problemParameters = searchParams;
-            gradientAscentOptimizerParams = new GradientAscentOptimizerParams
+            _problemParameters = searchParams;
+            _gradientAscentOptimizerParams = new GradientAscentOptimizerParams
             {
-                dimension = searchParams.dimension,
-                scoreFunction = searchParams.scoreFunction,
-                jumpLengthIterationsFinal = searchParams.jumpLengthIterationsFinal,
-                jumpLengthIterationsInitial = searchParams.jumpLengthIterationsInitial,
-                finalJumpsNumber = searchParams.finalJumpsNumber,
-                maxIterations = searchParams.gradientFollowingIterations,
-                solutionRange = searchParams.solutionRange,
-                timeLimit = searchParams.timeLimit,
+                Dimension = searchParams.Dimension,
+                ScoreFunction = searchParams.ScoreFunction,
+                JumpLengthIterationsFinal = searchParams.JumpLengthIterationsFinal,
+                JumpLengthIterationsInitial = searchParams.JumpLengthIterationsInitial,
+                FinalJumpsNumber = searchParams.FinalJumpsNumber,
+                MaxIterations = searchParams.GradientFollowingIterations,
+                SolutionRange = searchParams.SolutionRange,
+                TimeLimit = searchParams.TimeLimit,
             };
-            ((IExternalOptimizerAware)gradientAscentOptimizerParams).externalOptimizerState = GetExternallyInjectedOptimizerState();
+            ((IExternalOptimizerAware)_gradientAscentOptimizerParams).ExternalOptimizerState = GetExternallyInjectedOptimizerState();
             var gradientAscentOptimizer = new GradientAscentOptimizer(
-                gradientAscentOptimizerParams);
-            gradientAscentOptimizerParams.MaxJump = problemParameters.localAreaMultiplier * temperature;
+                _gradientAscentOptimizerParams);
+            _gradientAscentOptimizerParams.MaxJump = _problemParameters.LocalAreaMultiplier * _temperature;
         }
 
         private ExternallyInjectedOptimizerState GetExternallyInjectedOptimizerState()
         {
             return new ExternallyInjectedOptimizerState
             {
-                BestSolutionSoFar = new double[problemParameters.dimension],
-                CurrentSolution = currentSolution,
-                CurrentSolutionAtStart = new double[problemParameters.dimension],
+                BestSolutionSoFar = new double[_problemParameters.Dimension],
+                CurrentSolution = _currentSolution,
+                CurrentSolutionAtStart = new double[_problemParameters.Dimension],
             };
         }
 
         protected override double NextSolution()
         {
-            gradientAscentOptimizerParams.MaxJump = problemParameters.localAreaMultiplier * temperature / problemParameters.initialTemperature;
+            _gradientAscentOptimizerParams.MaxJump = _problemParameters.LocalAreaMultiplier * _temperature / _problemParameters.InitialTemperature;
             var currentValue = base.NextSolution();
-            var externalStateAware = ((IExternalOptimizerAware)gradientAscentOptimizerParams).externalOptimizerState;
+            var externalStateAware = ((IExternalOptimizerAware)_gradientAscentOptimizerParams).ExternalOptimizerState;
             externalStateAware.SolutionValue = currentValue;
-            Array.Copy(currentSolution, externalStateAware.CurrentSolutionAtStart, problemParameters.dimension);
-            Array.Copy(currentSolution, externalStateAware.BestSolutionSoFar, problemParameters.dimension);
+            Array.Copy(_currentSolution, externalStateAware.CurrentSolutionAtStart, _problemParameters.Dimension);
+            Array.Copy(_currentSolution, externalStateAware.BestSolutionSoFar, _problemParameters.Dimension);
             currentValue = externalStateAware.RequestNextSolution();
             if (currentValue > SolutionValue)
             {
-                Array.Copy(externalStateAware.BestSolutionSoFar, BestSolutionSoFar, problemParameters.dimension);
+                Array.Copy(externalStateAware.BestSolutionSoFar, BestSolutionSoFar, _problemParameters.Dimension);
                 // Array.Copy(externalStateAware.BestSolutionSoFar, currentSolution, problemParameters.dimension);
                 SolutionValue = currentValue;
             }

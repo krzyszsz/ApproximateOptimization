@@ -12,12 +12,12 @@ namespace ApproximateOptimization.Tests
             return new MultithreadedOptimizer<SimulatedAnnealingOptimizerParams>(
                 new MultiThreadedOptimizerParams<SimulatedAnnealingOptimizerParams>
                 {
-                    createOptimizer = (threadId) => new SimulatedAnnealingOptimizer(
+                    CreateOptimizer = (threadId) => new SimulatedAnnealingOptimizer(
                         new SimulatedAnnealingOptimizerParams
                         {
-                            scoreFunction = func,
-                            dimension = 2,
-                            maxIterations = maxIterations,
+                            ScoreFunction = func,
+                            Dimension = 2,
+                            MaxIterations = maxIterations,
                             CancellationToken = cancellationToken
                         }),
                 }
@@ -78,9 +78,6 @@ namespace ApproximateOptimization.Tests
             Func<double[], double> func = (double[] vector) =>
                 Math.Sin(vector[0] * (2 * Math.PI)) + Math.Cos((vector[1] - 0.4) * (2 * Math.PI));
             var sut = GetSut(func);
-            double expectedX = 0.25;
-            double expectedY = 0.4;
-            double expectedBestValue = 2;
 
             sut.FindMaximum();
 
@@ -101,6 +98,7 @@ namespace ApproximateOptimization.Tests
             _ = Task.Run(() => sut.FindMaximum());
             await Task.Delay(100);
             c.Cancel();
+            await Task.Delay(1000);
 
             Assert.That(sut.BestSolutionSoFar.Length, Is.EqualTo(2));
             Assert.That(sut.SolutionFound, Is.EqualTo(true));

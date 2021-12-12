@@ -30,16 +30,16 @@ public static void Example1_FindMaximum()
     var optimizer = OptimizerFactory.GetCompositeOptimizer(
         new SimulatedAnnealingWithGradientAscentOptimizerParams
         {
-            scoreFunction = func,
-            dimension = 2,
-            maxIterations = 100,
+            ScoreFunction = func,
+            Dimension = 2,
+            MaxIterations = 100,
         });
     optimizer.FindMaximum();
     Console.WriteLine(
         $"Maximum value {optimizer.SolutionValue} was found for " +
         $"x={optimizer.BestSolutionSoFar[0]:N4} and y={optimizer.BestSolutionSoFar[1]:N4} (x&y in 0..1).");
     // This prints:
-    // Maximum value 0.8414708661335348 was found for x=1.0000 and y=0.0005 (x&y in 0..1).
+    // Maximum value 0.8414708661335348 was found for x=1.0000 and y=0.0000 (x&y in 0..1).
 }
 
 struct Point { public double x; public double y; }
@@ -73,9 +73,9 @@ public static void Example2_Linear_regression()
     var optimizer = OptimizerFactory.GetCompositeOptimizer(
         new SimulatedAnnealingWithGradientAscentOptimizerParams
         {
-            scoreFunction = minusErrorFunc,
-            dimension = 2,
-            maxIterations = 100,
+            ScoreFunction = minusErrorFunc,
+            Dimension = 2,
+            MaxIterations = 100,
         }, rangeDiscovery: true); 
     optimizer.FindMaximum();
     Console.WriteLine(
@@ -112,10 +112,10 @@ public static void Example3_Equation_solver()
     var optimizer = OptimizerFactory.GetCompositeOptimizer(
         new SimulatedAnnealingWithGradientAscentOptimizerParams
         {
-            scoreFunction = minusErrorFunc,
-            dimension = 2,
-            maxIterations = 100,
-            solutionRange = new[] { new[] { -10.0, +10.0 }, new[] { -10.0, +10.0 } },
+            ScoreFunction = minusErrorFunc,
+            Dimension = 2,
+            MaxIterations = 100,
+            SolutionRange = new[] { new[] { -10.0, +10.0 }, new[] { -10.0, +10.0 } },
         }, rangeDiscovery: false);
     optimizer.FindMaximum();
     Console.WriteLine(optimizer.SolutionFound && optimizer.SolutionValue < 0.1

@@ -13,6 +13,7 @@ jobs:
 
     steps:
     - name: Install GitVersion
+      if: github.event_name == 'push' || github.event.pull_request.merged == true
       uses: codacy/git-version@2.4.0
     - name: Checkout Code
       uses: actions/checkout@v2
@@ -24,14 +25,19 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Determine Version
+      if: github.event_name == 'push' || github.event.pull_request.merged == true
       id: gitversion
       uses: codacy/git-version@2.4.0
     - name: Restore dependencies
       run: dotnet restore
-    - name: Build
+    - name: Build Versioned
+      if: github.event_name == 'push' || github.event.pull_request.merged == true
       run: dotnet build ApproximateOptimization.sln --configuration release /p:Version=${{ steps.gitversion.outputs.VERSION }} /p:AssemblyVersion=${{ steps.gitversion.outputs.VERSION }} /p:InformationalVersion=${{ steps.gitversion.outputs.VERSION }} --no-restore
+    - name: Build
+      if: github.event_name != 'push' && github.event.pull_request.merged != true
+      run: dotnet build ApproximateOptimization.sln --configuration release --no-restore
     - name: Test
-      run: dotnet test --configuration Release /p:Version=${{ steps.gitversion.outputs.VERSION }} --no-build --verbosity normal
+      run: dotnet test --configuration Release --no-build --verbosity normal
     - name: Tag version
       if: github.event_name == 'push' || github.event.pull_request.merged == true
       run: git tag ${{ steps.gitversion.outputs.VERSION }} master; git push origin ${{ steps.gitversion.outputs.VERSION }}

@@ -10,10 +10,10 @@ namespace ApproximateOptimization.Tests
             return OptimizerFactory.GetCompositeOptimizer(
                 new SimulatedAnnealingWithGradientAscentOptimizerParams
                 {
-                    scoreFunction = func,
-                    dimension = 2,
-                    maxIterations = 5,
-                    solutionRange = range ?? new[] { new[] { 0.0, 1.0 }, new[] { 0.0, 1.0 } },
+                    ScoreFunction = func,
+                    Dimension = 2,
+                    MaxIterations = 5,
+                    SolutionRange = range ?? new[] { new[] { 0.0, 1.0 }, new[] { 0.0, 1.0 } },
                 });
         }
 

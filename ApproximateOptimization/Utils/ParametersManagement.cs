@@ -26,9 +26,9 @@ namespace ApproximateOptimization.Utils
             {
                 throw new ArgumentNullException(nameof(optimizerParams));
             }
-            if (optimizerParams.solutionRange == null)
+            if (optimizerParams.SolutionRange == null)
             {
-                optimizerParams.solutionRange = GetDefaultSolutionRange(optimizerParams.dimension);
+                optimizerParams.SolutionRange = GetDefaultSolutionRange(optimizerParams.Dimension);
             }
             optimizerParams.Validate();
         }
