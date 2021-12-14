@@ -46,6 +46,11 @@ namespace ApproximateOptimization
         /// </summary>
         public double[][] SolutionRange { get; set; } = null;
 
+        /// <summary>
+        /// Optional - first solution to check that will be the base for finding other solutions.
+        /// </summary>
+        public double[] StartSolution { get; set;}
+
         public virtual void Validate()
         {
             if (MaxIterations == -1 && TimeLimit == default(TimeSpan) && CancellationToken == default(CancellationToken))
@@ -66,6 +71,11 @@ namespace ApproximateOptimization
             {
                 throw new ArgumentException(
                     $"Incorrect solution range size. Expected: {Dimension}x2 but got second dimension: {SolutionRange.First(x => x.Length != 2).Length}");
+            }
+            if (StartSolution != null && StartSolution.Length != Dimension)
+            {
+                throw new ArgumentException(
+                    $"Incorrect StartSolution dimension. Expected: {Dimension} but got first dimension: {StartSolution.Length}");
             }
         }
     }
