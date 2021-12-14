@@ -83,6 +83,11 @@ namespace ApproximateOptimization
 
         protected void SetInitialSolution()
         {
+            if (_problemParameters.StartSolution != null)
+            {
+                Array.Copy(_problemParameters.StartSolution, _currentSolution, _problemParameters.Dimension);
+                return;
+            }
             for (int i = 0; i < _problemParameters.Dimension; i++)
             {
                 var rangeWidth = _problemParameters.SolutionRange[i][1] - _problemParameters.SolutionRange[i][0];
