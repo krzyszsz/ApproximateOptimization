@@ -18,5 +18,10 @@ namespace ApproximateOptimization
                 throw new ArgumentException("LocalAreaMultiplier should be a number greater than 0 and less than 1.");
             }
         }
+
+        public SimulatedAnnealingWithGradientAscentOptimizerParams ShallowClone()
+        {
+            return MemberwiseClone() as SimulatedAnnealingWithGradientAscentOptimizerParams;
+        }
     }
 }
