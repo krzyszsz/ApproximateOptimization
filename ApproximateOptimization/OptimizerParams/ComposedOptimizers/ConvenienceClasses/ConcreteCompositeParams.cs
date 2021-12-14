@@ -6,8 +6,9 @@
         {
             CreateOptimizer = (int threadNumber) =>
             {
-                problemParameters.RandomSeed = threadNumber;
-                return new SimulatedAnnealingWithGradientAscentOptimizer(problemParameters);
+                var newProblemParameters = problemParameters.ShallowClone();
+                newProblemParameters.RandomSeed = threadNumber;
+                return new SimulatedAnnealingWithGradientAscentOptimizer(newProblemParameters);
             };
         }
     }
