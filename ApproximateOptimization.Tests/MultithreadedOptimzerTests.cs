@@ -15,6 +15,7 @@ namespace ApproximateOptimization.Tests
                     CreateOptimizer = (threadId) => new SimulatedAnnealingOptimizer(
                         new SimulatedAnnealingOptimizerParams
                         {
+                            RandomSeed = threadId,
                             ScoreFunction = func,
                             Dimension = 2,
                             MaxIterations = maxIterations,

@@ -7,8 +7,8 @@ namespace ApproximateOptimization.Tests
     {
         private IOptimizer GetSut(
             Func<double[], double> scoreFunc,
-            long maxIterations = 80,
-            double temperatureMultiplier = 0.9,
+            long maxIterations = 500,
+            double temperatureMultiplier = 0.99,
             double initialTemperature = 2.0)
         {
             return new ConcreteOptimizerWithRangeDiscovery(new ConcreteOptimizerWithRangeDiscoveryParams
@@ -27,7 +27,7 @@ namespace ApproximateOptimization.Tests
                         TemperatureMultiplier = temperatureMultiplier,
                         InitialTemperature = initialTemperature
                     });
-                }
+                },
             });
         }
 

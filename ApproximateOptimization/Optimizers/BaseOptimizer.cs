@@ -49,7 +49,7 @@ namespace ApproximateOptimization
         public void FindMaximum()
         {
             Array.Copy(_currentSolution, BestSolutionSoFar, _problemParameters.Dimension);
-            SolutionValue = _problemParameters.ScoreFunction(BestSolutionSoFar);
+            SolutionValue = double.NegativeInfinity; // _problemParameters.ScoreFunction(BestSolutionSoFar);
             long iterations = 0;
             var sw = new Stopwatch();
             sw.Start();
