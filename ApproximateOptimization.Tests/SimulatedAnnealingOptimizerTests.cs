@@ -8,8 +8,8 @@ namespace ApproximateOptimization.Tests
         private IOptimizer GetSut(
             Func<double[],
                 double> func,
-                int maxIterations=59,
-                double temperatureMultiplier = 0.9,
+                int maxIterations=500,
+                double temperatureMultiplier = 0.99,
                 double initialTemperature=2.0)
         {
             return new SimulatedAnnealingOptimizer(
