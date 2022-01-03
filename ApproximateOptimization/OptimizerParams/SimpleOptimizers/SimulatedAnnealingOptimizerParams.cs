@@ -19,7 +19,7 @@ namespace ApproximateOptimization
         /// <summary>
         /// Value used to initialize random numbers generator.
         /// </summary>
-        public int RandomSeed { get; set; } = 0;
+        public int RandomSeed { get; set; } = (int)(DateTime.UtcNow.Ticks % int.MaxValue);
 
         public override void Validate()
         {
