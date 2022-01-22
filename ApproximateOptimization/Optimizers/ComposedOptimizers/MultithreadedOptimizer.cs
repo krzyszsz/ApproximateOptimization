@@ -71,7 +71,7 @@ namespace ApproximateOptimization
                     }
                     catch (Exception e)
                     {
-                        _problemParameters.Logger.Error($"Error while running an optimizer in thread ${threadId}: ${e}");
+                       _problemParameters.Logger.Error($"Error while running an optimizer in thread ${threadId}: ${e}");
                     }
                 });
                 threads[i] = thread;

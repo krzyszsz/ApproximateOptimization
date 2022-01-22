@@ -32,12 +32,23 @@ namespace ApproximateOptimization
         {
             SolutionValue = double.NegativeInfinity;
             BestSolutionSoFar = new double[_baseOptimizerParams.Dimension];
+            Array.Copy(_baseOptimizerParams.StartSolution, BestSolutionSoFar, _baseOptimizerParams.Dimension);
             for  (var i=0; i<_baseOptimizerParams.MaxIterations; i++)
             {
-                Array.Copy(_baseOptimizerParams.StartSolution, BestSolutionSoFar, _baseOptimizerParams.Dimension);
                 for (var dimension=0; dimension<BestSolutionSoFar.Length; dimension++)
                 {
                     TryChangingDimensionInBestSolution(dimension);
+                }
+                if (i % 2 == 1) // TODO: Parametrize!
+                {
+                    for (var d = 0; d < _baseOptimizerParams.Dimension; d++)
+                    {
+                        var width = _baseOptimizerParams.SolutionRange[d][1] - _baseOptimizerParams.SolutionRange[d][0];
+                        var newWidth = width * 0.8; // TOD: Parametrize!
+                        var halfNewWidth = 0.5 * newWidth;
+                        _baseOptimizerParams.SolutionRange[d][0] = Math.Max(_baseOptimizerParams.SolutionRange[d][0], BestSolutionSoFar[d] - halfNewWidth);
+                        _baseOptimizerParams.SolutionRange[d][1] = Math.Min(_baseOptimizerParams.SolutionRange[d][1], BestSolutionSoFar[d] + halfNewWidth);
+                    }
                 }
             }
         }
@@ -51,7 +62,10 @@ namespace ApproximateOptimization
                 threads.Add(new Thread((threadNum) =>
                 {
                     var localSolution = new double[_baseOptimizerParams.Dimension];
-                    Array.Copy(BestSolutionSoFar, localSolution, _baseOptimizerParams.Dimension);
+                    lock (lockSync)
+                    {
+                        Array.Copy(BestSolutionSoFar, localSolution, _baseOptimizerParams.Dimension);
+                    }
 
                     var width = _baseOptimizerParams.SolutionRange[dimension][1] - _baseOptimizerParams.SolutionRange[dimension][0];
                     localSolution[dimension] = _baseOptimizerParams.SolutionRange[dimension][0] + (_threads <= 1 ? 0.0 : width * ((int)threadNum / (_threads - 1.0) ));
