@@ -17,6 +17,7 @@ namespace ApproximateOptimization.Tests
             {
                 ScoreFunction = func,
                 Dimension = 2,
+                RandomSeed = 0,
                 MaxIterations = maxIterations,
                 TemperatureMultiplier = temperatureMultiplier,
                 InitialTemperature = initialTemperature

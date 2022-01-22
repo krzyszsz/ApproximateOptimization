@@ -21,6 +21,7 @@ namespace ApproximateOptimization.Tests
                     new SimulatedAnnealingOptimizerParams
                     {
                         Dimension = 2,
+                        RandomSeed = 0,
                         ScoreFunction = scoreFunc,
                         SolutionRange = solutionRange,
                         MaxIterations = maxIterations,
