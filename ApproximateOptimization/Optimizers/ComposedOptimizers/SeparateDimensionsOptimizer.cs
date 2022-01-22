@@ -30,9 +30,9 @@ namespace ApproximateOptimization
 
         public void FindMaximum()
         {
-            SolutionValue = double.NegativeInfinity;
             BestSolutionSoFar = new double[_baseOptimizerParams.Dimension];
             Array.Copy(_baseOptimizerParams.StartSolution, BestSolutionSoFar, _baseOptimizerParams.Dimension);
+            SolutionValue = _baseOptimizerParams.ScoreFunction(BestSolutionSoFar);
             for  (var i=0; i<_baseOptimizerParams.MaxIterations; i++)
             {
                 for (var dimension=0; dimension<BestSolutionSoFar.Length; dimension++)
