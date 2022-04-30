@@ -8,8 +8,8 @@ namespace ApproximateOptimization.Tests
         private IOptimizer GetSut(
             Func<double[], double> scoreFunc,
             long maxIterations = 500,
-            double temperatureMultiplier = 0.99,
-            double initialTemperature = 2.0)
+            double temperatureMultiplier = 0.98,
+            double initialTemperature = 3.0)
         {
             return new ConcreteOptimizerWithRangeDiscovery(new ConcreteOptimizerWithRangeDiscoveryParams
             {
