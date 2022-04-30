@@ -22,7 +22,7 @@ namespace ApproximateOptimization
 
         protected override double NextSolution()
         {
-            for (var i=0; i<_stagePerDimension.Length; i++)
+            for (var i = 0; i < _stagePerDimension.Length; i++)
             {
                 _stagePerDimension[i] = (_stagePerDimension[i] + 1) % MaxStages;
                 if (_stagePerDimension[i] != 0) break;
