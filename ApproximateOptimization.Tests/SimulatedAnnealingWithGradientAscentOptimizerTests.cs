@@ -21,7 +21,8 @@ namespace ApproximateOptimization.Tests
                 MaxIterations = maxIterations,
                 TemperatureMultiplier = temperatureMultiplier,
                 InitialTemperature = initialTemperature,
-                LocalAreaMultiplier = localAreaMultiplier
+                LocalAreaMultiplier = localAreaMultiplier,
+                SwitchingFreq = 2
             });
         }
 

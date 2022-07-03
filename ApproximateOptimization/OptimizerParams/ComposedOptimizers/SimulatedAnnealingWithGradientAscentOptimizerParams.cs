@@ -5,10 +5,12 @@ namespace ApproximateOptimization
     public class SimulatedAnnealingWithGradientAscentOptimizerParams : SimulatedAnnealingOptimizerParams
     {
         public double LocalAreaMultiplier { get; set; } = 0.4;
-        public long GradientFollowingIterations { get; set; } = 20;
-        public int JumpLengthIterationsFinal { get; set; } = 20;
-        public int JumpLengthIterationsInitial { get; set; } = 6;
-        public int FinalJumpsNumber { get; set; } = 6;
+        public long GradientFollowingIterations { get; set; } = 19;
+        public int JumpLengthIterationsFinal { get; set; } = 19;
+        public int JumpLengthIterationsInitial { get; set; } = 5;
+        public int FinalJumpsNumber { get; set; } = 5;
+
+        public int SwitchingFreq { get; set; } = 53;
 
         public override void Validate()
         {
