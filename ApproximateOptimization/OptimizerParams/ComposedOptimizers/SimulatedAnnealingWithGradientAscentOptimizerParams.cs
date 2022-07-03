@@ -10,6 +10,8 @@ namespace ApproximateOptimization
         public int JumpLengthIterationsInitial { get; set; } = 6;
         public int FinalJumpsNumber { get; set; } = 6;
 
+        public int SwitchingFreq { get; set; } = 200;
+
         public override void Validate()
         {
             base.Validate();

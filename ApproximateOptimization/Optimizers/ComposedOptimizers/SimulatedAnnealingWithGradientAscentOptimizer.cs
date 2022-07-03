@@ -11,6 +11,7 @@ namespace ApproximateOptimization
     {
         private GradientAscentOptimizerParams _gradientAscentOptimizerParams;
         private SimulatedAnnealingWithGradientAscentOptimizerParams _problemParameters;
+        private int _switchingCounter;
 
         public SimulatedAnnealingWithGradientAscentOptimizer(SimulatedAnnealingWithGradientAscentOptimizerParams searchParams)
             : base(searchParams)
@@ -47,17 +48,29 @@ namespace ApproximateOptimization
         {
             _gradientAscentOptimizerParams.MaxJump = _problemParameters.LocalAreaMultiplier * _temperature / _problemParameters.InitialTemperature;
             var currentValue = base.NextSolution();
+            if (_switchingCounter++ % this._problemParameters.SwitchingFreq == 0)
+            {
+                var ascentCurrentValue = CallGradientAscent(currentValue);
+                if (ascentCurrentValue > currentValue) currentValue = ascentCurrentValue;
+            }
+
+            return currentValue;
+        }
+
+        private double CallGradientAscent(double currentValueOfLatestRandomPoint)
+        {
             var externalStateAware = ((IExternalOptimizerAware)_gradientAscentOptimizerParams).ExternalOptimizerState;
-            externalStateAware.SolutionValue = currentValue;
+            externalStateAware.SolutionValue = currentValueOfLatestRandomPoint;
             Array.Copy(_currentSolution, externalStateAware.CurrentSolutionAtStart, _problemParameters.Dimension);
-            Array.Copy(_currentSolution, externalStateAware.BestSolutionSoFar, _problemParameters.Dimension);
-            currentValue = externalStateAware.RequestNextSolution();
+            Array.Copy(BestSolutionSoFar, externalStateAware.BestSolutionSoFar, _problemParameters.Dimension);
+            var currentValue = externalStateAware.RequestNextSolution();
             if (currentValue > SolutionValue)
             {
                 Array.Copy(externalStateAware.BestSolutionSoFar, BestSolutionSoFar, _problemParameters.Dimension);
                 // Array.Copy(externalStateAware.BestSolutionSoFar, currentSolution, problemParameters.dimension);
                 SolutionValue = currentValue;
             }
+
             return currentValue;
         }
     }
