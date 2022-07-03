@@ -22,7 +22,7 @@ namespace ApproximateOptimization.Tests
                 TemperatureMultiplier = temperatureMultiplier,
                 InitialTemperature = initialTemperature,
                 LocalAreaMultiplier = localAreaMultiplier,
-                SwitchingFreq = 1
+                SwitchingFreq = 2
             });
         }
 
