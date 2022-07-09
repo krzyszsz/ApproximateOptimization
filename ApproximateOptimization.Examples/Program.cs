@@ -109,7 +109,9 @@ namespace ApproximateOptimizationExamples
 
         public static void Example4_Easy_optimizer()
         {
-            // Finds maximum of sin(x) * cos(y) for range x: 0..1 and y: 0..1
+			// This example demonstrates a simplified optimizer "EasyOptimizer"
+			// which finds internal parameters automatically and only needs timeout and precision.
+			// It resolves the same problem as example 1.
             var func = (double[] vector) => Math.Sin(vector[0]) * Math.Cos(vector[1]);
             var optimizer = OptimizerFactory.GetEasyOptimizer(
                 new EasyOptimizerParams
