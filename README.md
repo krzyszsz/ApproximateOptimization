@@ -8,7 +8,7 @@ The implementation aims to limit memory allocations to improve performance and a
 
 Please note that when the range is not provided, only 0..1 is searched for all dimensions - see example 1. For automatic range discovery (slow and misleading!), see example 2 employing rangeDiscovery and example 3 with provided search range. Also, by default the optimizer finds maximum, but you can flip the sign of the function to find minimum (examples 2 and 3).
 
-Example 4 shows "EasyOptimizer" which attempts to automatically adjust number of iterations and temperature multiplier so that the user only need to provie required precision and timeout.
+Example 4 shows "EasyOptimizer" which attempts to automatically adjust internal parameters (number of iterations and temperature multiplier) so that the usage gets simplified and only precision and timeout are required.
 
 This is definitely not the most advanced optimizer you can find but (hopefully) it is simple and easy to customize & extend.
 
@@ -38,8 +38,8 @@ public static void Example1_FindMaximum()
 		});
 	optimizer.FindMaximum();
 	Console.WriteLine(
-		$"Maximum value {optimizer.SolutionValue} was found for " +
-		$"x={optimizer.BestSolutionSoFar[0]:N4} and y={optimizer.BestSolutionSoFar[1]:N4} (x&y in 0..1).");
+	  $"Maximum value {optimizer.SolutionValue} was found for " +
+	  $"x={optimizer.BestSolutionSoFar[0]:N4} and y={optimizer.BestSolutionSoFar[1]:N4} (x&y in 0..1).");
 	// This prints:
 	// Maximum value 0.8414709848078902 was found for x=1.0000 and y=0.0000 (x&y in 0..1).
 }
@@ -81,8 +81,8 @@ public static void Example2_Linear_regression()
 		}, rangeDiscovery: true); 
 	optimizer.FindMaximum();
 	Console.WriteLine(
-		$"Found regression line " +
-		$"y = {optimizer.BestSolutionSoFar[0]:N4}*x + {optimizer.BestSolutionSoFar[1]:N4}");
+	  $"Found regression line " +
+	  $"y = {optimizer.BestSolutionSoFar[0]:N4}*x + {optimizer.BestSolutionSoFar[1]:N4}");
 	// This prints:
 	// Found regression line y = 10.8605*x + 8.6941
 }
@@ -130,7 +130,9 @@ public static void Example3_Equation_solver()
 
 public static void Example4_Easy_optimizer()
 {
-	// Finds maximum of sin(x) * cos(y) for range x: 0..1 and y: 0..1
+	// This example demonstrates a simplified optimizer "EasyOptimizer"
+	// which finds internal parameters automatically and only needs timeout and precision.
+	// It resolves the same problem as example 1.
 	var func = (double[] vector) => Math.Sin(vector[0]) * Math.Cos(vector[1]);
 	var optimizer = OptimizerFactory.GetEasyOptimizer(
 		new EasyOptimizerParams
@@ -141,8 +143,8 @@ public static void Example4_Easy_optimizer()
 		});
 	optimizer.FindMaximum();
 	Console.WriteLine(
-		$"Maximum value {optimizer.SolutionValue} was found for " +
-		$"x={optimizer.BestSolutionSoFar[0]:N4} and y={optimizer.BestSolutionSoFar[1]:N4} (x&y in 0..1).");
+	  $"Maximum value {optimizer.SolutionValue} was found for " +
+	  $"x={optimizer.BestSolutionSoFar[0]:N4} and y={optimizer.BestSolutionSoFar[1]:N4} (x&y in 0..1).");
 	// This prints:
 	// Maximum value 0.8414709848078904 was found for x=1.0000 and y=0.0000 (x&y in 0..1).
 }
