@@ -11,7 +11,7 @@ namespace ApproximateOptimization
         /// </summary>
         public long MaxIterations { get; set; } = -1;
 
-        public virtual void Validate()
+        public override void Validate()
         {
             base.Validate();
             if (MaxIterations == -1 && TimeLimit == default(TimeSpan) && CancellationToken == default(CancellationToken))
