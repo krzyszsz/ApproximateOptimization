@@ -130,9 +130,8 @@ public static void Example3_Equation_solver()
 
 public static void Example4_Easy_optimizer()
 {
-	// This example demonstrates a simplified optimizer "EasyOptimiser"
-	// which finds internal parameters automatically
-	// and only needs timeout and precision.
+	// This example demonstrates a simplified optimizer "EasyOptimizer"
+	// which finds internal parameters automatically and only needs timeout and precision.
 	// It resolves the same problem as example 1.
 	var func = (double[] vector) => Math.Sin(vector[0]) * Math.Cos(vector[1]);
 	var optimizer = OptimizerFactory.GetEasyOptimizer(
@@ -144,8 +143,8 @@ public static void Example4_Easy_optimizer()
 		});
 	optimizer.FindMaximum();
 	Console.WriteLine(
-		$"Maximum value {optimizer.SolutionValue} was found for " +
-		$"x={optimizer.BestSolutionSoFar[0]:N4} and y={optimizer.BestSolutionSoFar[1]:N4} (x&y in 0..1).");
+	  $"Maximum value {optimizer.SolutionValue} was found for " +
+	  $"x={optimizer.BestSolutionSoFar[0]:N4} and y={optimizer.BestSolutionSoFar[1]:N4} (x&y in 0..1).");
 	// This prints:
 	// Maximum value 0.8414709848078904 was found for x=1.0000 and y=0.0000 (x&y in 0..1).
 }
