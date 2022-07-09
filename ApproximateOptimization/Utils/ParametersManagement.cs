@@ -20,7 +20,7 @@ namespace ApproximateOptimization.Utils
             return solutionRange;
         }
 
-        internal static void ProcessStandardParametersForConstructor<T>(this T optimizerParams) where T : BaseOptimizerParams
+        internal static void ProcessStandardParametersForConstructor<T>(this T optimizerParams) where T : CoreOptimizerParams
         {
             if (optimizerParams == null)
             {
