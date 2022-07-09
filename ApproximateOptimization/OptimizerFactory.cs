@@ -48,5 +48,17 @@
                 }
             });
         }
+
+        /// <summary>
+        /// Factory method creating an easy to use optimazer automatically adjusting number of iterations to achieve requested precision.
+        /// </summary>
+        /// <param name="optimizerParams">Problem definition.</param>
+        /// <param name="threads">Number of threads to run.</param>
+        /// <returns>Simple optimizer automatically adjusting number of iterations to achieve requested precision</returns>
+        public static IOptimizer GetEasyOptimizer(
+            EasyOptimizerParams optimizerParams)
+        {
+            return new EasyOptimizer(optimizerParams);
+        }
     }
 }

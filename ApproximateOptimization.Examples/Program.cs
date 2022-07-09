@@ -22,7 +22,7 @@ namespace ApproximateOptimizationExamples
                 $"Maximum value {optimizer.SolutionValue} was found for " +
                 $"x={optimizer.BestSolutionSoFar[0]:N4} and y={optimizer.BestSolutionSoFar[1]:N4} (x&y in 0..1).");
             // This prints:
-            // Maximum value 0.8414708661335348 was found for x=1.0000 and y=0.0000 (x&y in 0..1).
+            // Maximum value 0.8414709848078902 was found for x=1.0000 and y=0.0000 (x&y in 0..1).
         }
 
         public static void Example2_Linear_regression()
@@ -63,7 +63,7 @@ namespace ApproximateOptimizationExamples
                 $"Found regression line " +
                 $"y = {optimizer.BestSolutionSoFar[0]:N4}*x + {optimizer.BestSolutionSoFar[1]:N4}");
             // This prints:
-            // Found regression line y = 10.8911*x + 8.6238
+            // Found regression line y = 10.8605*x + 8.6941
         }
 
         public static void Example3_Equation_solver()
@@ -104,7 +104,26 @@ namespace ApproximateOptimizationExamples
                 $"y = {optimizer.BestSolutionSoFar[1]:N4}"
                 : "Solution not found.");
             // This prints:
-            // Equations' solution: x = 0.6046 y = 0.3721
+            // Equations' solution: x = 0.6043 y = 0.3725
+        }
+
+        public static void Example4_Easy_optimizer()
+        {
+            // Finds maximum of sin(x) * cos(y) for range x: 0..1 and y: 0..1
+            var func = (double[] vector) => Math.Sin(vector[0]) * Math.Cos(vector[1]);
+            var optimizer = OptimizerFactory.GetEasyOptimizer(
+                new EasyOptimizerParams
+                {
+                    ScoreFunction = func,
+                    Dimension = 2,
+                    RequiredPrecision = 0.01
+                });
+            optimizer.FindMaximum();
+            Console.WriteLine(
+                $"Maximum value {optimizer.SolutionValue} was found for " +
+                $"x={optimizer.BestSolutionSoFar[0]:N4} and y={optimizer.BestSolutionSoFar[1]:N4} (x&y in 0..1).");
+            // This prints:
+            // Maximum value 0.8414709848078904 was found for x=1.0000 and y=0.0000 (x&y in 0..1).
         }
 
         static void Main(string[] args)
@@ -114,6 +133,8 @@ namespace ApproximateOptimizationExamples
             Example2_Linear_regression();
 
             Example3_Equation_solver();
+
+            Example4_Easy_optimizer();
 
             Console.WriteLine("Press Enter.");
             Console.ReadLine();
