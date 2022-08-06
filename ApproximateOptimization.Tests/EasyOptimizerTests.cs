@@ -5,7 +5,7 @@ namespace ApproximateOptimization.Tests
 {
     public class EasyOptimizerTests
     {
-        private IOptimizer GetSut(Func<double[], double> func, double requiredPrecision = 0.001)
+        private IOptimizer GetSut(Func<double[], double> func, double requiredPrecision = 0.01)
         {
             return new EasyOptimizer(new EasyOptimizerParams
             {

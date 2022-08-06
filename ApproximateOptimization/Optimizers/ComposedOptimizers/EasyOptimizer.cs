@@ -40,7 +40,8 @@ namespace ApproximateOptimization
             var timeLeft = _problemParameters.TimeLimit != default ? _problemParameters.TimeLimit - sw.Elapsed : default;
             while (true)
             {
-                var requiredIterations = (int)(110 * Math.Pow(10, loopNumber++)); // Each time 10x more iterations
+                var requiredIterations = (int)(_problemParameters.InitialIterations
+                    * Math.Pow(_problemParameters.IterationsScaler, loopNumber++)); // Each time "IterationsScaler" x more iterations
 
                 var optimizer = OptimizerFactory.GetCompositeOptimizer(
                     new SimulatedAnnealingWithGradientAscentOptimizerParams
