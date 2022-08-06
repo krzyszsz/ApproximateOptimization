@@ -8,6 +8,9 @@ namespace ApproximateOptimization
 
         public double RequiredPrecision { get; set; } = 0.01;
 
+        public long InitialIterations { get; set; } = 130;
+        public double IterationsScaler { get; set; } = 3.0;
+
         private const double ImpossiblePrecision = 0.000_000_000_001;
 
         public override void Validate()
