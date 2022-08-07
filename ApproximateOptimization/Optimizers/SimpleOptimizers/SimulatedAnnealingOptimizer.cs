@@ -20,6 +20,24 @@ namespace ApproximateOptimization
             _stagePerDimension = new int[simulatedAnnealingParams.Dimension];
         }
 
+        /// <summary>
+        /// For problems where checking each solution takes a long time, it may be beneficial if each SimulatedAnnealigOptimizer
+        /// starts in a different part of the solutions space. This way we can run these optimizers concurrently and have good results
+        /// quicker.
+        /// </summary>
+        /// <param name="stage">Value from range 0 (inclusive) to 1 (inclusive) indicating part of the solutions space to start.</param>
+        public void SetInitialStage(double stage)
+        {
+            stage = stage - (long)stage;
+            var stageInt = (int)(stage * Math.Pow(MaxStages, _stagePerDimension.Length));
+            for (var position = _problemParameters.Dimension - 1; position >= 0; position--)
+            {
+                int digit = stageInt / MaxStages;
+                stageInt = stageInt - digit * MaxStages;
+                _stagePerDimension[position] = digit;
+            }
+        }
+
         protected override double NextSolution()
         {
             for (var i = 0; i < _stagePerDimension.Length; i++)
