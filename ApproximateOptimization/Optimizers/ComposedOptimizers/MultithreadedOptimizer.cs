@@ -49,6 +49,11 @@ namespace ApproximateOptimization
                     try
                     {
                         optimizer = _problemParameters.CreateOptimizer(threadIdInt);
+                        var simulatedAnnealingOptimizer = optimizer as SimulatedAnnealingOptimizer;
+                        if (simulatedAnnealingOptimizer != null)
+                        {
+                            simulatedAnnealingOptimizer.SetInitialStage(((double)i) / _problemParameters.ThreadCount);
+                        }
                         optimizers[threadIdInt] = optimizer;
                     }
                     catch (Exception e)
