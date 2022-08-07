@@ -11,6 +11,11 @@ namespace ApproximateOptimization
         public long InitialIterations { get; set; } = 130;
         public double IterationsScaler { get; set; } = 3.0;
 
+        /// <summary>
+        /// After how many iterations it should start gradient ascent.
+        /// </summary>
+        public long SwitchingFreq { get; set; } = 120;
+
         private const double ImpossiblePrecision = 0.000_000_000_001;
 
         public override void Validate()
