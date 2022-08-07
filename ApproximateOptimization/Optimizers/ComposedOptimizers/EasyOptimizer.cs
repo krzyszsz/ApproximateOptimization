@@ -38,6 +38,7 @@ namespace ApproximateOptimization
             sw.Start();
             var loopNumber = 0;
             var timeLeft = _problemParameters.TimeLimit != default ? _problemParameters.TimeLimit - sw.Elapsed : default;
+            long iterations = 0;
             while (true)
             {
                 var requiredIterations = (int)(_problemParameters.InitialIterations
@@ -49,6 +50,8 @@ namespace ApproximateOptimization
                         ScoreFunction = _problemParameters.ScoreFunction,
                         Dimension = _problemParameters.Dimension,
                         MaxIterations = requiredIterations,
+                        MinIterations = _problemParameters.MinIterations,
+                        SwitchingFreq = _problemParameters.SwitchingFreq,
                         SolutionRange = _problemParameters.SolutionRange,
                         InitialTemperature = 10.0,
                         TemperatureMultiplier = Math.Pow(_problemParameters.RequiredPrecision / 10.0, 1.0 / requiredIterations),
@@ -73,7 +76,8 @@ namespace ApproximateOptimization
                 }
 
                 timeLeft = _problemParameters.TimeLimit != default ? _problemParameters.TimeLimit - sw.Elapsed : default;
-                if (_problemParameters.TimeLimit != default && timeLeft <= TimeSpan.Zero) break;
+                iterations++;
+                if (_problemParameters.TimeLimit != default && timeLeft <= TimeSpan.Zero && iterations >= _problemParameters.MinIterations) break;
                 if (_problemParameters.CancellationToken != default(CancellationToken)
                     && _problemParameters.CancellationToken.IsCancellationRequested)
                     break;

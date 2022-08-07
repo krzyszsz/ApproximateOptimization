@@ -37,6 +37,11 @@ namespace ApproximateOptimization
         public CancellationToken CancellationToken { get; set; } = default(CancellationToken);
 
         /// <summary>
+        /// Min iterations to execute regardless of time limit.
+        /// </summary>
+        public long MinIterations { get; set; } = -1;
+
+        /// <summary>
         /// Range defined for each dimension. When omitted, all dimensions have assumed range 0..1.
         /// </summary>
         public double[][] SolutionRange { get; set; } = null;

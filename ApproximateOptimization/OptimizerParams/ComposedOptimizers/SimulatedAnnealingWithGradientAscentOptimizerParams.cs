@@ -9,8 +9,8 @@ namespace ApproximateOptimization
         public int JumpLengthIterationsFinal { get; set; } = 19;
         public int JumpLengthIterationsInitial { get; set; } = 5;
         public int FinalJumpsNumber { get; set; } = 5;
-
-        public int SwitchingFreq { get; set; } = 53;
+        public long MinIterations { get; set; } = 10;
+        public long SwitchingFreq { get; set; } = 53;
 
         public override void Validate()
         {

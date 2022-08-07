@@ -59,7 +59,7 @@ namespace ApproximateOptimization
                 NextSolution();
 
                 if (_problemParameters.MaxIterations > 0 && iterations >= _problemParameters.MaxIterations) break;
-                if (_problemParameters.TimeLimit != default && sw.Elapsed >= _problemParameters.TimeLimit) break;
+                if (_problemParameters.TimeLimit != default && sw.Elapsed >= _problemParameters.TimeLimit && iterations >= _problemParameters.MinIterations) break;
                 if (_problemParameters.CancellationToken != default(CancellationToken)
                     && _problemParameters.CancellationToken.IsCancellationRequested)
                     break;
