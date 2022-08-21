@@ -14,6 +14,7 @@ namespace ApproximateOptimization.Tests
                     Dimension = 2,
                     MaxIterations = 5,
                     SolutionRange = range ?? new[] { new[] { 0.0, 1.0 }, new[] { 0.0, 1.0 } },
+                    SwitchingFreq = 2
                 });
         }
 
