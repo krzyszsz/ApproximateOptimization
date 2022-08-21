@@ -50,7 +50,7 @@ namespace ApproximateOptimization
         {
             _gradientAscentOptimizerParams.MaxJump = _problemParameters.LocalAreaMultiplier * _temperature / _problemParameters.InitialTemperature;
             var currentValue = base.NextSolution();
-            if (_switchingCounter++ % this._problemParameters.SwitchingFreq == 0)
+            if (_switchingCounter++ % this._problemParameters.SwitchingFreq == this._problemParameters.SwitchingFreq - 1)
             {
                 var ascentCurrentValue = CallGradientAscent(currentValue);
                 if (ascentCurrentValue > currentValue) currentValue = ascentCurrentValue;
