@@ -21,12 +21,19 @@ namespace ApproximateOptimization
         /// </summary>
         public int RandomSeed { get; set; } = (int)(DateTime.UtcNow.Ticks % int.MaxValue);
 
+        public int MaxStages { get; set; } = 4;
+
         public override void Validate()
         {
             base.Validate();
             if (TemperatureMultiplier <= 0 || TemperatureMultiplier >= 1)
             {
                 throw new ArgumentException("TemperatureMultiplier should be a number greater than 0 and less than 1.");
+            }
+
+            if (MaxStages <= 0 || MaxStages > 10 || Math.Pow(MaxStages, Dimension) >= 1_000_000_000)
+            {
+                throw new ArgumentException("MaxStage should be a number from range 1..10 and MAX_STAGE to the power of DIMENSIONS should be less than 1_000_000_000.");
             }
         }
     }
