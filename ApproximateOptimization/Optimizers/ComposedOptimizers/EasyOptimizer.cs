@@ -54,6 +54,7 @@ namespace ApproximateOptimization
                         SwitchingFreq = _problemParameters.SwitchingFreq,
                         SolutionRange = _problemParameters.SolutionRange,
                         InitialTemperature = 10.0,
+                        MaxStages = 2,
                         TemperatureMultiplier = Math.Pow(_problemParameters.RequiredPrecision / 10.0, 1.0 / requiredIterations),
                         CancellationToken = _problemParameters.CancellationToken,
                         StartSolution = _problemParameters.StartSolution,

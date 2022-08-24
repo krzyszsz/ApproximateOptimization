@@ -8,7 +8,6 @@ namespace ApproximateOptimization
         protected readonly Random _random;
         private SimulatedAnnealingOptimizerParams _problemParameters;
         private int[] _stagePerDimension;
-        const int MaxStages = 4;
 
 
         public SimulatedAnnealingOptimizer(SimulatedAnnealingOptimizerParams simulatedAnnealingParams)
@@ -29,11 +28,11 @@ namespace ApproximateOptimization
         public void SetInitialStage(double stage)
         {
             stage = stage - (long)stage;
-            var stageInt = (int)(stage * Math.Pow(MaxStages, _stagePerDimension.Length));
+            var stageInt = (int)(stage * Math.Pow(_problemParameters.MaxStages, _stagePerDimension.Length));
             for (var position = _problemParameters.Dimension - 1; position >= 0; position--)
             {
-                int digit = stageInt / MaxStages;
-                stageInt = stageInt - digit * MaxStages;
+                int digit = stageInt / _problemParameters.MaxStages;
+                stageInt = stageInt - digit * _problemParameters.MaxStages;
                 _stagePerDimension[position] = digit;
             }
         }
@@ -42,14 +41,14 @@ namespace ApproximateOptimization
         {
             for (var i = 0; i < _stagePerDimension.Length; i++)
             {
-                _stagePerDimension[i] = (_stagePerDimension[i] + 1) % MaxStages;
+                _stagePerDimension[i] = (_stagePerDimension[i] + 1) % _problemParameters.MaxStages;
                 if (_stagePerDimension[i] != 0) break;
             }
 
             for (int i = 0; i < _problemParameters.Dimension; i++)
             {
                 var rangeWidth = _problemParameters.SolutionRange[i][1] - _problemParameters.SolutionRange[i][0];
-                var moreSystematicRandom = ((double)_stagePerDimension[i] / MaxStages) + (_random.NextDouble() / MaxStages);
+                var moreSystematicRandom = ((double)_stagePerDimension[i] / _problemParameters.MaxStages) + (_random.NextDouble() / _problemParameters.MaxStages);
                 if (moreSystematicRandom > 1.0) moreSystematicRandom = moreSystematicRandom - 1.0;
                 _currentSolution[i] = BestSolutionSoFar[i] + (moreSystematicRandom * 2.0 * rangeWidth - rangeWidth) * _temperature;
                 if (_currentSolution[i] > _problemParameters.SolutionRange[i][1])
