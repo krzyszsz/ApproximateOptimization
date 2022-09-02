@@ -21,7 +21,7 @@ namespace ApproximateOptimization
         /// </summary>
         public int RandomSeed { get; set; } = (int)(DateTime.UtcNow.Ticks % int.MaxValue);
 
-        public int MaxStages { get; set; } = 4;
+        public int MaxStages { get; set; } = 2;
 
         public override void Validate()
         {

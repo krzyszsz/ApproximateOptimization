@@ -3,15 +3,16 @@
     /// <summary>
     /// Convenience class with all generic arguments provided.
     /// </summary>
-    public class ConcreteMultiThreadedOptimizerParams : MultiThreadedOptimizerParams<SimulatedAnnealingWithGradientAscentOptimizerParams>
+    public class ConcreteMultiThreadedOptimizerParams : MultiThreadedOptimizerParams<MultiStrategyOptimizerParams>
     {
-        public ConcreteMultiThreadedOptimizerParams(SimulatedAnnealingWithGradientAscentOptimizerParams problemParameters)
+        public ConcreteMultiThreadedOptimizerParams(MultiStrategyOptimizerParams problemParameters)
         {
+            ScoreFunction = problemParameters.ScoreFunction;
             CreateOptimizer = (int threadNumber) =>
             {
                 var newProblemParameters = problemParameters.ShallowClone();
                 newProblemParameters.RandomSeed = threadNumber;
-                return new SimulatedAnnealingWithGradientAscentOptimizer(newProblemParameters);
+                return new MultiStrategyOptimizer(newProblemParameters);
             };
         }
     }

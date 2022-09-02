@@ -1,7 +1,7 @@
 ﻿namespace ApproximateOptimization
 {
     public class ConcreteOptimizerWithRangeDiscovery : AutoTuningFinder<
-                ConcreteOptimizerWithRangeDiscoveryParams, SimulatedAnnealingWithGradientAscentOptimizerParams>
+                ConcreteOptimizerWithRangeDiscoveryParams, MultiStrategyOptimizerParams>
     {
         public ConcreteOptimizerWithRangeDiscovery(ConcreteOptimizerWithRangeDiscoveryParams problemParameters) : base(problemParameters)
         {

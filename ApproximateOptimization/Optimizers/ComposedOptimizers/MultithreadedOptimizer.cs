@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace ApproximateOptimization
@@ -11,6 +12,8 @@ namespace ApproximateOptimization
     public class MultithreadedOptimizer<T> : IOptimizer, IOptimizerStats where T: new()
     {
         private MultiThreadedOptimizerParams<T> _problemParameters;
+        private PriorityQueue<double[], double> _bestSolutionsForGA;
+        protected readonly Random _random;
 
         public MultithreadedOptimizer(MultiThreadedOptimizerParams<T> problemParameters)
         {
@@ -19,7 +22,9 @@ namespace ApproximateOptimization
                 throw new ArgumentNullException(nameof(problemParameters));
             }
             problemParameters.Validate();
-            this._problemParameters = problemParameters;
+            _problemParameters = problemParameters;
+            _bestSolutionsForGA = new PriorityQueue<double[], double>(_problemParameters.GAPopulation+1);
+            _random = new Random(0);
         }
 
         public double[] BestSolutionSoFar { get; private set; }
@@ -91,14 +96,63 @@ namespace ApproximateOptimization
 
             for (int i=0; i< _problemParameters.ThreadCount; i++)
             {
-                if ((optimizers[i]?.SolutionFound ?? false) &&
-                    (!SolutionFound || SolutionValue < optimizers[i].SolutionValue))
+                if (optimizers[i]?.SolutionFound ?? false)
                 {
-                    SolutionValue = optimizers[i].SolutionValue;
-                    BestSolutionSoFar = optimizers[i].BestSolutionSoFar;
-                    SolutionFound = true;
+                    _bestSolutionsForGA.Enqueue(optimizers[i].BestSolutionSoFar, optimizers[i].SolutionValue);
+                    if (_bestSolutionsForGA.Count > _problemParameters.GAPopulation)
+                    {
+                        _bestSolutionsForGA.Dequeue();
+                    }
                 }
             }
+
+            RunGA((sol, val) =>
+            {
+                _bestSolutionsForGA.Enqueue(sol, val.Value);
+                if (_bestSolutionsForGA.Count > _problemParameters.GAPopulation)
+                {
+                    _bestSolutionsForGA.Dequeue();
+                }
+            });
+
+            while (_bestSolutionsForGA.TryDequeue(out var solution, out var value))
+            {
+                BestSolutionSoFar = solution;
+                SolutionValue = value;
+                SolutionFound = true;
+            }
+        }
+
+        private void RunGA(Action<double[], double?> nextSolutionSuggestedCallback)
+        {
+            var items = new List<double[]>();
+            foreach (var item in _bestSolutionsForGA.UnorderedItems)
+            {
+                items.Add(item.Element);
+            }
+            for (var i = 0; i < items.Count; i++)
+            {
+                var item = items[i];
+                for (var j = 0; j < _problemParameters.GAChildrenPerSolution; j++)
+                {
+                    if (items.Count < 2) break;
+                    var otherElementIdx = _random.Next(items.Count - 1);
+                    if (otherElementIdx >= i) otherElementIdx++;
+                    var newSolutionToCheck = CrossOver(item, items[otherElementIdx]);
+                    nextSolutionSuggestedCallback(newSolutionToCheck, _problemParameters.ScoreFunction(newSolutionToCheck));
+                }
+            }
+        }
+
+        private double[] CrossOver(double[] item1, double[] item2)
+        {
+            var result = new double[item1.Length];
+            for (var i = 0; i < item1.Length; i++)
+            {
+                var weight = _random.NextDouble();
+                result[i] = weight * item1[i] + (1 - weight) * item2[i];
+            }
+            return result;
         }
     }
 }

@@ -45,7 +45,7 @@ namespace ApproximateOptimization
                     * Math.Pow(_problemParameters.IterationsScaler, loopNumber++)); // Each time "IterationsScaler" x more iterations
 
                 var optimizer = OptimizerFactory.GetCompositeOptimizer(
-                    new SimulatedAnnealingWithGradientAscentOptimizerParams
+                    new MultiStrategyOptimizerParams
                     {
                         ScoreFunction = _problemParameters.ScoreFunction,
                         Dimension = _problemParameters.Dimension,
@@ -59,6 +59,11 @@ namespace ApproximateOptimization
                         CancellationToken = _problemParameters.CancellationToken,
                         StartSolution = _problemParameters.StartSolution,
                         TimeLimit = timeLeft,
+
+                        GAEnabled = _problemParameters.GAEnabled,
+                        GAChildrenPerSolution = _problemParameters.GAChildrenPerSolution,
+                        GAPeriod = _problemParameters.GAPeriod,
+                        GAPopulation = _problemParameters.GAPopulation,
                     }, rangeDiscovery: false, threads: _problemParameters.Threads);
                 optimizer.FindMaximum();
 

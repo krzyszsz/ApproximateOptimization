@@ -7,7 +7,7 @@
     /// This is a concrete version of CompositeOptimizer to be used for convenience where multiple generic arguments
     /// could be confusing.
     /// </summary>
-    public class ConcreteCompositeOptimizer : CompositeOptimizer<ConcreteMultiThreadedOptimizerParams, SimulatedAnnealingWithGradientAscentOptimizerParams>
+    public class ConcreteCompositeOptimizer : CompositeOptimizer<ConcreteMultiThreadedOptimizerParams, MultiStrategyOptimizerParams>
     {
         public ConcreteCompositeOptimizer(ConcreteMultiThreadedOptimizerParams problemParams)
             : base(problemParams)

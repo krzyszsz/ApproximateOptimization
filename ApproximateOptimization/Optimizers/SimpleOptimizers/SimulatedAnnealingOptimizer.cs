@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ApproximateOptimization
 {
@@ -8,7 +9,6 @@ namespace ApproximateOptimization
         protected readonly Random _random;
         private SimulatedAnnealingOptimizerParams _problemParameters;
         private int[] _stagePerDimension;
-
 
         public SimulatedAnnealingOptimizer(SimulatedAnnealingOptimizerParams simulatedAnnealingParams)
             : base(simulatedAnnealingParams)
@@ -37,7 +37,7 @@ namespace ApproximateOptimization
             }
         }
 
-        protected override double NextSolution()
+        protected override void RequestNextSolutions(Action<double[], double?> nextSolutionSuggestedCallback)
         {
             for (var i = 0; i < _stagePerDimension.Length; i++)
             {
@@ -67,7 +67,7 @@ namespace ApproximateOptimization
 
             _temperature *= _problemParameters.TemperatureMultiplier;
             LocalAreaAtTheEnd = _temperature;
-            return GetCurrentValueAndUpdateBest();
+            nextSolutionSuggestedCallback(_currentSolution, null);
         }
     }
 }

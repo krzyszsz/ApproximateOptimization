@@ -8,7 +8,7 @@ namespace ApproximateOptimization.Tests
         private IOptimizer GetSut(Func<double[], double> func, double[][] range=null)
         {
             return OptimizerFactory.GetCompositeOptimizer(
-                new SimulatedAnnealingWithGradientAscentOptimizerParams
+                new MultiStrategyOptimizerParams
                 {
                     ScoreFunction = func,
                     Dimension = 2,

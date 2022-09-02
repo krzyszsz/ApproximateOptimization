@@ -16,6 +16,11 @@ namespace ApproximateOptimization
         /// </summary>
         public long SwitchingFreq { get; set; } = 120;
 
+        public bool GAEnabled { get; set; } = true;
+        public int GAPeriod { get; set; } = 20; // Every 20 iterations
+        public int GAPopulation { get; set; } = 4; // we get 4 best solutions to create cross-overs of them (this will generate 8 new iterations - each with random other x2)
+        public int GAChildrenPerSolution { get; set; } = 2;
+
         private const double ImpossiblePrecision = 0.000_000_000_001;
 
         public override void Validate()
