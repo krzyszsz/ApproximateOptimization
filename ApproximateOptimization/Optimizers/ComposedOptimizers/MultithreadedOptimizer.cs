@@ -106,14 +106,17 @@ namespace ApproximateOptimization
                 }
             }
 
-            RunGA((sol, val) =>
+            for (var i=0; i<_problemParameters.GAGenerations; i++)
             {
-                _bestSolutionsForGA.Enqueue(sol, val.Value);
-                if (_bestSolutionsForGA.Count > _problemParameters.GAPopulation)
+                RunGA((sol, val) =>
                 {
-                    _bestSolutionsForGA.Dequeue();
-                }
-            });
+                    _bestSolutionsForGA.Enqueue(sol, val.Value);
+                    if (_bestSolutionsForGA.Count > _problemParameters.GAPopulation)
+                    {
+                        _bestSolutionsForGA.Dequeue();
+                    }
+                });
+            }
 
             while (_bestSolutionsForGA.TryDequeue(out var solution, out var value))
             {
