@@ -26,8 +26,11 @@ namespace ApproximateOptimization
         /// <summary>
         /// Implementations of this method should update "currentSolution" and not change "BestSolutionSoFar"
         /// but they can read "BestSolutionSoFar" to create next iteration based on it.
+        /// 
+        /// This method can create multiple new solutions to check - each one should be passed as an argument of the callback.
+        /// The callback will return true if the new solution is an improvement.
         /// </summary>
-        protected abstract double NextSolution();
+        protected abstract void RequestNextSolutions(Action<double[], double?> nextSolutionSuggestedCallback);
 
         public BaseOptimizer(BaseOptimizerParams optimizerParams)
         {
@@ -35,15 +38,16 @@ namespace ApproximateOptimization
             _problemParameters = optimizerParams;
             BestSolutionSoFar = new double[_problemParameters.Dimension];
             _currentSolution = new double[_problemParameters.Dimension];
-            var paramsFromExternalOptimizer = _problemParameters as IExternalOptimizerAware;
-            if (paramsFromExternalOptimizer?.ExternalOptimizerState != null)
+            SetInitialSolution();
+        }
+
+        private void CheckSolution(double[] solution, double? givenValue)
+        {
+            if (solution != _currentSolution)
             {
-                paramsFromExternalOptimizer.ExternalOptimizerState.RequestNextSolution = NextSolution;
+                Array.Copy(solution, _currentSolution, _problemParameters.Dimension);
             }
-            else
-            {
-                SetInitialSolution();
-            }
+            GetCurrentValueAndUpdateBest(givenValue);
         }
 
         public void FindMaximum()
@@ -56,7 +60,7 @@ namespace ApproximateOptimization
             while (true)
             {
                 iterations++;
-                NextSolution();
+                RequestNextSolutions(CheckSolution);
 
                 if (_problemParameters.MaxIterations > 0 && iterations >= _problemParameters.MaxIterations) break;
                 if (_problemParameters.TimeLimit != default && sw.Elapsed >= _problemParameters.TimeLimit && iterations >= _problemParameters.MinIterations) break;
@@ -70,13 +74,16 @@ namespace ApproximateOptimization
             SolutionFound = true;
         }
 
-        protected double GetCurrentValueAndUpdateBest()
+        public event Action UpdatedBestSolution;
+
+        private double GetCurrentValueAndUpdateBest(double? givenValue)
         {
-            var value = _problemParameters.ScoreFunction(_currentSolution);
+            var value = givenValue ?? _problemParameters.ScoreFunction(_currentSolution);
             if (value > SolutionValue)
             {
                 Array.Copy(_currentSolution, BestSolutionSoFar, _problemParameters.Dimension);
                 SolutionValue = value;
+                UpdatedBestSolution?.Invoke();
             }
             return value;
         }
@@ -86,6 +93,10 @@ namespace ApproximateOptimization
             if (_problemParameters.StartSolution != null)
             {
                 Array.Copy(_problemParameters.StartSolution, _currentSolution, _problemParameters.Dimension);
+                if (_problemParameters.StartSolutionValue != null)
+                {
+                    SolutionValue = _problemParameters.StartSolutionValue.Value;
+                }
                 return;
             }
             for (int i = 0; i < _problemParameters.Dimension; i++)

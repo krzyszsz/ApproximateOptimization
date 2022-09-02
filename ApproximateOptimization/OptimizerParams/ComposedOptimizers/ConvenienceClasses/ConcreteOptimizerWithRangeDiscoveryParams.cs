@@ -1,5 +1,5 @@
 ﻿namespace ApproximateOptimization
 {
-    public class ConcreteOptimizerWithRangeDiscoveryParams : OptimizerWithRangeDiscoveryParams<SimulatedAnnealingWithGradientAscentOptimizerParams>
+    public class ConcreteOptimizerWithRangeDiscoveryParams : OptimizerWithRangeDiscoveryParams<MultiStrategyOptimizerParams>
     { }
 }

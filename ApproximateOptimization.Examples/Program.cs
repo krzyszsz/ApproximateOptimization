@@ -11,7 +11,7 @@ namespace ApproximateOptimizationExamples
             // Finds maximum of sin(x) * cos(y) for range x: 0..1 and y: 0..1
             var func = (double[] vector) => Math.Sin(vector[0]) * Math.Cos(vector[1]);
             var optimizer = OptimizerFactory.GetCompositeOptimizer(
-                new SimulatedAnnealingWithGradientAscentOptimizerParams
+                new MultiStrategyOptimizerParams
                 {
                     ScoreFunction = func,
                     Dimension = 2,
@@ -52,7 +52,7 @@ namespace ApproximateOptimizationExamples
             var minusErrorFunc = (double[] coefficients) => -errorFunction(coefficients);
 
             var optimizer = OptimizerFactory.GetCompositeOptimizer(
-                new SimulatedAnnealingWithGradientAscentOptimizerParams
+                new MultiStrategyOptimizerParams
                 {
                     ScoreFunction = minusErrorFunc,
                     Dimension = 2,
@@ -91,7 +91,7 @@ namespace ApproximateOptimizationExamples
             // Below: We need to flip the sign of the error function to minimize it rather than maximize it.
             var minusErrorFunc = (double[] variables) => -errorFunction(variables);
             var optimizer = OptimizerFactory.GetCompositeOptimizer(
-                new SimulatedAnnealingWithGradientAscentOptimizerParams
+                new MultiStrategyOptimizerParams
                 {
                     ScoreFunction = minusErrorFunc,
                     Dimension = 2,

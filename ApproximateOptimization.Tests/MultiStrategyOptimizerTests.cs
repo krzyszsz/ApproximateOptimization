@@ -3,7 +3,7 @@ using System;
 
 namespace ApproximateOptimization.Tests
 {
-    public class SimulatedAnnealingWithGradientAscentOptimizerTests
+    public class MultiStrategyOptimizerTests
     {
         private IOptimizer GetSut(
             Func<double[], double> func,
@@ -13,7 +13,7 @@ namespace ApproximateOptimization.Tests
             double localAreaMultiplier=0.2
             )
         {
-            return new SimulatedAnnealingWithGradientAscentOptimizer(new SimulatedAnnealingWithGradientAscentOptimizerParams
+            return new MultiStrategyOptimizer(new MultiStrategyOptimizerParams
             {
                 ScoreFunction = func,
                 Dimension = 2,

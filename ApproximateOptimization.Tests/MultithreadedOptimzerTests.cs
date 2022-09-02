@@ -12,6 +12,7 @@ namespace ApproximateOptimization.Tests
             return new MultithreadedOptimizer<SimulatedAnnealingOptimizerParams>(
                 new MultiThreadedOptimizerParams<SimulatedAnnealingOptimizerParams>
                 {
+                    ScoreFunction = func,
                     CreateOptimizer = (threadId) => new SimulatedAnnealingOptimizer(
                         new SimulatedAnnealingOptimizerParams
                         {

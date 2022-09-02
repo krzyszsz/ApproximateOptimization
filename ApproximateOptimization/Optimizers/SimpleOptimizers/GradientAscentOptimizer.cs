@@ -15,7 +15,6 @@ namespace ApproximateOptimization
         const double _delta = 0.001;
         private double[] _direction;
         private double _diagonalLength;
-        private ExternallyInjectedOptimizerState _externalState;
         private GradientAscentOptimizerParams _problemParameters;
 
         public GradientAscentOptimizer(GradientAscentOptimizerParams searchParams)
@@ -23,35 +22,18 @@ namespace ApproximateOptimization
         {
             _problemParameters = searchParams;
             _direction = new double[searchParams.Dimension];
-            _externalState = ((IExternalOptimizerAware)_problemParameters)?.ExternalOptimizerState;
-            if (_externalState != null)
-            {
-                BestSolutionSoFar = _externalState.CurrentSolutionAtStart;
-                _currentSolution = _externalState.CurrentSolution;
-            }
         }
 
-        protected override double NextSolution()
+        protected override void RequestNextSolutions(Action<double[], double?> nextSolutionSuggestedCallback)
         {
-            if (_externalState != null)
-            {
-                SolutionValue = _externalState.SolutionValue;
-            }
             var smallIncrement = _problemParameters.MaxJump * _delta;
             for (int i = 0; i < _problemParameters.MaxIterations; i++)
             {
                 FindDirection(smallIncrement);
                 var moreAccurateJumpLengths =
                     _problemParameters.MaxIterations - i <= _problemParameters.FinalJumpsNumber;
-                FindJumpLength(moreAccurateJumpLengths);
+                FindJumpLength(moreAccurateJumpLengths, nextSolutionSuggestedCallback);
             }
-            var currentValue = GetCurrentValueAndUpdateBest();
-            if (_externalState != null)
-            {
-                _externalState.SolutionValue = currentValue;
-                Array.Copy(BestSolutionSoFar, _externalState.BestSolutionSoFar, _problemParameters.Dimension);
-            }
-            return currentValue;
         }
 
         private void ApplyJump(double jumpLength)
@@ -118,7 +100,7 @@ namespace ApproximateOptimization
             _diagonalLength = Math.Sqrt(_diagonalLength);
         }
 
-        private void FindJumpLength(bool moreAccurateJumpLengths)
+        private void FindJumpLength(bool moreAccurateJumpLengths, Action<double[], double?> nextSolutionSuggestedCallback)
         {
             var rangeBegin = 0.0;
             var rangeEnd = _problemParameters.MaxJump * _diagonalLength;
@@ -162,7 +144,7 @@ namespace ApproximateOptimization
             if (valueForBestJumpLength > SolutionValue)
             {
                 ApplyJump(bestJumpLength);
-                GetCurrentValueAndUpdateBest();
+                nextSolutionSuggestedCallback(_currentSolution, valueForBestJumpLength);
             }
         }
     }

@@ -51,6 +51,11 @@ namespace ApproximateOptimization
         /// </summary>
         public double[] StartSolution { get; set; }
 
+        /// <summary>
+        /// Optional value of the start solution.
+        /// </summary>
+        public double? StartSolutionValue { get; set; }
+
         public virtual void Validate()
         {
             if (SolutionRange == null)
