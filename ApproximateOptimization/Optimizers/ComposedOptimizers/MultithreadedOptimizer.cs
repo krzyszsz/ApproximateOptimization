@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ApproximateOptimization
 {
@@ -106,14 +107,18 @@ namespace ApproximateOptimization
                 }
             }
 
+            var syncRoot = new object();
             for (var i=0; i<_problemParameters.GAGenerations; i++)
             {
                 RunGA((sol, val) =>
                 {
-                    _bestSolutionsForGA.Enqueue(sol, val.Value);
-                    if (_bestSolutionsForGA.Count > _problemParameters.GAPopulation)
+                    lock (syncRoot)
                     {
-                        _bestSolutionsForGA.Dequeue();
+                        _bestSolutionsForGA.Enqueue(sol, val.Value);
+                        if (_bestSolutionsForGA.Count > _problemParameters.GAPopulation)
+                        {
+                            _bestSolutionsForGA.Dequeue();
+                        }
                     }
                 });
             }
@@ -133,18 +138,22 @@ namespace ApproximateOptimization
             {
                 items.Add(item.Element);
             }
+            if (items.Count < 2) return;
+            var solutionsToCheck = new List<double[]>();
             for (var i = 0; i < items.Count; i++)
             {
                 var item = items[i];
                 for (var j = 0; j < _problemParameters.GAChildrenPerSolution; j++)
                 {
-                    if (items.Count < 2) break;
                     var otherElementIdx = _random.Next(items.Count - 1);
                     if (otherElementIdx >= i) otherElementIdx++;
                     var newSolutionToCheck = CrossOver(item, items[otherElementIdx]);
-                    nextSolutionSuggestedCallback(newSolutionToCheck, _problemParameters.ScoreFunction(newSolutionToCheck));
+                    solutionsToCheck.Add(newSolutionToCheck);
                 }
             }
+            Parallel.ForEach(solutionsToCheck, 
+                new ParallelOptions { MaxDegreeOfParallelism = _problemParameters.ThreadCount },
+                newSolutionToCheck => nextSolutionSuggestedCallback(newSolutionToCheck, _problemParameters.ScoreFunction(newSolutionToCheck)));
         }
 
         private double[] CrossOver(double[] item1, double[] item2)
