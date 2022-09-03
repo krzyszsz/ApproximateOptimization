@@ -92,12 +92,12 @@ namespace ApproximateOptimization
             {
                 items.Add(item.Element);
             }
+            if (items.Count < 2) return;
             for (var i = 0; i < items.Count; i++)
             {
                 var item = items[i];
                 for (var j = 0; j < _problemParameters.GAChildrenPerSolution; j++)
                 {
-                    if (items.Count < 2) break;
                     var otherElementIdx = _random.Next(items.Count - 1);
                     if (otherElementIdx >= i) otherElementIdx++;
                     var newSolutionToCheck = CrossOver(item, items[otherElementIdx]);
