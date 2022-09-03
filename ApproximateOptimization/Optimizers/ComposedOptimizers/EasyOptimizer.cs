@@ -29,6 +29,10 @@ namespace ApproximateOptimization
             optimizerParams.ProcessStandardParametersForConstructor();
             _problemParameters = optimizerParams;
             BestSolutionSoFar = new double[_problemParameters.Dimension];
+            if (optimizerParams.StartSolution != null)
+            {
+                Array.Copy(_problemParameters.StartSolution, BestSolutionSoFar, _problemParameters.Dimension);
+            }
         }
 
         public void FindMaximum()
