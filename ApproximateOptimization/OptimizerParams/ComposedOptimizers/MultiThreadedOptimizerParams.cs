@@ -9,7 +9,6 @@ namespace ApproximateOptimization
         public ILogger Logger { get; set; } = ThreadSafeConsoleLogger.Instance;
 
         public Func<double[], double> ScoreFunction { get; set; }
-        public bool GAEnabled { get; set; } = true;
         public int GAPopulation { get; set; } = 4;
         public int GAChildrenPerSolution { get; set; } = 2;
         public int GAGenerations { get; set; } = 3;
