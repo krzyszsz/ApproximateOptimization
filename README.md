@@ -30,7 +30,7 @@ public static void Example1_FindMaximum()
 	// Finds maximum of sin(x) * cos(y) for range x: 0..1 and y: 0..1
 	var func = (double[] vector) => Math.Sin(vector[0]) * Math.Cos(vector[1]);
 	var optimizer = OptimizerFactory.GetCompositeOptimizer(
-		new SimulatedAnnealingWithGradientAscentOptimizerParams
+		new MultiStrategyOptimizerParams
 		{
 			ScoreFunction = func,
 			Dimension = 2,
@@ -38,8 +38,8 @@ public static void Example1_FindMaximum()
 		});
 	optimizer.FindMaximum();
 	Console.WriteLine(
-	  $"Maximum value {optimizer.SolutionValue} was found for " +
-	  $"x={optimizer.BestSolutionSoFar[0]:N4} and y={optimizer.BestSolutionSoFar[1]:N4} (x&y in 0..1).");
+		$"Maximum value {optimizer.SolutionValue} was found for " +
+		$"x={optimizer.BestSolutionSoFar[0]:N4} and y={optimizer.BestSolutionSoFar[1]:N4} (x&y in 0..1).");
 	// This prints:
 	// Maximum value 0.8414709848078902 was found for x=1.0000 and y=0.0000 (x&y in 0..1).
 }
@@ -73,7 +73,7 @@ public static void Example2_Linear_regression()
 	var minusErrorFunc = (double[] coefficients) => -errorFunction(coefficients);
 
 	var optimizer = OptimizerFactory.GetCompositeOptimizer(
-		new SimulatedAnnealingWithGradientAscentOptimizerParams
+		new MultiStrategyOptimizerParams
 		{
 			ScoreFunction = minusErrorFunc,
 			Dimension = 2,
@@ -81,8 +81,8 @@ public static void Example2_Linear_regression()
 		}, rangeDiscovery: true); 
 	optimizer.FindMaximum();
 	Console.WriteLine(
-	  $"Found regression line " +
-	  $"y = {optimizer.BestSolutionSoFar[0]:N4}*x + {optimizer.BestSolutionSoFar[1]:N4}");
+		$"Found regression line " +
+		$"y = {optimizer.BestSolutionSoFar[0]:N4}*x + {optimizer.BestSolutionSoFar[1]:N4}");
 	// This prints:
 	// Found regression line y = 10.8605*x + 8.6941
 }
@@ -112,7 +112,7 @@ public static void Example3_Equation_solver()
 	// Below: We need to flip the sign of the error function to minimize it rather than maximize it.
 	var minusErrorFunc = (double[] variables) => -errorFunction(variables);
 	var optimizer = OptimizerFactory.GetCompositeOptimizer(
-		new SimulatedAnnealingWithGradientAscentOptimizerParams
+		new MultiStrategyOptimizerParams
 		{
 			ScoreFunction = minusErrorFunc,
 			Dimension = 2,
@@ -143,8 +143,8 @@ public static void Example4_Easy_optimizer()
 		});
 	optimizer.FindMaximum();
 	Console.WriteLine(
-	  $"Maximum value {optimizer.SolutionValue} was found for " +
-	  $"x={optimizer.BestSolutionSoFar[0]:N4} and y={optimizer.BestSolutionSoFar[1]:N4} (x&y in 0..1).");
+		$"Maximum value {optimizer.SolutionValue} was found for " +
+		$"x={optimizer.BestSolutionSoFar[0]:N4} and y={optimizer.BestSolutionSoFar[1]:N4} (x&y in 0..1).");
 	// This prints:
 	// Maximum value 0.8414709848078904 was found for x=1.0000 and y=0.0000 (x&y in 0..1).
 }
