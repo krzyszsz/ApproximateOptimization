@@ -7,6 +7,7 @@ namespace ApproximateOptimization
         public int Threads { get; set; } = Environment.ProcessorCount;
 
         public double RequiredPrecision { get; set; } = 0.01;
+        public long MaxIterations { get; set; } = -1;
 
         public long InitialIterations { get; set; } = 130;
         public double IterationsScaler { get; set; } = 3.0;

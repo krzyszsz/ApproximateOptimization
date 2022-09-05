@@ -87,6 +87,8 @@ namespace ApproximateOptimization
 
                 timeLeft = _problemParameters.TimeLimit != default ? _problemParameters.TimeLimit - sw.Elapsed : default;
                 iterations++;
+                if (_problemParameters.MaxIterations > 0 && iterations >= _problemParameters.MaxIterations) break;
+                if (_problemParameters.TimeLimit != default && timeLeft <= TimeSpan.Zero && _problemParameters.MinIterations == -1) break;
                 if (_problemParameters.TimeLimit != default && timeLeft <= TimeSpan.Zero && iterations >= _problemParameters.MinIterations) break;
                 if (_problemParameters.CancellationToken != default(CancellationToken)
                     && _problemParameters.CancellationToken.IsCancellationRequested)
