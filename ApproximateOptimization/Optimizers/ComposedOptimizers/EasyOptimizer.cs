@@ -37,7 +37,7 @@ namespace ApproximateOptimization
 
         public void FindMaximum()
         {
-            SolutionValue = _problemParameters.StartSolution == null ? double.NegativeInfinity : _problemParameters.ScoreFunction(BestSolutionSoFar);
+            SolutionValue = double.NegativeInfinity;
             var sw = new Stopwatch();
             sw.Start();
             var loopNumber = 0;
