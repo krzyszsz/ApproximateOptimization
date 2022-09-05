@@ -42,7 +42,6 @@ namespace ApproximateOptimization
             sw.Start();
             var loopNumber = 0;
             var timeLeft = _problemParameters.TimeLimit != default ? _problemParameters.TimeLimit - sw.Elapsed : default;
-            long iterations = 0;
             while (true)
             {
                 var requiredIterations = (int)(_problemParameters.InitialIterations
@@ -86,10 +85,9 @@ namespace ApproximateOptimization
                 }
 
                 timeLeft = _problemParameters.TimeLimit != default ? _problemParameters.TimeLimit - sw.Elapsed : default;
-                iterations++;
-                if (_problemParameters.MaxIterations > 0 && iterations >= _problemParameters.MaxIterations) break;
+                if (_problemParameters.MaxIterations > 0 && IterationsExecuted >= _problemParameters.MaxIterations) break;
                 if (_problemParameters.TimeLimit != default && timeLeft <= TimeSpan.Zero && _problemParameters.MinIterations == -1) break;
-                if (_problemParameters.TimeLimit != default && timeLeft <= TimeSpan.Zero && iterations >= _problemParameters.MinIterations) break;
+                if (_problemParameters.TimeLimit != default && timeLeft <= TimeSpan.Zero && IterationsExecuted >= _problemParameters.MinIterations) break;
                 if (_problemParameters.CancellationToken != default(CancellationToken)
                     && _problemParameters.CancellationToken.IsCancellationRequested)
                     break;
