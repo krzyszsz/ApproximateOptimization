@@ -67,7 +67,7 @@ namespace ApproximateOptimization
                         GAChildrenPerSolution = _problemParameters.GAChildrenPerSolution,
                         GAPeriod = _problemParameters.GAPeriod,
                         GAPopulation = _problemParameters.GAPopulation,
-                    }, rangeDiscovery: false, threads: _problemParameters.Threads);
+                    }, rangeDiscovery: false, threads: _problemParameters.Threads, partitions: _problemParameters.Partitions);
                 optimizer.FindMaximum();
 
                 var optimizerStats = optimizer as IOptimizerStats;

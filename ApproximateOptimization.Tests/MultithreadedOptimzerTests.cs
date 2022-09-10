@@ -13,10 +13,10 @@ namespace ApproximateOptimization.Tests
                 new MultiThreadedOptimizerParams<SimulatedAnnealingOptimizerParams>
                 {
                     ScoreFunction = func,
-                    CreateOptimizer = (threadId) => new SimulatedAnnealingOptimizer(
+                    CreateOptimizer = (partitionId) => new SimulatedAnnealingOptimizer(
                         new SimulatedAnnealingOptimizerParams
                         {
-                            RandomSeed = threadId,
+                            RandomSeed = (int)partitionId,
                             ScoreFunction = func,
                             Dimension = 2,
                             MaxIterations = maxIterations,

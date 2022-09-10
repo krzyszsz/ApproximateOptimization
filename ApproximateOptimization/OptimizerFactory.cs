@@ -21,7 +21,7 @@
         /// with widening solution range. Parameter only works when rangeDiscovery is passed as true.</param>
         /// <returns>An optimizer employing MultithreadedOptimizer to run SimulatedAnnealingWithGradientAscent</returns>
         public static IOptimizer GetCompositeOptimizer(
-            MultiStrategyOptimizerParams optimizerParams, int threads = 8, bool rangeDiscovery = false, int rangeDiscoveryMaxAttempts=50, int gAGenerations=3, int gAChildrenPerSolution=4, int gAPopulation=4)
+            MultiStrategyOptimizerParams optimizerParams, int threads = 8, int? partitions = null, bool rangeDiscovery = false, int rangeDiscoveryMaxAttempts=50, int gAGenerations=3, int gAChildrenPerSolution=4, int gAPopulation=4)
         {
             if (!rangeDiscovery)
             {
@@ -30,6 +30,7 @@
                     optimizerParams)
                     {
                         ThreadCount = threads,
+                        Partitions = partitions,
                         GAGenerations = gAGenerations,
                         GAChildrenPerSolution = gAChildrenPerSolution,
                         GAPopulation = gAPopulation

@@ -10,7 +10,7 @@
             ScoreFunction = problemParameters.ScoreFunction;
             int threadCounter = 0;
             var syncRoot = new object();
-            CreateOptimizer = (int threadNumber) =>
+            CreateOptimizer = (long partitionId) =>
             {
                 var newProblemParameters = problemParameters.ShallowClone();
                 lock (syncRoot)
@@ -21,7 +21,7 @@
                         newProblemParameters.StartSolutionValue = null;
                     }
                 }
-                newProblemParameters.RandomSeed = threadNumber;
+                newProblemParameters.RandomSeed = (int)partitionId;
                 return new MultiStrategyOptimizer(newProblemParameters);
             };
         }

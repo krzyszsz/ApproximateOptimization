@@ -15,7 +15,7 @@ namespace ApproximateOptimization.Tests
                     MaxIterations = 5,
                     SolutionRange = range ?? new[] { new[] { 0.0, 1.0 }, new[] { 0.0, 1.0 } },
                     SwitchingFreq = 2
-                });
+                }, threads: 2);
         }
 
         [Test]
@@ -78,6 +78,38 @@ namespace ApproximateOptimization.Tests
                     -Math.Pow(vector[0] - expectedX, 2) - Math.Pow(vector[1] - expectedY, 2) + expectedBestValue;
                 var searchRange = new[] { new[] { -5.0, +5.0 }, new[] { -5.0, +5.0 } };
                 var sut = GetSut(func, searchRange);
+
+                sut.FindMaximum();
+
+                Assert.That(sut.BestSolutionSoFar.Length, Is.EqualTo(2));
+                Assert.That(sut.SolutionFound, Is.EqualTo(true));
+                Assert.That(sut.BestSolutionSoFar[0], Is.EqualTo(expectedX).Within(0.000001));
+                Assert.That(sut.BestSolutionSoFar[1], Is.EqualTo(expectedY).Within(0.000001));
+                Assert.That(sut.SolutionValue, Is.EqualTo(expectedBestValue).Within(0.000001));
+            }
+        }
+
+        [Test]
+        public void FindsGoodSolutionAcrossWholeRange_WithMultiplePartitions()
+        {
+            Random random = new Random(0);
+            for (int i = 0; i < 100; i++)
+            {
+                double expectedX = random.NextDouble() * 10 - 5;
+                double expectedY = random.NextDouble() * 10 - 5;
+                double expectedBestValue = random.NextDouble();
+                Func<double[], double> func = (double[] vector) =>
+                    -Math.Pow(vector[0] - expectedX, 2) - Math.Pow(vector[1] - expectedY, 2) + expectedBestValue;
+                var searchRange = new[] { new[] { -5.0, +5.0 }, new[] { -5.0, +5.0 } };
+                var sut = OptimizerFactory.GetCompositeOptimizer(
+                    new MultiStrategyOptimizerParams
+                    {
+                        ScoreFunction = func,
+                        Dimension = 2,
+                        MaxIterations = 5,
+                        SolutionRange = searchRange,
+                        SwitchingFreq = 5,
+                    }, threads: 2, partitions: 5);
 
                 sut.FindMaximum();
 

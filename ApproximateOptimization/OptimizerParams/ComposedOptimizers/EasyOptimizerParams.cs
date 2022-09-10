@@ -6,6 +6,11 @@ namespace ApproximateOptimization
     {
         public int Threads { get; set; } = Environment.ProcessorCount;
 
+        /// <summary>
+        /// This is by default same as the number of threads but can be higher (extra partitions will be queued and executed in first free thread).
+        /// </summary>
+        public int? Partitions { get; set; } = null;
+
         public double RequiredPrecision { get; set; } = 0.01;
         public long MaxIterations { get; set; } = -1;
 
