@@ -5,10 +5,10 @@
         public ConcreteCompositeParams(MultiStrategyOptimizerParams problemParameters)
         {
             ScoreFunction = problemParameters.ScoreFunction;
-            CreateOptimizer = (int threadNumber) =>
+            CreateOptimizer = (long partitionId) =>
             {
                 var newProblemParameters = problemParameters.ShallowClone();
-                newProblemParameters.RandomSeed = threadNumber;
+                newProblemParameters.RandomSeed = (int)partitionId;
                 return new MultiStrategyOptimizer(newProblemParameters);
             };
         }

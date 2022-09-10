@@ -15,6 +15,8 @@ namespace ApproximateOptimization
         private MultiThreadedOptimizerParams<T> _problemParameters;
         private PriorityQueue<double[], double> _bestSolutionsForGA;
         protected readonly Random _random;
+        private object _lockSyncObject = new object();
+        private IOptimizer[] _optimizers;
 
         public MultithreadedOptimizer(MultiThreadedOptimizerParams<T> problemParameters)
         {
@@ -42,52 +44,29 @@ namespace ApproximateOptimization
 
         public void FindMaximum()
         {
+            int unallocatedProblemPartitions = _problemParameters.Partitions ?? _problemParameters.ThreadCount;
             var threads = new Thread[_problemParameters.ThreadCount];
-            var optimizers = new IOptimizer[_problemParameters.ThreadCount];
-            double[][] solutions = new double[_problemParameters.ThreadCount][];
-            var lockSyncObject = new object();
+            _optimizers = new IOptimizer[unallocatedProblemPartitions];
+            double[][] solutions = new double[unallocatedProblemPartitions][];
+            long partitionId = 0;
 
             for (int i=0; i< _problemParameters.ThreadCount; i++)
             {
-                var thread = new Thread((object threadId) => {
-                    int threadIdInt = (int)threadId;
-                    IOptimizer optimizer;
-                    try
+                var thread = new Thread(() =>
+                {
+                    while (UnallocatedPartitionsStillExist(ref unallocatedProblemPartitions))
                     {
-                        optimizer = _problemParameters.CreateOptimizer(threadIdInt);
-                        var simulatedAnnealingOptimizer = optimizer as SimulatedAnnealingOptimizer;
-                        if (simulatedAnnealingOptimizer != null)
+                        long partitionIdLocal;
+                        lock (_lockSyncObject)
                         {
-                            simulatedAnnealingOptimizer.SetInitialStage(((double)i) / _problemParameters.ThreadCount);
+                            partitionIdLocal = partitionId++;
                         }
-                        optimizers[threadIdInt] = optimizer;
-                    }
-                    catch (Exception e)
-                    {
-                        _problemParameters.Logger.Error($"Error while creating an optimizer in thread ${threadId}: ${e}");
-                        return;
-                    }
-
-                    try
-                    {
-                        optimizer.FindMaximum();
-                        var optimizerStats = optimizer as IOptimizerStats;
-                        if (optimizerStats != null)
-                            lock (lockSyncObject)
-                            {
-                                ElapsedTime = optimizerStats.ElapsedTime; // From the last optimizer, not necessarily best
-                                LocalAreaAtTheEnd = optimizerStats.LocalAreaAtTheEnd; // From the last optimizer, not necessarily best
-                                IterationsExecuted += optimizerStats.IterationsExecuted;
-                            }
-                    }
-                    catch (Exception e)
-                    {
-                       _problemParameters.Logger.Error($"Error while running an optimizer in thread ${threadId}: ${e}");
+                        RunSinglePartition(partitionIdLocal);
                     }
                 });
                 threads[i] = thread;
                 thread.IsBackground = true;
-                thread.Start(i);
+                thread.Start();
             }
 
             for (int i=0; i< _problemParameters.ThreadCount; i++)
@@ -97,9 +76,9 @@ namespace ApproximateOptimization
 
             for (int i=0; i< _problemParameters.ThreadCount; i++)
             {
-                if (optimizers[i]?.SolutionFound ?? false)
+                if (_optimizers[i]?.SolutionFound ?? false)
                 {
-                    _bestSolutionsForGA.Enqueue(optimizers[i].BestSolutionSoFar, optimizers[i].SolutionValue);
+                    _bestSolutionsForGA.Enqueue(_optimizers[i].BestSolutionSoFar, _optimizers[i].SolutionValue);
                     if (_bestSolutionsForGA.Count > _problemParameters.GAPopulation)
                     {
                         _bestSolutionsForGA.Dequeue();
@@ -129,6 +108,55 @@ namespace ApproximateOptimization
                 SolutionValue = value;
                 SolutionFound = true;
             }
+        }
+
+        private void RunSinglePartition(long partitionId)
+        {
+            IOptimizer optimizer;
+            try
+            {
+                optimizer = _problemParameters.CreateOptimizer(partitionId);
+                var simulatedAnnealingOptimizer = optimizer as SimulatedAnnealingOptimizer;
+                if (simulatedAnnealingOptimizer != null)
+                {
+                    simulatedAnnealingOptimizer.SetInitialStage(((double)partitionId) / _problemParameters.ThreadCount);
+                }
+                _optimizers[partitionId] = optimizer;
+            }
+            catch (Exception e)
+            {
+                _problemParameters.Logger.Error($"Error while creating an optimizer in partition ${partitionId}: ${e}");
+                return;
+            }
+
+            try
+            {
+                optimizer.FindMaximum();
+                var optimizerStats = optimizer as IOptimizerStats;
+                if (optimizerStats != null)
+                    lock (_lockSyncObject)
+                    {
+                        ElapsedTime = optimizerStats.ElapsedTime; // From the last optimizer, not necessarily best
+                        LocalAreaAtTheEnd = optimizerStats.LocalAreaAtTheEnd; // From the last optimizer, not necessarily best
+                        IterationsExecuted += optimizerStats.IterationsExecuted;
+                    }
+            }
+            catch (Exception e)
+            {
+                _problemParameters.Logger.Error($"Error while running an optimizer in thread ${partitionId}: ${e}");
+            }
+        }
+
+        private bool UnallocatedPartitionsStillExist(ref int unallocatedProblemPartitions)
+        {
+            bool unallocatedPartitionsExist;
+            lock (_lockSyncObject)
+            {
+                unallocatedPartitionsExist = unallocatedProblemPartitions > 0;
+                if (unallocatedPartitionsExist) unallocatedProblemPartitions--;
+            }
+
+            return unallocatedPartitionsExist;
         }
 
         private void RunGA(Action<double[], double?> nextSolutionSuggestedCallback)
