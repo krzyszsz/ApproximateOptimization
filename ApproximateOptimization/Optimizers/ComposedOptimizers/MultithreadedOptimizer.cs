@@ -74,7 +74,7 @@ namespace ApproximateOptimization
                 threads[i].Join();
             }
 
-            for (int i=0; i< _problemParameters.ThreadCount; i++)
+            for (int i=0; i< _optimizers.Length; i++)
             {
                 if (_optimizers[i]?.SolutionFound ?? false)
                 {
