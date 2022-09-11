@@ -143,7 +143,7 @@ namespace ApproximateOptimization
             }
             catch (Exception e)
             {
-                _problemParameters.Logger.Error($"Error while running an optimizer in thread ${partitionId}: ${e}");
+                _problemParameters.Logger.Error($"Error while running an optimizer in partition ${partitionId}: ${e}");
             }
         }
 
