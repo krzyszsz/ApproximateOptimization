@@ -61,10 +61,19 @@ namespace ApproximateOptimization
             return _problemParameters.ScoreFunction(_currentSolution);
         }
 
+        private void EnsureValueInRange(ref double value, int dimension)
+        {
+            if (value < _problemParameters.SolutionRange[dimension][0]) value = _problemParameters.SolutionRange[dimension][0];
+            else
+            if (value > _problemParameters.SolutionRange[dimension][1]) value = _problemParameters.SolutionRange[dimension][1];
+        }
+
         private void FindGradientForDimension(int i, double smallIncrement)
         {
             var a = _currentSolution[i] - smallIncrement;
             var b = _currentSolution[i] + smallIncrement;
+            EnsureValueInRange(ref a, i);
+            EnsureValueInRange(ref b, i);
             _direction[i] = (GetScoreForReplacedDimension(i, b) - GetScoreForReplacedDimension(i, a)) / (b - a);
         }
 
