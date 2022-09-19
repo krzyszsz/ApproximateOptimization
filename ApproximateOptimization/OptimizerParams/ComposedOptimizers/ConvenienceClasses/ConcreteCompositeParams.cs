@@ -1,4 +1,6 @@
-﻿namespace ApproximateOptimization
+﻿using System;
+
+namespace ApproximateOptimization
 {
     public class ConcreteCompositeParams : CompositeOptimizerParams<MultiStrategyOptimizerParams>
     {
@@ -8,7 +10,7 @@
             CreateOptimizer = (long partitionId) =>
             {
                 var newProblemParameters = problemParameters.ShallowClone();
-                newProblemParameters.RandomSeed = (int)partitionId;
+                newProblemParameters.RandomSeed = (problemParameters.NonRepeatableRandom ? (int)(DateTime.UtcNow.Ticks + (int)partitionId * 1000_000_000) : (int)partitionId);
                 return new MultiStrategyOptimizer(newProblemParameters);
             };
         }
