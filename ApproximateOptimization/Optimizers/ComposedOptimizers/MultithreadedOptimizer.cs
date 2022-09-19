@@ -44,6 +44,7 @@ namespace ApproximateOptimization
 
         public void FindMaximum()
         {
+            if (SolutionFound) throw new ApplicationException("Cannot call FindMaximum twice on the same instance of optimizer.");
             int unallocatedProblemPartitions = _problemParameters.Partitions ?? _problemParameters.ThreadCount;
             var threads = new Thread[_problemParameters.ThreadCount];
             _optimizers = new IOptimizer[unallocatedProblemPartitions];

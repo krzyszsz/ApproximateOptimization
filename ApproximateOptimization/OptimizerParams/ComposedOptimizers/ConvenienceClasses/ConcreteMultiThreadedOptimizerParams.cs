@@ -23,7 +23,7 @@ namespace ApproximateOptimization
                         newProblemParameters.StartSolutionValue = null;
                     }
                 }
-                newProblemParameters.RandomSeed = (problemParameters.NonRepeatableRandom ? (int)(DateTime.UtcNow.Ticks + (int)partitionId * 1000_000_000) : (int)partitionId);
+                newProblemParameters.RandomSeed = (problemParameters.NonRepeatableRandom ? (int)(DateTime.UtcNow.Ticks + partitionId * 1000_000_000L) : (int)partitionId);
                 return new MultiStrategyOptimizer(newProblemParameters);
             };
         }
