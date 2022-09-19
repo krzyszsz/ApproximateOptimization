@@ -14,6 +14,12 @@ namespace ApproximateOptimization
         public int GAChildrenPerSolution { get; set; } = 2;
         public int GAGenerations { get; set; } = 3;
 
+        /// <summary>
+        /// By default random generator is initialized with the same seed to make debugging easier.
+        /// In some scenarios you may want to change the default and make it more random to make each execution different.
+        /// </summary>
+        public bool NonRepeatableRandom = false;
+
         public virtual void Validate()
         {
             if (CreateOptimizer == null)

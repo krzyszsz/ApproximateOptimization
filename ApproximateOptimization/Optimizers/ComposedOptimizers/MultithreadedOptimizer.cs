@@ -27,7 +27,7 @@ namespace ApproximateOptimization
             problemParameters.Validate();
             _problemParameters = problemParameters;
             _bestSolutionsForGA = new PriorityQueue<double[], double>(_problemParameters.GAPopulation+1);
-            _random = new Random(0);
+            _random = new Random(_problemParameters.NonRepeatableRandom ? (int)DateTime.UtcNow.Ticks : 0);
         }
 
         public double[] BestSolutionSoFar { get; private set; }

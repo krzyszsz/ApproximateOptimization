@@ -2,7 +2,7 @@
 A simple heuristic optimizer finding a solution expressed as an array of numbers where a function can be provided telling the optimizer how good any particular array of numbers is. It rarely finds accurate solutions but for many problems they are "accurate enough".
 
 # Technical Details
-As shown in the examples below, the easiest usage of the optimizer is via CompositeOptimizer which finds the solution using three alternating stages: randomly scattering solutions in a multi-dimensional area narrowing down around the best solution so far; and in the second stage gradient ascent to systematically move towards the local maximum; finally there are elements of generic algorithms to combine best found solutions and try them as well.
+As shown in the examples below, the easiest usage of the optimizer is via CompositeOptimizer which finds the solution using three alternating stages: randomly scattering solutions in a multi-dimensional area narrowing down around the best solution so far; and in the second stage gradient ascent to systematically move towards the local maximum; alternatively, there are elements of genetic algorithms to combine best found solutions and try them as well.
 
 The implementation aims to limit memory allocations to improve performance and also runs multiple optimizers in parallel threads.
 

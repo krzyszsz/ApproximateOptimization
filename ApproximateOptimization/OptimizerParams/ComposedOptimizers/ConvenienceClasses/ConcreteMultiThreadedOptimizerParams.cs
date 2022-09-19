@@ -1,4 +1,6 @@
-﻿namespace ApproximateOptimization
+﻿using System;
+
+namespace ApproximateOptimization
 {
     /// <summary>
     /// Convenience class with all generic arguments provided.
@@ -21,7 +23,7 @@
                         newProblemParameters.StartSolutionValue = null;
                     }
                 }
-                newProblemParameters.RandomSeed = (int)partitionId;
+                newProblemParameters.RandomSeed = (problemParameters.NonRepeatableRandom ? (int)(DateTime.UtcNow.Ticks + (int)partitionId * 1000_000_000) : (int)partitionId);
                 return new MultiStrategyOptimizer(newProblemParameters);
             };
         }

@@ -33,7 +33,8 @@
                         Partitions = partitions,
                         GAGenerations = gAGenerations,
                         GAChildrenPerSolution = gAChildrenPerSolution,
-                        GAPopulation = gAPopulation
+                        GAPopulation = gAPopulation,
+                        NonRepeatableRandom = optimizerParams.NonRepeatableRandom
                     });
             }
             return
@@ -50,7 +51,8 @@
                         ThreadCount = threads,
                         GAGenerations = gAGenerations,
                         GAChildrenPerSolution = gAChildrenPerSolution,
-                        GAPopulation = gAPopulation
+                        GAPopulation = gAPopulation,
+                        NonRepeatableRandom = optimizerParams.NonRepeatableRandom
                     });
                 }
             });
