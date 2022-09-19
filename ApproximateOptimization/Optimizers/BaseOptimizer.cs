@@ -52,6 +52,7 @@ namespace ApproximateOptimization
 
         public void FindMaximum()
         {
+            if (SolutionFound) throw new ApplicationException("Cannot call FindMaximum twice on the same instance of optimizer.");
             Array.Copy(_currentSolution, BestSolutionSoFar, _problemParameters.Dimension);
             SolutionValue = _problemParameters.StartSolution == null ? double.NegativeInfinity : _problemParameters.ScoreFunction(BestSolutionSoFar);
             long iterations = 0;

@@ -27,6 +27,7 @@ namespace ApproximateOptimization
 
         public void FindMaximum()
         {
+            if (SolutionFound) throw new ApplicationException("Cannot call FindMaximum twice on the same instance of optimizer.");
             var solutionRange = _problemParameters.SolutionRange ?? ParametersManagement.GetDefaultSolutionRange(_problemParameters.Dimension);
             bool requiresRecalculation = false;
             var attempts = _problemParameters.MaxAttempts;
