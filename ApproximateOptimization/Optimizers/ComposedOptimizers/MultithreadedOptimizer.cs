@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,6 +43,8 @@ namespace ApproximateOptimization
 
         public double LocalAreaAtTheEnd { get; private set; }
 
+        private ConcurrentDictionary<TabooSearchItem, double> _cacheForTabooSearch;
+
         public void FindMaximum()
         {
             if (SolutionFound) throw new ApplicationException("Cannot call FindMaximum twice on the same instance of optimizer.");
@@ -50,6 +53,23 @@ namespace ApproximateOptimization
             _optimizers = new IOptimizer[unallocatedProblemPartitions];
             double[][] solutions = new double[unallocatedProblemPartitions][];
             long partitionId = 0;
+
+            if (_problemParameters.TabooSearch)
+            {
+                _cacheForTabooSearch = new ConcurrentDictionary<TabooSearchItem, double>();
+                var originalFunc = _problemParameters.ScoreFunction;
+                _problemParameters.ScoreFunction = (solution) =>
+                {
+                    var reducedSolution = new TabooSearchItem(solution, _problemParameters.TabooAreaForAllDimensions);
+                    if (_cacheForTabooSearch.ContainsKey(reducedSolution))
+                    {
+                        return double.MinValue;
+                    }
+                    var result = originalFunc(solution);
+                    _cacheForTabooSearch[reducedSolution] = result;
+                    return result;
+                };
+            }
 
             for (int i=0; i< _problemParameters.ThreadCount; i++)
             {
@@ -194,6 +214,53 @@ namespace ApproximateOptimization
                 result[i] = weight * item1[i] + (1 - weight) * item2[i];
             }
             return result;
+        }
+
+        private class TabooSearchItem : IEquatable<TabooSearchItem>
+        {
+            public double[] _reducedPoint;
+
+            public TabooSearchItem(double[] originalPoint, double localAreaSize)
+            {
+                _reducedPoint = new double[originalPoint.Length];
+                for (var i = 0; i < originalPoint.Length; i++)
+                {
+                    _reducedPoint[i] = ((int)(originalPoint[i] / localAreaSize)) * localAreaSize;
+                }
+            }
+
+            public bool Equals(TabooSearchItem other)
+            {
+                for (var i = 0; i < other._reducedPoint.Length; i++)
+                {
+                    if (_reducedPoint[i] != other._reducedPoint[i])
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj == null)
+                    return false;
+
+                TabooSearchItem otherObj = obj as TabooSearchItem;
+                if (otherObj == null)
+                    return false;
+                return Equals(otherObj);
+            }
+
+            public override int GetHashCode()
+            {
+                int result = 0;
+                for (var i = 0; i < _reducedPoint.Length; i++)
+                {
+                    result = result ^ _reducedPoint[i].GetHashCode();
+                }
+                return result;
+            }
         }
     }
 }

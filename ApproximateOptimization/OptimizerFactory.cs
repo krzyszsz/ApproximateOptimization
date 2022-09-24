@@ -21,7 +21,8 @@
         /// with widening solution range. Parameter only works when rangeDiscovery is passed as true.</param>
         /// <returns>An optimizer employing MultithreadedOptimizer to run SimulatedAnnealingWithGradientAscent</returns>
         public static IOptimizer GetCompositeOptimizer(
-            MultiStrategyOptimizerParams optimizerParams, int threads = 8, int? partitions = null, bool rangeDiscovery = false, int rangeDiscoveryMaxAttempts=50, int gAGenerations=3, int gAChildrenPerSolution=4, int gAPopulation=4)
+            MultiStrategyOptimizerParams optimizerParams, int threads = 8, int? partitions = null, bool rangeDiscovery = false, int rangeDiscoveryMaxAttempts=50, int gAGenerations=3, int gAChildrenPerSolution=4, int gAPopulation=4,
+                bool tabooSearch=false, double tabooArea=0.01)
         {
             if (!rangeDiscovery)
             {
@@ -34,7 +35,9 @@
                         GAGenerations = gAGenerations,
                         GAChildrenPerSolution = gAChildrenPerSolution,
                         GAPopulation = gAPopulation,
-                        NonRepeatableRandom = optimizerParams.NonRepeatableRandom
+                        NonRepeatableRandom = optimizerParams.NonRepeatableRandom,
+                        TabooSearch = tabooSearch,
+                        TabooAreaForAllDimensions = tabooArea
                     });
             }
             return

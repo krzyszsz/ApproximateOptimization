@@ -20,6 +20,20 @@ namespace ApproximateOptimization
         /// </summary>
         public bool NonRepeatableRandom = false;
 
+        /// <summary>
+        /// When set as true, the optimizer will skip points in the areas that have been already checked.
+        /// This requires extra memory allocations to maintain points already checked so it is only beneficial
+        /// if checking each point is expensive.
+        /// 
+        /// Taboo list is maintained for all problem partitions and require locking.
+        /// </summary>
+        public bool TabooSearch = false;
+
+        /// <summary>
+        /// By default the same is used for all dimensions (simplification, can be changed in future versions).
+        /// </summary>
+        public double TabooAreaForAllDimensions = 0.01;
+
         public virtual void Validate()
         {
             if (CreateOptimizer == null)

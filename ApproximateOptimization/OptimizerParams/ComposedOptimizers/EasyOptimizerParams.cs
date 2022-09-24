@@ -29,6 +29,21 @@ namespace ApproximateOptimization
 
         private const double ImpossiblePrecision = 0.000_000_000_001;
 
+        /// <summary>
+        /// When set as true, the optimizer will skip points in the areas that have been already checked.
+        /// This requires extra memory allocations to maintain points already checked so it is only beneficial
+        /// if checking each point is expensive.
+        /// 
+        /// Taboo list is maintained for all problem partitions and require locking.
+        /// </summary>
+        public bool TabooSearch = true;
+
+        /// <summary>
+        /// By default the same is used for all dimensions (simplification, can be changed in future versions).
+        /// </summary>
+        public double TabooAreaForAllDimensions = 0.001;
+
+
         public override void Validate()
         {
             base.Validate();
@@ -36,6 +51,12 @@ namespace ApproximateOptimization
             {
                 throw new ArgumentException(
                     $"Incorrect RequiredPrecision. Expected more than: {ImpossiblePrecision} but got first dimension: {RequiredPrecision}");
+            }
+
+            if (TabooAreaForAllDimensions <= 0)
+            {
+                throw new ArgumentException(
+                    $"Incorrect TabooAreaForAllDimensions. Should be positive but got: {TabooAreaForAllDimensions}");
             }
         }
     }
