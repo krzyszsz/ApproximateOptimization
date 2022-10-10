@@ -1,5 +1,8 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ApproximateOptimization.Tests
 {
@@ -84,6 +87,36 @@ namespace ApproximateOptimization.Tests
                 Assert.That(sut.BestSolutionSoFar[1], Is.EqualTo(expectedY).Within(precision));
                 Assert.That(sut.SolutionValue, Is.EqualTo(expectedBestValue).Within(precision));
             }
+        }
+
+        [Test]
+        public void SolutionsAreNotRepeatable()
+        {
+            var solutions = new ConcurrentBag<double>();
+            Func<double[], double> func = (double[] vector) =>
+            {
+                solutions.Add(vector[0]);
+                return vector[0];
+            };
+            for (var i=0; i<100; i++)
+            {
+                var sut = new EasyOptimizer(new EasyOptimizerParams
+                {
+                    ScoreFunction = func,
+                    Dimension = 1,
+                    RequiredPrecision = 0.1,
+                    Threads = 4,
+                    NonRepeatableRandom = true,
+                    MaxIterations = 1,
+                    GAEnabled = false,
+                    TabooSearch = false
+                });
+                sut.FindMaximum();
+            }
+            var histogram = solutions.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
+
+            Assert.That(solutions.Count(), Is.EqualTo(100*4));
+            Assert.That(histogram.Max(x => x.Value), Is.LessThan(5));
         }
     }
 

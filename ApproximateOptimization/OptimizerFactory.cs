@@ -37,7 +37,7 @@
                         GAPopulation = gAPopulation,
                         NonRepeatableRandom = optimizerParams.NonRepeatableRandom,
                         TabooSearch = tabooSearch,
-                        TabooAreaForAllDimensions = tabooArea
+                        TabooAreaForAllDimensions = tabooArea,
                     });
             }
             return
