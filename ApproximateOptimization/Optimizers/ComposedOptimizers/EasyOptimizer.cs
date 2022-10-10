@@ -53,7 +53,7 @@ namespace ApproximateOptimization
                     {
                         ScoreFunction = _problemParameters.ScoreFunction,
                         Dimension = _problemParameters.Dimension,
-                        MaxIterations = requiredIterations,
+                        MaxIterations = _problemParameters.MaxIterations > 0 ? _problemParameters.MaxIterations : requiredIterations,
                         MinIterations = _problemParameters.MinIterations,
                         SwitchingFreq = _problemParameters.SwitchingFreq,
                         SolutionRange = _problemParameters.SolutionRange,
@@ -68,8 +68,9 @@ namespace ApproximateOptimization
                         GAChildrenPerSolution = _problemParameters.GAChildrenPerSolution,
                         GAPeriod = _problemParameters.GAPeriod,
                         GAPopulation = _problemParameters.GAPopulation,
+                        NonRepeatableRandom = _problemParameters.NonRepeatableRandom,
                     }, rangeDiscovery: false, threads: _problemParameters.Threads, partitions: _problemParameters.Partitions,
-                        tabooSearch: _problemParameters.TabooSearch, tabooArea: _problemParameters.TabooAreaForAllDimensions);
+                        tabooSearch: _problemParameters.TabooSearch, tabooArea: _problemParameters.TabooAreaForAllDimensions, gAGenerations: _problemParameters.GAEnabled ? _problemParameters.GaGenerations : 0);
                 optimizer.FindMaximum();
 
                 var optimizerStats = optimizer as IOptimizerStats;

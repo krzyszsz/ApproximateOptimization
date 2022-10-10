@@ -218,7 +218,7 @@ namespace ApproximateOptimization
 
         private class TabooSearchItem : IEquatable<TabooSearchItem>
         {
-            public double[] _reducedPoint;
+            private double[] _reducedPoint;
 
             public TabooSearchItem(double[] originalPoint, double localAreaSize)
             {
