@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace ApproximateOptimization
 {
-    public class SeparateDimensionsOptimizer : IOptimizer
+    public sealed class SeparateDimensionsOptimizer : IOptimizer
     {
         private BaseOptimizerParams _baseOptimizerParams;
         private int _threads;

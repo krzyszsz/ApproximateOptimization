@@ -1,5 +1,5 @@
 ﻿namespace ApproximateOptimization
 {
-    public class ConcreteOptimizerWithRangeDiscoveryParams : OptimizerWithRangeDiscoveryParams<MultiStrategyOptimizerParams>
+    public sealed class ConcreteOptimizerWithRangeDiscoveryParams : OptimizerWithRangeDiscoveryParams<MultiStrategyOptimizerParams>
     { }
 }

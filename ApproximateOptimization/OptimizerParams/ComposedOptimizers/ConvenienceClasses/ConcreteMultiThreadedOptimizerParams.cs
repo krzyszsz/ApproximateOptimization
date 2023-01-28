@@ -5,7 +5,7 @@ namespace ApproximateOptimization
     /// <summary>
     /// Convenience class with all generic arguments provided.
     /// </summary>
-    public class ConcreteMultiThreadedOptimizerParams : MultiThreadedOptimizerParams<MultiStrategyOptimizerParams>
+    public sealed class ConcreteMultiThreadedOptimizerParams : MultiThreadedOptimizerParams<MultiStrategyOptimizerParams>
     {
         public ConcreteMultiThreadedOptimizerParams(MultiStrategyOptimizerParams problemParameters)
         {

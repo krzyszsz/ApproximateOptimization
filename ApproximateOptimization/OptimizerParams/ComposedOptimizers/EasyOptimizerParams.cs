@@ -2,7 +2,7 @@
 
 namespace ApproximateOptimization
 {
-    public class EasyOptimizerParams : CoreOptimizerParams
+    public sealed class EasyOptimizerParams : CoreOptimizerParams
     {
         public int Threads { get; set; } = Environment.ProcessorCount;
 

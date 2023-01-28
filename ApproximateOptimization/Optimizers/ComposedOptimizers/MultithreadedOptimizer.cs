@@ -147,7 +147,7 @@ namespace ApproximateOptimization
             catch (Exception e)
             {
                 _problemParameters.Logger.Error($"Error while creating an optimizer in partition ${partitionId}: ${e}");
-                return;
+                throw;
             }
 
             try
@@ -165,6 +165,7 @@ namespace ApproximateOptimization
             catch (Exception e)
             {
                 _problemParameters.Logger.Error($"Error while running an optimizer in partition ${partitionId}: ${e}");
+                throw;
             }
         }
 
@@ -216,7 +217,7 @@ namespace ApproximateOptimization
             return result;
         }
 
-        private class TabooSearchItem : IEquatable<TabooSearchItem>
+        private sealed class TabooSearchItem : IEquatable<TabooSearchItem>
         {
             private double[] _reducedPoint;
 

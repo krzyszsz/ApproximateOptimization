@@ -8,7 +8,7 @@ namespace ApproximateOptimization
     /// <summary>
     /// Runs composite optimizer as long as the required precision is achieved or time exceeded.
     /// </summary>
-    public class EasyOptimizer : IOptimizer, IOptimizerStats
+    public sealed class EasyOptimizer : IOptimizer, IOptimizerStats
     {
         private EasyOptimizerParams _problemParameters;
 
