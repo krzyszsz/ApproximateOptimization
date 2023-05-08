@@ -35,6 +35,7 @@ public sealed class ReusableThread
                     finishMRE.Set();
                 }
             }));
+            _thread.IsBackground = true;
             _thread.Start(new Tuple<SemaphoreSlim, ManualResetEvent>(_startSemaphore, _finishMRE));
         }
     }
@@ -46,7 +47,7 @@ public sealed class ReusableThread
 
     public void Join()
     {
-        // This is not the same as Join() from standard thread: first of all it MUST be called each time (thread is not returned to the pool).
+        // This is not the same as Join() from standard thread: first of all it MUST be called each time (otherwise thread is not returned to the pool).
         _finishMRE.WaitOne();
         _finishMRE.Reset();
         threads.Enqueue((_thread, _startSemaphore, _finishMRE));
