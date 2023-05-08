@@ -49,7 +49,7 @@ namespace ApproximateOptimization
         {
             if (SolutionFound) throw new ApplicationException("Cannot call FindMaximum twice on the same instance of optimizer.");
             int unallocatedProblemPartitions = _problemParameters.Partitions ?? _problemParameters.ThreadCount;
-            var threads = new Thread[_problemParameters.ThreadCount];
+            var threads = new ReusableThread[_problemParameters.ThreadCount];
             _optimizers = new IOptimizer[unallocatedProblemPartitions];
             double[][] solutions = new double[unallocatedProblemPartitions][];
             long partitionId = 0;
@@ -71,28 +71,32 @@ namespace ApproximateOptimization
                 };
             }
 
-            for (int i=0; i< _problemParameters.ThreadCount; i++)
+            try
             {
-                var thread = new Thread(() =>
+                for (int i = 0; i < _problemParameters.ThreadCount; i++)
                 {
-                    while (UnallocatedPartitionsStillExist(ref unallocatedProblemPartitions))
+                    var thread = new ReusableThread(() =>
                     {
-                        long partitionIdLocal;
-                        lock (_lockSyncObject)
+                        while (UnallocatedPartitionsStillExist(ref unallocatedProblemPartitions))
                         {
-                            partitionIdLocal = partitionId++;
+                            long partitionIdLocal;
+                            lock (_lockSyncObject)
+                            {
+                                partitionIdLocal = partitionId++;
+                            }
+                            RunSinglePartition(partitionIdLocal);
                         }
-                        RunSinglePartition(partitionIdLocal);
-                    }
-                });
-                threads[i] = thread;
-                thread.IsBackground = true;
-                thread.Start();
+                    });
+                    threads[i] = thread;
+                    thread.Start();
+                }
             }
-
-            for (int i=0; i< _problemParameters.ThreadCount; i++)
+            finally
             {
-                threads[i].Join();
+                for (int i = 0; i < _problemParameters.ThreadCount; i++)
+                {
+                    threads[i].Join();
+                }
             }
 
             for (int i=0; i< _optimizers.Length; i++)
@@ -262,5 +266,58 @@ namespace ApproximateOptimization
                 return result;
             }
         }
+    }
+}
+
+/// <summary>
+/// Simple thread pool. This is not using the built in .net thread pool to not impact other tasks.
+/// </summary>
+public sealed class ReusableThread
+{
+    private static ConcurrentQueue<Thread> threads = new();
+    private static ConcurrentQueue<Action> actions = new();
+    private static SemaphoreSlim startSemaphore = new(0);
+    private static SemaphoreSlim finishSemaphore = new(0);
+    private static CancellationTokenSource cts = new();
+    private Thread _thread;
+
+    public ReusableThread(Action action)
+    {
+        actions.Enqueue(action);
+        if (!threads.TryDequeue(out _thread))
+        {
+            _thread = new Thread(() =>
+            {
+                var token = cts.Token;
+                while (!cts.IsCancellationRequested)
+                {
+                    startSemaphore.Wait(token);
+                    if (actions.TryDequeue(out var localAction)) localAction();
+                    finishSemaphore.Release();
+                }
+            });
+        }
+    }
+
+    public void Start()
+    {
+        startSemaphore.Release();
+        _thread.Start();
+    }
+
+    public void Join()
+    {
+        // This is not the same as Join() from standard thread: first of all it MUST be called each time (otherwise semaphore is released many times).
+        finishSemaphore.Wait(); // Also: This is often triggered by a different thread from the pool! But for this specific usage it makes no difference.
+    }
+
+    public static void Destroy()
+    {
+        // Not a standard Dispose because this method removes static objects and should only be called when optimizers will no longer be needed.
+        cts.Cancel();
+        while (actions.Count > 0) actions.TryDequeue(out var _);
+        while (threads.Count > 0) threads.TryDequeue(out var t);
+        startSemaphore.Dispose();
+        finishSemaphore.Dispose();
     }
 }
