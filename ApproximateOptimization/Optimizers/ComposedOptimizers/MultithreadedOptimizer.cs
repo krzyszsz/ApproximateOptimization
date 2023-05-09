@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ApproximateOptimization
@@ -70,34 +71,8 @@ namespace ApproximateOptimization
                 };
             }
 
-            try
-            {
-                for (int i = 0; i < _problemParameters.ThreadCount; i++)
-                {
-                    var thread = new ReusableThread();
-                    threads[i] = thread;
-                    ReusableThread.EnqueueBeforeStart(() =>
-                    {
-                        while (UnallocatedPartitionsStillExist(ref unallocatedProblemPartitions))
-                        {
-                            long partitionIdLocal;
-                            lock (_lockSyncObject)
-                            {
-                                partitionIdLocal = partitionId++;
-                            }
-                            RunSinglePartition(partitionIdLocal);
-                        }
-                    });
-                    thread.Start();
-                }
-            }
-            finally
-            {
-                for (int i = 0; i < _problemParameters.ThreadCount; i++)
-                {
-                    threads[i].Join();
-                }
-            }
+            var customThreadPool = new ReusableThread.ParallelForEach<int>(_problemParameters.ThreadCount, Enumerable.Range(0, unallocatedProblemPartitions).ToList(), RunSinglePartition);
+            customThreadPool.Join();
 
             for (int i=0; i< _optimizers.Length; i++)
             {
@@ -135,7 +110,7 @@ namespace ApproximateOptimization
             }
         }
 
-        private void RunSinglePartition(long partitionId)
+        private void RunSinglePartition(int partitionId)
         {
             IOptimizer optimizer;
             try
@@ -172,19 +147,6 @@ namespace ApproximateOptimization
                 throw;
             }
         }
-
-        private bool UnallocatedPartitionsStillExist(ref int unallocatedProblemPartitions)
-        {
-            bool unallocatedPartitionsExist;
-            lock (_lockSyncObject)
-            {
-                unallocatedPartitionsExist = unallocatedProblemPartitions > 0;
-                if (unallocatedPartitionsExist) unallocatedProblemPartitions--;
-            }
-
-            return unallocatedPartitionsExist;
-        }
-
         private void RunGA(Action<double[], double?> nextSolutionSuggestedCallback)
         {
             var items = new List<double[]>();

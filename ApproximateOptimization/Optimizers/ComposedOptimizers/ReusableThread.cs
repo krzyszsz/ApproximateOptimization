@@ -56,6 +56,11 @@ public sealed class ReusableThread
     {
         // This is not the same as Join() from standard thread: first of all it MUST be called each time (otherwise thread is not returned to the pool).
         _finishMRE.WaitOne();
+        InternalJoin();
+    }
+
+    internal void InternalJoin()
+    {
         threads.Enqueue((_thread, _startSemaphore, _finishMRE));
         _startSemaphore = null;
         _finishMRE = null;
@@ -101,7 +106,7 @@ public sealed class ReusableThread
             ManualResetEvent.WaitAll(_threads.Select(x => x._finishMRE).ToArray());
             for (var i = 0; i < _threads.Length; i++)
             {
-                _threads[i].Join();
+                _threads[i].InternalJoin();
             }
         }
     }
