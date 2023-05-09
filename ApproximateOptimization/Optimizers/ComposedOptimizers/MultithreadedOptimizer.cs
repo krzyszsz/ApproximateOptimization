@@ -74,7 +74,9 @@ namespace ApproximateOptimization
             {
                 for (int i = 0; i < _problemParameters.ThreadCount; i++)
                 {
-                    var thread = new ReusableThread(() =>
+                    var thread = new ReusableThread();
+                    threads[i] = thread;
+                    ReusableThread.EnqueueBeforeStart(() =>
                     {
                         while (UnallocatedPartitionsStillExist(ref unallocatedProblemPartitions))
                         {
@@ -86,7 +88,6 @@ namespace ApproximateOptimization
                             RunSinglePartition(partitionIdLocal);
                         }
                     });
-                    threads[i] = thread;
                     thread.Start();
                 }
             }
@@ -204,9 +205,9 @@ namespace ApproximateOptimization
                     solutionsToCheck.Add(newSolutionToCheck);
                 }
             }
-            Parallel.ForEach(solutionsToCheck, 
-                new ParallelOptions { MaxDegreeOfParallelism = _problemParameters.ThreadCount },
-                newSolutionToCheck => nextSolutionSuggestedCallback(newSolutionToCheck, _problemParameters.ScoreFunction(newSolutionToCheck)));
+            var customThreadPool = new ReusableThread.CustomThreadPool(_problemParameters.ThreadCount);
+            customThreadPool.ParallelForEach(solutionsToCheck, newSolutionToCheck => nextSolutionSuggestedCallback(newSolutionToCheck, _problemParameters.ScoreFunction(newSolutionToCheck)));
+            customThreadPool.Join();
         }
 
         private double[] CrossOver(double[] item1, double[] item2)

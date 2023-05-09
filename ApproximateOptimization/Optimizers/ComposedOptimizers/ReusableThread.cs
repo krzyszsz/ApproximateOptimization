@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+
 /// <summary>
 /// Simple thread pool. This is not using the built in .net thread pool to not impact other tasks.
 /// </summary>
@@ -13,9 +16,8 @@ public sealed class ReusableThread
     private SemaphoreSlim _startSemaphore;
     private Thread _thread;
 
-    public ReusableThread(Action action)
+    public ReusableThread()
     {
-        actions.Enqueue(action);
         if (threads.TryDequeue(out var threadData))
         {
             (_thread, _startSemaphore, _finishMRE) = threadData;
@@ -23,7 +25,7 @@ public sealed class ReusableThread
         else
         {
             _startSemaphore = new SemaphoreSlim(0);
-            _finishMRE = new ManualResetEvent(false);
+            _finishMRE = new ManualResetEvent(true);
             _thread = new Thread(new ParameterizedThreadStart((object threadParameter) =>
             {
                 (SemaphoreSlim startSemaphore, ManualResetEvent finishMRE) = (Tuple<SemaphoreSlim, ManualResetEvent>)threadParameter;
@@ -31,17 +33,22 @@ public sealed class ReusableThread
                 while (!cts.IsCancellationRequested)
                 {
                     startSemaphore.Wait(token);
-                    if (actions.TryDequeue(out var localAction)) localAction();
+                    while (actions.TryDequeue(out var localAction)) localAction();
                     finishMRE.Set();
                 }
             }));
-            _thread.IsBackground = true;
             _thread.Start(new Tuple<SemaphoreSlim, ManualResetEvent>(_startSemaphore, _finishMRE));
         }
     }
 
+    public static void EnqueueBeforeStart(Action action)
+    {
+        actions.Enqueue(action);
+    }
+
     public void Start()
     {
+        _finishMRE.Reset();
         _startSemaphore.Release();
     }
 
@@ -49,7 +56,6 @@ public sealed class ReusableThread
     {
         // This is not the same as Join() from standard thread: first of all it MUST be called each time (otherwise thread is not returned to the pool).
         _finishMRE.WaitOne();
-        _finishMRE.Reset();
         threads.Enqueue((_thread, _startSemaphore, _finishMRE));
         _startSemaphore = null;
         _finishMRE = null;
@@ -66,6 +72,36 @@ public sealed class ReusableThread
             threads.TryDequeue(out var t);
             t.Item2.Dispose(); // Make sure all threads are Joined before this is called.
             t.Item3.Dispose(); // Make sure all threads are Joined before this is called.
+        }
+    }
+
+    public sealed class CustomThreadPool
+    {
+        private readonly ReusableThread[] _threads;
+
+        public CustomThreadPool(int threads)
+        {
+            _threads = new ReusableThread[threads];
+            for (var i = 0; i < threads; i++)
+            {
+                _threads[i] = new ReusableThread();
+            }
+        }
+
+        public void ParallelForEach<T>(List<T> items, Action<T> action)
+        {
+            var maxThreads = Math.Min(_threads.Length, items.Count);
+            var getForEachAction = (T x) => () => action(x);
+            for (var i = 0; i < items.Count; i++) ReusableThread.EnqueueBeforeStart(getForEachAction(items[i]));
+            for (var i=0; i<maxThreads; i++) _threads[i].Start();
+        }
+
+        public void Join()
+        {
+            for (var i = 0; i < _threads.Length; i++)
+            {
+                _threads[i].Join();
+            }
         }
     }
 }
