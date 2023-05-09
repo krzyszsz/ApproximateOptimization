@@ -75,29 +75,30 @@ public sealed class ReusableThread
         }
     }
 
-    public sealed class CustomThreadPool
+    public sealed class ParallelForEach<T>
     {
         private readonly ReusableThread[] _threads;
 
-        public CustomThreadPool(int threads)
+        public ParallelForEach(int maxThreads, List<T> items, Action<T> action)
         {
-            _threads = new ReusableThread[threads];
-            for (var i = 0; i < threads; i++)
+            var threadsNumber = Math.Min(maxThreads, items.Count);
+            _threads = new ReusableThread[threadsNumber];
+            for (var i = 0; i < threadsNumber; i++)
             {
                 _threads[i] = new ReusableThread();
             }
+            for (var i = 0; i < items.Count; i++) ReusableThread.EnqueueBeforeStart(getForEachAction(action, items[i]));
+            for (var i = 0; i < maxThreads; i++) _threads[i].Start();
         }
 
-        public void ParallelForEach<T>(List<T> items, Action<T> action)
+        private Action getForEachAction(Action<T> action, T x)
         {
-            var maxThreads = Math.Min(_threads.Length, items.Count);
-            var getForEachAction = (T x) => () => action(x);
-            for (var i = 0; i < items.Count; i++) ReusableThread.EnqueueBeforeStart(getForEachAction(items[i]));
-            for (var i=0; i<maxThreads; i++) _threads[i].Start();
+            return () => action(x);
         }
 
         public void Join()
         {
+            ManualResetEvent.WaitAll(_threads.Select(x => x._finishMRE).ToArray());
             for (var i = 0; i < _threads.Length; i++)
             {
                 _threads[i].Join();
