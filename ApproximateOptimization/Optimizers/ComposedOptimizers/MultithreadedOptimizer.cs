@@ -205,8 +205,7 @@ namespace ApproximateOptimization
                     solutionsToCheck.Add(newSolutionToCheck);
                 }
             }
-            var customThreadPool = new ReusableThread.CustomThreadPool(_problemParameters.ThreadCount);
-            customThreadPool.ParallelForEach(solutionsToCheck, newSolutionToCheck => nextSolutionSuggestedCallback(newSolutionToCheck, _problemParameters.ScoreFunction(newSolutionToCheck)));
+            var customThreadPool = new ReusableThread.ParallelForEach<double[]>(_problemParameters.ThreadCount, solutionsToCheck, newSolutionToCheck => nextSolutionSuggestedCallback(newSolutionToCheck, _problemParameters.ScoreFunction(newSolutionToCheck)));
             customThreadPool.Join();
         }
 
