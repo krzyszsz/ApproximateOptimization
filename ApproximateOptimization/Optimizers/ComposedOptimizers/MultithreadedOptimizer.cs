@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ApproximateOptimization
 {
@@ -52,7 +51,6 @@ namespace ApproximateOptimization
             var threads = new ReusableThread[_problemParameters.ThreadCount];
             _optimizers = new IOptimizer[unallocatedProblemPartitions];
             double[][] solutions = new double[unallocatedProblemPartitions][];
-            long partitionId = 0;
 
             if (_problemParameters.TabooSearch)
             {
