@@ -93,7 +93,7 @@ public sealed class ReusableThread
                 _threads[i] = new ReusableThread();
             }
             for (var i = 0; i < items.Count; i++) ReusableThread.EnqueueBeforeStart(getForEachAction(action, items[i]));
-            for (var i = 0; i < maxThreads; i++) _threads[i].Start();
+            for (var i = 0; i < threadsNumber; i++) _threads[i].Start();
         }
 
         private Action getForEachAction(Action<T> action, T x)
@@ -103,7 +103,17 @@ public sealed class ReusableThread
 
         public void Join()
         {
-            ManualResetEvent.WaitAll(_threads.Select(x => x._finishMRE).ToArray());
+            if (_threads.Length <= 64)
+            {
+                ManualResetEvent.WaitAll(_threads.Select(x => x._finishMRE).ToArray());
+            }
+            else
+            {
+                for (var i = 0; i < _threads.Length; i++)
+                {
+                    _threads[i]._finishMRE.WaitOne();
+                }
+            }
             for (var i = 0; i < _threads.Length; i++)
             {
                 _threads[i].InternalJoin();
