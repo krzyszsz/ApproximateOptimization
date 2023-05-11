@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
 /// <summary>
@@ -9,12 +8,12 @@ using System.Threading;
 /// </summary>
 internal sealed class ReusableThread
 {
-    private static ConcurrentStack<(Thread, SemaphoreSlim, AutoResetEvent, ReferenceToActionsQueue)> threads = new();
+    private static ConcurrentStack<(Thread, SemaphoreSlim, SemaphoreSlim, ReferenceToActionsQueue)> threads = new();
     private static CancellationTokenSource cts = new();
-    private SemaphoreSlim _startSemaphore;
-    private Thread _thread;
-    private ReferenceToActionsQueue _referenceToActionsQueue;
-    public AutoResetEvent FinishSignal;
+    private readonly SemaphoreSlim _startSemaphore;
+    private readonly Thread _thread;
+    private readonly ReferenceToActionsQueue _referenceToActionsQueue;
+    public readonly SemaphoreSlim FinishSignal;
 
     public ReusableThread(ConcurrentQueue<Action> actions)
     {
@@ -26,14 +25,14 @@ internal sealed class ReusableThread
         else
         {
             _startSemaphore = new SemaphoreSlim(0, 1);
-            FinishSignal = new AutoResetEvent(false);
+            FinishSignal = new SemaphoreSlim(0, 1);
             _referenceToActionsQueue = new ReferenceToActionsQueue()
             {
                 Ref = actions
             };
             _thread = new Thread(new ParameterizedThreadStart((object threadParameter) =>
             {
-                (SemaphoreSlim startSemaphore, AutoResetEvent finishSignal, ReferenceToActionsQueue referenceToActionsQueue) = threadParameter as Tuple<SemaphoreSlim, AutoResetEvent, ReferenceToActionsQueue>;
+                (SemaphoreSlim startSemaphore, SemaphoreSlim finishSignal, ReferenceToActionsQueue referenceToActionsQueue) = threadParameter as Tuple<SemaphoreSlim, SemaphoreSlim, ReferenceToActionsQueue>;
                 var token = cts.Token;
                 while (!cts.IsCancellationRequested)
                 {
@@ -41,12 +40,12 @@ internal sealed class ReusableThread
                     if (!token.IsCancellationRequested)
                     {
                         while (referenceToActionsQueue.Ref.TryDequeue(out var localAction)) localAction();
-                        Thread.MemoryBarrier();
                     }
-                    finishSignal.Set();
+                    finishSignal.Release();
                 }
             }));
-            _thread.Start(new Tuple<SemaphoreSlim, AutoResetEvent, ReferenceToActionsQueue>(_startSemaphore, FinishSignal, _referenceToActionsQueue));
+            _thread.IsBackground = true;
+            _thread.Start(new Tuple<SemaphoreSlim, SemaphoreSlim, ReferenceToActionsQueue>(_startSemaphore, FinishSignal, _referenceToActionsQueue));
         }
     }
 
@@ -58,7 +57,7 @@ internal sealed class ReusableThread
     public void Join()
     {
         // This is not the same as Join() from standard thread: first of all it MUST be called each time (otherwise thread is not returned to the pool).
-        FinishSignal.WaitOne();
+        FinishSignal.Wait();
         InternalJoin();
     }
 
@@ -89,13 +88,13 @@ internal sealed class ReusableThread
 public sealed class ParallelForEach<T>
 {
     private readonly ReusableThread[] _threads;
-    private ConcurrentQueue<Action> _actions = new();
+    private readonly ConcurrentQueue<Action> _actions = new();
 
     public ParallelForEach(int maxThreads, List<T> items, Action<T> action)
     {
         var threadsNumber = Math.Min(maxThreads, items.Count);
         _threads = new ReusableThread[threadsNumber];
-        for (var i = 0; i < items.Count; i++) EnqueueBeforeStart(getForEachAction(action, items[i]));
+        for (var i = 0; i < items.Count; i++) EnqueueBeforeStart(GetForEachAction(action, items[i]));
         for (var i = 0; i < threadsNumber; i++)
         {
             _threads[i] = new ReusableThread(_actions);
@@ -108,24 +107,18 @@ public sealed class ParallelForEach<T>
         _actions.Enqueue(action);
     }
 
-    private Action getForEachAction(Action<T> action, T x)
+    private static Action GetForEachAction(Action<T> action, T x)
     {
         return () => action(x);
     }
 
     public void Join()
     {
-        if (_threads.Length <= 64)
+        for (var i = 0; i < _threads.Length; i++)
         {
-            WaitHandle.WaitAll(_threads.Select(x => x.FinishSignal).ToArray());
+            _threads[i].FinishSignal.Wait();
         }
-        else
-        {
-            for (var i = 0; i < _threads.Length; i++)
-            {
-                _threads[i].FinishSignal.WaitOne();
-            }
-        }
+       
         for (var i = 0; i < _threads.Length; i++)
         {
             _threads[i].InternalJoin();
