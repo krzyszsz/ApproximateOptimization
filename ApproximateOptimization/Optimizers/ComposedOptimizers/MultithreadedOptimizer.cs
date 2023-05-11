@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ApproximateOptimization
 {
@@ -52,7 +51,6 @@ namespace ApproximateOptimization
             var threads = new ReusableThread[_problemParameters.ThreadCount];
             _optimizers = new IOptimizer[unallocatedProblemPartitions];
             double[][] solutions = new double[unallocatedProblemPartitions][];
-            long partitionId = 0;
 
             if (_problemParameters.TabooSearch)
             {
@@ -71,7 +69,7 @@ namespace ApproximateOptimization
                 };
             }
 
-            var customThreadPool = new ReusableThread.ParallelForEach<int>(_problemParameters.ThreadCount, Enumerable.Range(0, unallocatedProblemPartitions).ToList(), RunSinglePartition);
+            var customThreadPool = new ParallelForEach<int>(_problemParameters.ThreadCount, Enumerable.Range(0, unallocatedProblemPartitions).ToList(), RunSinglePartition);
             customThreadPool.Join();
 
             for (int i=0; i< _optimizers.Length; i++)
@@ -167,7 +165,7 @@ namespace ApproximateOptimization
                     solutionsToCheck.Add(newSolutionToCheck);
                 }
             }
-            var customThreadPool = new ReusableThread.ParallelForEach<double[]>(_problemParameters.ThreadCount, solutionsToCheck, newSolutionToCheck => nextSolutionSuggestedCallback(newSolutionToCheck, _problemParameters.ScoreFunction(newSolutionToCheck)));
+            var customThreadPool = new ParallelForEach<double[]>(_problemParameters.ThreadCount, solutionsToCheck, newSolutionToCheck => nextSolutionSuggestedCallback(newSolutionToCheck, _problemParameters.ScoreFunction(newSolutionToCheck)));
             customThreadPool.Join();
         }
 
