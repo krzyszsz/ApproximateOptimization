@@ -9,7 +9,7 @@ using System.Threading;
 /// </summary>
 internal sealed class ReusableThread
 {
-    private static ConcurrentQueue<(Thread, SemaphoreSlim, AutoResetEvent, ReferenceToActionsQueue)> threads = new();
+    private static ConcurrentStack<(Thread, SemaphoreSlim, AutoResetEvent, ReferenceToActionsQueue)> threads = new();
     private static CancellationTokenSource cts = new();
     private SemaphoreSlim _startSemaphore;
     private Thread _thread;
@@ -18,7 +18,7 @@ internal sealed class ReusableThread
 
     public ReusableThread(ConcurrentQueue<Action> actions)
     {
-        if (threads.TryDequeue(out var threadData))
+        if (threads.TryPop(out var threadData))
         {
             (_thread, _startSemaphore, FinishSignal, _referenceToActionsQueue) = threadData;
             _referenceToActionsQueue.Ref = actions;
@@ -64,7 +64,7 @@ internal sealed class ReusableThread
 
     internal void InternalJoin()
     {
-        threads.Enqueue((_thread, _startSemaphore, FinishSignal, _referenceToActionsQueue));
+        threads.Push((_thread, _startSemaphore, FinishSignal, _referenceToActionsQueue));
     }
 
     public static void Destroy()
@@ -73,7 +73,7 @@ internal sealed class ReusableThread
         cts.Cancel();
         while (threads.Count > 0)
         {
-            threads.TryDequeue(out var t);
+            threads.TryPop(out var t);
             t.Item2.Dispose(); // Make sure all threads are Joined before this is called.
             t.Item3.Dispose(); // Make sure all threads are Joined before this is called.
         }
