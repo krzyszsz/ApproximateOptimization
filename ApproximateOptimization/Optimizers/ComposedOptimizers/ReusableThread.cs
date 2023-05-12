@@ -8,31 +8,33 @@ using System.Threading;
 /// </summary>
 internal sealed class ReusableThread
 {
-    private static ConcurrentStack<(Thread, SemaphoreSlim, SemaphoreSlim, ReferenceToActionsQueue)> threads = new();
+    private static ConcurrentStack<(Thread, SemaphoreSlim, SemaphoreSlim, SemaphoreSlim, ReferenceToActionsQueue)> threads = new();
     private static CancellationTokenSource cts = new();
     private readonly SemaphoreSlim _startSemaphore;
     private readonly Thread _thread;
     private readonly ReferenceToActionsQueue _referenceToActionsQueue;
     public readonly SemaphoreSlim FinishSignal;
+    public readonly SemaphoreSlim StoppedSignal;
 
     public ReusableThread(ConcurrentQueue<Action> actions)
     {
         if (threads.TryPop(out var threadData))
         {
-            (_thread, _startSemaphore, FinishSignal, _referenceToActionsQueue) = threadData;
+            (_thread, _startSemaphore, FinishSignal, StoppedSignal, _referenceToActionsQueue) = threadData;
             _referenceToActionsQueue.Ref = actions;
         }
         else
         {
             _startSemaphore = new SemaphoreSlim(0, 1);
             FinishSignal = new SemaphoreSlim(0, 1);
+            StoppedSignal = new SemaphoreSlim(0, 1);
             _referenceToActionsQueue = new ReferenceToActionsQueue()
             {
                 Ref = actions
             };
             _thread = new Thread(new ParameterizedThreadStart((object threadParameter) =>
             {
-                (SemaphoreSlim startSemaphore, SemaphoreSlim finishSignal, ReferenceToActionsQueue referenceToActionsQueue) = threadParameter as Tuple<SemaphoreSlim, SemaphoreSlim, ReferenceToActionsQueue>;
+                (SemaphoreSlim startSemaphore, SemaphoreSlim finishSignal, SemaphoreSlim stoppedSignal, ReferenceToActionsQueue referenceToActionsQueue) = threadParameter as Tuple<SemaphoreSlim, SemaphoreSlim, SemaphoreSlim, ReferenceToActionsQueue>;
                 var token = cts.Token;
                 while (!cts.IsCancellationRequested)
                 {
@@ -43,9 +45,10 @@ internal sealed class ReusableThread
                     }
                     finishSignal.Release();
                 }
+                stoppedSignal.Release();
             }));
             _thread.IsBackground = true;
-            _thread.Start(new Tuple<SemaphoreSlim, SemaphoreSlim, ReferenceToActionsQueue>(_startSemaphore, FinishSignal, _referenceToActionsQueue));
+            _thread.Start(new Tuple<SemaphoreSlim, SemaphoreSlim, SemaphoreSlim, ReferenceToActionsQueue>(_startSemaphore, FinishSignal, StoppedSignal, _referenceToActionsQueue));
         }
     }
 
@@ -63,16 +66,17 @@ internal sealed class ReusableThread
 
     internal void InternalJoin()
     {
-        threads.Push((_thread, _startSemaphore, FinishSignal, _referenceToActionsQueue));
+        threads.Push((_thread, _startSemaphore, FinishSignal, StoppedSignal, _referenceToActionsQueue));
     }
 
     public static void Destroy()
     {
         // Not a standard Dispose because this method removes static objects and should only be called when optimizers will no longer be needed.
         cts.Cancel();
-        while (threads.Count > 0)
+        while (threads.TryPop(out var t))
         {
-            threads.TryPop(out var t);
+            t.Item4.Wait();
+            t.Item4.Dispose();
             t.Item2.Dispose(); // Make sure all threads are Joined before this is called.
             t.Item3.Dispose(); // Make sure all threads are Joined before this is called.
         }
