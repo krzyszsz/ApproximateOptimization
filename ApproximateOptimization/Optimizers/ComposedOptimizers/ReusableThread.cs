@@ -73,9 +73,8 @@ internal sealed class ReusableThread
     {
         // Not a standard Dispose because this method removes static objects and should only be called when optimizers will no longer be needed.
         cts.Cancel();
-        while (threads.Count > 0)
+        while (threads.TryPop(out var t))
         {
-            threads.TryPop(out var t);
             t.Item4.Wait();
             t.Item4.Dispose();
             t.Item2.Dispose(); // Make sure all threads are Joined before this is called.
