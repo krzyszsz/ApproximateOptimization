@@ -70,7 +70,12 @@ namespace ApproximateOptimization
                         GAPopulation = _problemParameters.GAPopulation,
                         NonRepeatableRandom = _problemParameters.NonRepeatableRandom,
                     }, rangeDiscovery: false, threads: _problemParameters.Threads, partitions: _problemParameters.Partitions,
-                        tabooSearch: _problemParameters.TabooSearch, tabooArea: _problemParameters.TabooAreaForAllDimensions, gAGenerations: _problemParameters.GAEnabled ? _problemParameters.GaGenerations : 0);
+                        tabooSearch: _problemParameters.TabooSearch,
+                        tabooArea: _problemParameters.TabooAreaForAllDimensions, 
+                        gAGenerations: _problemParameters.GAEnabled ? _problemParameters.GaGenerations : 0,
+                        gAPopulation: _problemParameters.GAPopulation,
+                        gAChildrenPerSolution: _problemParameters.GAChildrenPerSolution
+                        );
                 optimizer.FindMaximum();
 
                 var optimizerStats = optimizer as IOptimizerStats;

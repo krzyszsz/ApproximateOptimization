@@ -91,6 +91,7 @@ namespace ApproximateOptimization
                 {
                     lock (syncRoot)
                     {
+                        IterationsExecuted++;
                         _bestSolutionsForGA.Enqueue(sol, val.Value);
                         if (_bestSolutionsForGA.Count > _problemParameters.GAPopulation)
                         {
