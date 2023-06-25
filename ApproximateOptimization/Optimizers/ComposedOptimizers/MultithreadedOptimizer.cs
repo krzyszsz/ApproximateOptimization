@@ -172,13 +172,26 @@ namespace ApproximateOptimization
 
         private double[] CrossOver(double[] item1, double[] item2)
         {
-            var result = new double[item1.Length];
-            for (var i = 0; i < item1.Length; i++)
+            if (_random.NextDouble() > 0.7)
             {
-                var weight = _random.NextDouble();
-                result[i] = weight * item1[i] + (1 - weight) * item2[i];
+                var result = new double[item1.Length];
+                for (var i = 0; i < item1.Length; i++)
+                {
+                    var weight = _random.NextDouble();
+                    result[i] = weight * item1[i] + (1 - weight) * item2[i];
+                }
+                return result;
             }
-            return result;
+            else
+            {
+                var result = new double[item1.Length];
+                var weight = _random.NextDouble();
+                for (var i = 0; i < item1.Length; i++)
+                {
+                    result[i] = weight * item1[i] + (1 - weight) * item2[i];
+                }
+                return result;
+            }
         }
 
         private sealed class TabooSearchItem : IEquatable<TabooSearchItem>
